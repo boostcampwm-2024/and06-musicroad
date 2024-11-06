@@ -12,7 +12,9 @@ import androidx.core.content.PermissionChecker
 import androidx.navigation.compose.rememberNavController
 import com.squirtles.musicroad.R
 import com.squirtles.musicroad.ui.theme.MusicRoadTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private val permissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()

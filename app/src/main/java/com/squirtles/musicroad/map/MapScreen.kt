@@ -1,6 +1,7 @@
 package com.squirtles.musicroad.map
 
 import android.content.res.Configuration
+import android.util.Log
 import android.view.View
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -30,14 +31,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentContainerView
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.squirtles.musicroad.R
 import com.squirtles.musicroad.ui.theme.MusicRoadTheme
 
 @Composable
 fun MapScreen(
     onFavoriteClick: () -> Unit,
-    onSettingClick: () -> Unit
+    onSettingClick: () -> Unit,
+    mapViewModel: MapViewModel = viewModel(),
+    mapViewModel2: MapViewModel = hiltViewModel()
 ) {
+    Log.d("뷰모델", "screen viewmodel: $mapViewModel")
+    Log.d("뷰모델", "screen hilt viewmodel: $mapViewModel2")
     Scaffold(
         contentWindowInsets = WindowInsets.navigationBars
     ) { innerPadding ->

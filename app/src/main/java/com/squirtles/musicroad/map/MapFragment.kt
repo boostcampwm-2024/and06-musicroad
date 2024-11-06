@@ -3,12 +3,15 @@ package com.squirtles.musicroad.map
 import android.Manifest
 import android.location.Location
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.content.PermissionChecker
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.naver.maps.geometry.LatLng
@@ -19,13 +22,16 @@ import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
 import com.naver.maps.map.overlay.CircleOverlay
 import com.naver.maps.map.overlay.LocationOverlay
+import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.util.FusedLocationSource
 import com.squirtles.musicroad.R
 import com.squirtles.musicroad.databinding.FragmentMapBinding
 import com.squirtles.musicroad.ui.theme.Primary
 import com.squirtles.musicroad.ui.theme.Purple15
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MapFragment : Fragment(), OnMapReadyCallback {
     private var _binding: FragmentMapBinding? = null
     private val binding get() = _binding!!
@@ -35,6 +41,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var locationOverlay: LocationOverlay
     private val circleOverlay = CircleOverlay()
 
+    private val viewModel: MapViewModel by viewModels()
+    private val viewModel2: MapViewModel by activityViewModels()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -42,6 +51,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         _binding = FragmentMapBinding.inflate(inflater, container, false)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
         locationSource = FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE)
+        Log.d("뷰모델", "fragment viewModels: $viewModel")
+        Log.d("뷰모델", "fragment activityViewModels: $viewModel2")
         return binding.root
     }
 
@@ -115,6 +126,12 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 PermissionChecker.PERMISSION_GRANTED &&
                 PermissionChecker.checkSelfPermission(requireContext(), PERMISSIONS[1]) ==
                 PermissionChecker.PERMISSION_GRANTED
+    }
+
+    private fun createMarker() {
+        val marker = Marker()
+        marker.position = LatLng(37.5670135, 126.9783740)
+        marker.map = naverMap
     }
 
     companion object {

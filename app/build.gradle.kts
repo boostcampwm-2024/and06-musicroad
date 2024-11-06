@@ -78,6 +78,8 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.ui.viewbinding)
     implementation(libs.androidx.navigation.compose)
+    implementation("androidx.activity:activity-ktx:1.1.0")
+    implementation("androidx.fragment:fragment-ktx:1.8.3")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -88,6 +90,7 @@ dependencies {
 
     // Hilt
     implementation(libs.hilt.android)
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
     ksp(libs.hilt.android.compiler)
     androidTestImplementation(libs.hilt.android.testing)
     kspAndroidTest(libs.hilt.android.compiler)
