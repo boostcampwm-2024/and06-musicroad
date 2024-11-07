@@ -6,16 +6,20 @@ import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.remember
 import androidx.core.content.PermissionChecker
 import androidx.navigation.compose.rememberNavController
 import com.squirtles.musicroad.R
+import com.squirtles.musicroad.map.MapViewModel
 import com.squirtles.musicroad.ui.theme.MusicRoadTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+    private val mapViewModel: MapViewModel by viewModels()
+
     private val permissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
@@ -47,7 +51,8 @@ class MainActivity : AppCompatActivity() {
                 }
                 MainNavGraph(
                     navController = navController,
-                    navigationActions = navigationActions
+                    navigationActions = navigationActions,
+                    mapViewModel = mapViewModel
                 )
             }
         }

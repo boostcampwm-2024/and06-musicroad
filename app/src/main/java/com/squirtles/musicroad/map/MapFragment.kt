@@ -1,6 +1,7 @@
 package com.squirtles.musicroad.map
 
 import android.Manifest
+import android.graphics.Color
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
@@ -11,7 +12,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.core.content.PermissionChecker
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.naver.maps.geometry.LatLng
@@ -30,6 +31,7 @@ import com.squirtles.musicroad.databinding.FragmentMapBinding
 import com.squirtles.musicroad.ui.theme.Primary
 import com.squirtles.musicroad.ui.theme.Purple15
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MapFragment : Fragment(), OnMapReadyCallback {
@@ -41,8 +43,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var locationOverlay: LocationOverlay
     private val circleOverlay = CircleOverlay()
 
-    private val viewModel: MapViewModel by viewModels()
-    private val viewModel2: MapViewModel by activityViewModels()
+    private val viewModel: MapViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -73,6 +74,22 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         setCameraZoomLimit()
         setInitLocation()
         setLocationChangeListener()
+        Log.d(TAG_LOG, "map fragment - onMapReady()")
+
+        lifecycleScope.launch {
+            viewModel.centerButtonClick.collect {
+                Log.d(TAG_LOG, "map fragment: center button click collect - $it")
+                viewModel.curLocation.value?.let { location ->
+                    createMarker(location)
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            viewModel.curLocation.collect {
+                Log.d(TAG_LOG, "map fragment: 위치 업데이트 - $it")
+            }
+        }
     }
 
     private fun setInitLocation() {
@@ -109,6 +126,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private fun setLocationChangeListener() {
         naverMap.addOnLocationChangeListener { location ->
             setCircleOverlay(location)
+            viewModel.updateCurLocation(location)
         }
     }
 
@@ -128,9 +146,13 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 PermissionChecker.PERMISSION_GRANTED
     }
 
-    private fun createMarker() {
+    private fun createMarker(location: Location) {
         val marker = Marker()
-        marker.position = LatLng(37.5670135, 126.9783740)
+        val markerIcon = MarkerIconView(requireContext())
+//        marker.position = LatLng(37.5670135, 126.9783740)
+        marker.position = LatLng(location.latitude, location.longitude)
+        marker.icon = OverlayImage.fromView(markerIcon)
+        marker.iconTintColor = Color.parseColor("#FF6B84FF")
         marker.map = naverMap
     }
 
@@ -142,5 +164,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION
         )
+
+        private const val TAG_LOG = "MapFragment"
     }
 }

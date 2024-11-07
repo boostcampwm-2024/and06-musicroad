@@ -31,8 +31,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentContainerView
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.squirtles.musicroad.R
 import com.squirtles.musicroad.ui.theme.MusicRoadTheme
 
@@ -40,11 +38,9 @@ import com.squirtles.musicroad.ui.theme.MusicRoadTheme
 fun MapScreen(
     onFavoriteClick: () -> Unit,
     onSettingClick: () -> Unit,
-    mapViewModel: MapViewModel = viewModel(),
-    mapViewModel2: MapViewModel = hiltViewModel()
+    viewModel: MapViewModel
 ) {
-    Log.d("뷰모델", "screen viewmodel: $mapViewModel")
-    Log.d("뷰모델", "screen hilt viewmodel: $mapViewModel2")
+    Log.d("뷰모델", "map screen viewmodel: $viewModel")
     Scaffold(
         contentWindowInsets = WindowInsets.navigationBars
     ) { innerPadding ->
@@ -71,7 +67,8 @@ fun MapScreen(
                     .align(Alignment.BottomCenter)
                     .padding(bottom = 16.dp),
                 onFavoriteClick = onFavoriteClick,
-                onSettingClick = onSettingClick
+                onSettingClick = onSettingClick,
+                onCenterClick = { viewModel.createMarker() }
             )
         }
     }
@@ -81,7 +78,8 @@ fun MapScreen(
 fun BottomNavigation(
     modifier: Modifier = Modifier,
     onFavoriteClick: () -> Unit,
-    onSettingClick: () -> Unit
+    onSettingClick: () -> Unit,
+    onCenterClick: () -> Unit
 ) {
     Box(
         modifier = modifier,
@@ -132,7 +130,7 @@ fun BottomNavigation(
                 .size(82.dp)
                 .clip(CircleShape)
                 .background(color = MaterialTheme.colorScheme.primary)
-                .clickable { /* TODO: 픽 등록 이동 */ },
+                .clickable { onCenterClick() /* TODO: 픽 등록 이동 */ },
             contentAlignment = Alignment.Center
         ) {
             Icon(
@@ -151,7 +149,9 @@ fun BottomNavigationLightPreview() {
     MusicRoadTheme {
         BottomNavigation(
             onFavoriteClick = {},
-            onSettingClick = {}
+            onSettingClick = {},
+            onCenterClick = {}
+
         )
     }
 }
@@ -162,7 +162,8 @@ fun BottomNavigationDarkPreview() {
     MusicRoadTheme {
         BottomNavigation(
             onFavoriteClick = {},
-            onSettingClick = {}
+            onSettingClick = {},
+            onCenterClick = {}
         )
     }
 }
