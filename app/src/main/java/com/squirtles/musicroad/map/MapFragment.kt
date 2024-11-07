@@ -52,9 +52,24 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         _binding = FragmentMapBinding.inflate(inflater, container, false)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
         locationSource = FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE)
-        Log.d("뷰모델", "fragment viewModels: $viewModel")
-        Log.d("뷰모델", "fragment activityViewModels: $viewModel2")
+        Log.d(TAG_LOG, "map fragment activityViewModels: $viewModel")
+
         return binding.root
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d(TAG_LOG, "map fragment - onPause()")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d(TAG_LOG, "map fragment - onResume()")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d(TAG_LOG, "map fragment - onStop()")
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
