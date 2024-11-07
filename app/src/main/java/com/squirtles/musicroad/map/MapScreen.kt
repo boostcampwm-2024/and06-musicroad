@@ -36,11 +36,11 @@ import com.squirtles.musicroad.ui.theme.MusicRoadTheme
 
 @Composable
 fun MapScreen(
+    mapViewModel: MapViewModel,
     onFavoriteClick: () -> Unit,
-    onSettingClick: () -> Unit,
-    viewModel: MapViewModel
+    onSettingClick: () -> Unit
 ) {
-    Log.d("뷰모델", "map screen viewmodel: $viewModel")
+    Log.d("뷰모델", "map screen viewmodel: $mapViewModel")
     Scaffold(
         contentWindowInsets = WindowInsets.navigationBars
     ) { innerPadding ->
@@ -68,7 +68,7 @@ fun MapScreen(
                     .padding(bottom = 16.dp),
                 onFavoriteClick = onFavoriteClick,
                 onSettingClick = onSettingClick,
-                onCenterClick = { viewModel.createMarker() }
+                onCenterClick = { mapViewModel.createMarker() }
             )
         }
     }
@@ -89,7 +89,7 @@ fun BottomNavigation(
             modifier = Modifier
                 .size(245.dp, 50.dp)
                 .clip(CircleShape)
-                .background(color = MaterialTheme.colorScheme.onPrimary)
+                .background(color = MaterialTheme.colorScheme.surface)
         ) {
             // 왼쪽 버튼
             Box(

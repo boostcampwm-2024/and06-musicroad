@@ -42,6 +42,10 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
+    // Firebase
+    implementation(libs.firebase.firestore.ktx)
+    implementation(libs.geofire.android.common)
+
     // Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)

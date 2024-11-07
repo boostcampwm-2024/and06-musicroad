@@ -18,7 +18,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    private val mapViewModel: MapViewModel by viewModels()
+    private val mapViewModel : MapViewModel by viewModels()
 
     private val permissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -50,9 +50,9 @@ class MainActivity : AppCompatActivity() {
                     MainNavigationActions(navController)
                 }
                 MainNavGraph(
+                    mapViewModel = mapViewModel,
                     navController = navController,
-                    navigationActions = navigationActions,
-                    mapViewModel = mapViewModel
+                    navigationActions = navigationActions
                 )
             }
         }

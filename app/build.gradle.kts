@@ -94,12 +94,19 @@ dependencies {
     ksp(libs.hilt.android.compiler)
     androidTestImplementation(libs.hilt.android.testing)
     kspAndroidTest(libs.hilt.android.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.hilt.navigation.fragment)
 
     // Firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
+    implementation(libs.google.firebase.dynamic.module.support)
 
     // Map
     implementation(libs.map.sdk)
     implementation(libs.play.services.location)
+
+    // Coil
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
 }

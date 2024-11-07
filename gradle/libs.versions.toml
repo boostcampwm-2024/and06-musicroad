@@ -1,6 +1,10 @@
 [versions]
 agp = "8.5.1"
+coil = "3.0.0"
 firebaseBom = "33.5.1"
+firebaseDynamicModuleSupportVersion = "16.0.0-beta03"
+geofireAndroidCommon = "3.2.0"
+hiltNavigationCompose = "1.2.0"
 kotlin = "1.9.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
@@ -23,10 +27,13 @@ googleServices = "4.4.2"
 constraintlayout = "2.2.0"
 uiViewbinding = "1.7.5"
 playServicesLocation = "21.3.0"
+firebaseFirestoreKtx = "25.1.1"
 
 [libraries]
 # AndroidX
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+androidx-hilt-navigation-fragment = { module = "androidx.hilt:hilt-navigation-fragment", version.ref = "hiltNavigationCompose" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
@@ -45,8 +52,12 @@ androidx-navigation-compose = { module = "androidx.navigation:navigation-compose
 # Firebase
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firebaseFirestoreKtx" }
+
 
 # Test
+geofire-android-common = { module = "com.firebase:geofire-android-common", version.ref = "geofireAndroidCommon" }
+google-firebase-dynamic-module-support = { module = "com.google.firebase:firebase-dynamic-module-support", version.ref = "firebaseDynamicModuleSupportVersion" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 
 # Map
@@ -77,6 +88,10 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 
 # UI ViewBinding
 androidx-ui-viewbinding = { group = "androidx.compose.ui", name = "ui-viewbinding", version.ref = "uiViewbinding" }
+
+# Coil
+coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
+coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coil" }
 
 # Plugins
 [plugins]

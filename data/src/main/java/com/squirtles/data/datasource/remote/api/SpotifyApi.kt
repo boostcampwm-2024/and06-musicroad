@@ -1,6 +1,6 @@
 package com.squirtles.data.datasource.remote.api
 
-import com.squirtles.data.datasource.remote.model.SpotifyResponse
+import com.squirtles.data.datasource.remote.model.spotify.SpotifyResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Header

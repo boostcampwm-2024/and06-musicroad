@@ -1,6 +1,6 @@
 package com.squirtles.data.datasource.remote.api
 
-import com.squirtles.data.datasource.remote.model.AccessTokenResponse
+import com.squirtles.data.datasource.remote.model.spotify.AccessTokenResponse
 import retrofit2.Response
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded

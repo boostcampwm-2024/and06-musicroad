@@ -8,4 +8,7 @@
     <string name="map_navigation_favorite_icon_description">픽 보관함 이동 버튼 아이콘</string>
     <string name="map_navigation_setting_icon_description">설정 이동 버튼 아이콘</string>
     <string name="map_navigation_center_icon_description">내비게이션 중앙 버튼 아이콘</string>
+    <string name="map_info_window_album_description">앨범 이미지</string>
+    <string name="map_info_window_pick_user">님의 픽</string>
+    <string name="map_info_window_favorite_count_icon_description">픽을 담은 개수</string>
 </resources>

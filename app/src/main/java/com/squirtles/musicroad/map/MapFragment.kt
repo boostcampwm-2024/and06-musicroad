@@ -13,6 +13,7 @@ import androidx.core.content.PermissionChecker
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.fragment.app.activityViewModels
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.naver.maps.geometry.LatLng
@@ -30,10 +31,8 @@ import com.squirtles.musicroad.R
 import com.squirtles.musicroad.databinding.FragmentMapBinding
 import com.squirtles.musicroad.ui.theme.Primary
 import com.squirtles.musicroad.ui.theme.Purple15
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
-@AndroidEntryPoint
 class MapFragment : Fragment(), OnMapReadyCallback {
     private var _binding: FragmentMapBinding? = null
     private val binding get() = _binding!!
@@ -43,7 +42,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var locationOverlay: LocationOverlay
     private val circleOverlay = CircleOverlay()
 
-    private val viewModel: MapViewModel by activityViewModels()
+    private val mapViewModel: MapViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -52,7 +51,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         _binding = FragmentMapBinding.inflate(inflater, container, false)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
         locationSource = FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE)
-        Log.d(TAG_LOG, "map fragment activityViewModels: $viewModel")
+        Log.d(TAG_LOG, "map fragment activityViewModels: $mapViewModel")
 
         return binding.root
     }
@@ -74,6 +73,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.d(TAG_LOG, mapViewModel.toString())
         val mapView = binding.containerMap.getFragment<MapFragment>()
         mapView.getMapAsync(this)
     }
@@ -84,24 +84,26 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }
 
     override fun onMapReady(naverMap: NaverMap) {
+        Log.d(TAG_LOG, "map fragment - onMapReady()")
         this.naverMap = naverMap
         initLocationOverlay()
         setCameraZoomLimit()
         setInitLocation()
         setLocationChangeListener()
-        Log.d(TAG_LOG, "map fragment - onMapReady()")
+        mapViewModel.fetchPick("1PJY507YTSR8vlX7VH5w")
+//        mapViewModel.fetchPick("1aDOLBPkTYqPyZJOvpBy")
 
         lifecycleScope.launch {
-            viewModel.centerButtonClick.collect {
+            mapViewModel.centerButtonClick.collect {
                 Log.d(TAG_LOG, "map fragment: center button click collect - $it")
-                viewModel.curLocation.value?.let { location ->
+                mapViewModel.curLocation.value?.let { location ->
                     createMarker(location)
                 }
             }
         }
 
         lifecycleScope.launch {
-            viewModel.curLocation.collect {
+            mapViewModel.curLocation.collect {
                 Log.d(TAG_LOG, "map fragment: 위치 업데이트 - $it")
             }
         }
@@ -141,7 +143,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private fun setLocationChangeListener() {
         naverMap.addOnLocationChangeListener { location ->
             setCircleOverlay(location)
-            viewModel.updateCurLocation(location)
+            mapViewModel.updateCurLocation(location)
         }
     }
 

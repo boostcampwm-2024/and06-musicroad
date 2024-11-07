@@ -1,4 +1,4 @@
-package com.squirtles.data.datasource.remote.model
+package com.squirtles.data.datasource.remote.model.spotify
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
