@@ -76,7 +76,7 @@ import com.squirtles.musicroad.media.PlayerServiceViewModel
 import com.squirtles.musicroad.ui.theme.Black
 import com.squirtles.musicroad.ui.theme.Primary
 import com.squirtles.musicroad.ui.theme.White
-import com.squirtles.musicroad.videoplayer.MusicVideoScreen
+import com.squirtles.musicroad.detail.videoplayer.MusicVideoScreen
 import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 

@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.mediaservice"
+    namespace = "com.example.musicplayer"
     compileSdk = 34
 
     defaultConfig {
@@ -32,12 +32,9 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-
+    implementation(projects.domain.player)
+    implementation(projects.core.model)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
     // Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)

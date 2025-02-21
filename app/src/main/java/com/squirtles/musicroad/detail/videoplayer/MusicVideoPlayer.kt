@@ -1,4 +1,4 @@
-package com.squirtles.musicroad.videoplayer
+package com.squirtles.musicroad.detail.videoplayer
 
 import android.graphics.Matrix
 import android.graphics.SurfaceTexture

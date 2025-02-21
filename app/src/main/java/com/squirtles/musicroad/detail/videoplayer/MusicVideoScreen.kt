@@ -1,4 +1,4 @@
-package com.squirtles.musicroad.videoplayer
+package com.squirtles.musicroad.detail.videoplayer
 
 import androidx.activity.compose.BackHandler
 import androidx.annotation.OptIn

@@ -1,4 +1,4 @@
-package com.squirtles.musicroad.videoplayer
+package com.squirtles.musicroad.detail.videoplayer
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
