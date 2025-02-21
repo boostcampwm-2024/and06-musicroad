@@ -47,14 +47,14 @@ class GoogleId(private val context: Context) {
     private fun signInWithFirebase(googleIdTokenCredential: GoogleIdTokenCredential, onSuccess: (String, GoogleIdTokenCredential) -> Unit) {
         val credential = GoogleAuthProvider.getCredential(googleIdTokenCredential.idToken, null)
         FirebaseAuth.getInstance().signInWithCredential(credential)
-            .addOnCompleteListener { task ->
-                val user = FirebaseAuth.getInstance().currentUser
-                if (task.isSuccessful && user != null) {
-                    Log.d("SignIn", "Firebase 인증 uid : ${user.uid}")
-                    onSuccess(user.uid, googleIdTokenCredential)
-                } else {
-                    Log.e("SignIn", "Firebase 인증 실패", task.exception)
+            .addOnSuccessListener { authResult ->
+                authResult.user?.uid?.let { uid ->
+                    Log.d("SignIn", "Firebase 인증 uid : $uid")
+                    onSuccess(uid, googleIdTokenCredential)
                 }
+            }
+            .addOnFailureListener { exception ->
+                Log.e("SignIn", "Firebase 인증 실패", exception)
             }
     }
 
