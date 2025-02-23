@@ -106,8 +106,6 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.ui.viewbinding)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.animation)
     testImplementation(libs.junit)
@@ -134,7 +132,6 @@ dependencies {
     androidTestImplementation(libs.hilt.android.testing)
     kspAndroidTest(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
-    implementation(libs.androidx.hilt.navigation.fragment)
 
     // Firebase
     implementation(platform(libs.firebase.bom))
