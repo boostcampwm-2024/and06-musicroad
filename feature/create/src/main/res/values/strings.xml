@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">MusicRoad</string>
+
+    <string name="top_app_bar_back_description">상단 바 뒤로 가기 버튼</string>
+    <string name="pick_album_description">앨범 이미지</string>
+    <string name="pick_comment_placeholder">거리에 남길 한마디를 입력하세요.</string>
+    <string name="pick_app_bar_title">픽 등록</string>
+    <string name="pick_app_bar_upload_description">등록하기</string>
+</resources>

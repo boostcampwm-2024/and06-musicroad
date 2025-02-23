@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <string name="google_id_no_credential_exception_message">기기에 로그인된 구글 계정이 없습니다</string>
+</resources>
