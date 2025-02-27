@@ -1,5 +1,9 @@
 package com.squirtles.musicroad.map
 
+import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -24,7 +29,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.getString
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.flowWithLifecycle
 import com.squirtles.musicroad.R
 import com.squirtles.musicroad.account.AccountViewModel
 import com.squirtles.musicroad.account.GoogleId
@@ -37,6 +45,8 @@ import com.squirtles.musicroad.map.components.LoadingDialog
 import com.squirtles.musicroad.map.components.MapBottomNavBar
 import com.squirtles.musicroad.map.components.PickNotificationBanner
 import com.squirtles.musicroad.media.PlayerServiceViewModel
+import com.squirtles.musicroad.ui.theme.Black
+import kotlinx.coroutines.launch
 
 @Composable
 fun MapScreen(
@@ -55,6 +65,7 @@ fun MapScreen(
     val playerState by playerServiceViewModel.playerState.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
     var showBottomSheet by remember { mutableStateOf(false) }
     var showLocationLoading by rememberSaveable { mutableStateOf(true) }
     var isPlaying: Boolean by remember { mutableStateOf(false) }
@@ -62,9 +73,22 @@ fun MapScreen(
     // Sign In Dialog
     var showSignInDialog by remember { mutableStateOf(false) }
     var signInDialogDescription by remember { mutableStateOf("") }
+    var showLoadingIndicator by rememberSaveable { mutableStateOf(false) }
+
+    BackHandler(enabled = showLoadingIndicator) { }
 
     LaunchedEffect(Unit) {
         playerServiceViewModel.readyPlayer()
+
+        launch {
+            accountViewModel.signInSuccess
+                .flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+                .collect { isSuccess ->
+                    if (isSuccess) {
+                        showLoadingIndicator = false
+                    }
+                }
+        }
     }
 
     LaunchedEffect(playerState) {
@@ -211,14 +235,31 @@ fun MapScreen(
         SignInAlertDialog(
             onDismissRequest = { showSignInDialog = false },
             onGoogleSignInClick = {
+                showSignInDialog = false
+                showLoadingIndicator = true
                 GoogleId(context).signIn(
                     onSuccess = { uid, credential ->
                         accountViewModel.signIn(uid, credential)
-                        showSignInDialog = false
                     }
                 )
             },
             description = signInDialogDescription
         )
+    }
+
+    if (showLoadingIndicator) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Black.copy(alpha = 0.5F))
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onClick = {}
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
+        }
     }
 }
