@@ -110,11 +110,16 @@ fun PickDetailScreen(
     LaunchedEffect(Unit) {
         detailViewModel.fetchPick(pickId)
 
-        accountViewModel.signInSuccess
-            .flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
-            .collect { isSuccess ->
-                if (isSuccess) detailViewModel.fetchPick(pickId)
-            }
+        launch {
+            accountViewModel.signInSuccess
+                .flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+                .collect { isSuccess ->
+                    if (isSuccess) {
+                        showProcessIndicator = false
+                        detailViewModel.fetchPick(pickId)
+                    }
+                }
+        }
     }
 
     when (uiState) {
@@ -348,10 +353,11 @@ fun PickDetailScreen(
         SignInAlertDialog(
             onDismissRequest = { showSignInDialog = false },
             onGoogleSignInClick = {
+                showSignInDialog = false
+                showProcessIndicator = true
                 GoogleId(context).signIn(
                     onSuccess = { uid, credential ->
                         accountViewModel.signIn(uid, credential)
-                        showSignInDialog = false
                     }
                 )
             },
