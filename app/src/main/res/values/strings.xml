@@ -148,8 +148,8 @@
     <string name="sign_out_dialog_confirm">로그아웃</string>
 
 
-    <string name="delete_account_dialog_title">회원탈퇴 하시겠습니까?</string>
-    <string name="delete_account_dialog_description">탈퇴 시 등록한 픽을 복구할 수 없습니다.</string>
+    <string name="delete_account_dialog_title">정말 탈퇴하시겠습니까?</string>
+    <string name="delete_account_dialog_description">탈퇴 시 회원 정보와 픽 데이터가 삭제되며, 복구할 수 없습니다.</string>
     <string name="delete_account_dialog_dismiss">취소</string>
     <string name="delete_account_dialog_confirm">탈퇴</string>
 </resources>
