@@ -73,6 +73,7 @@ fun MapScreen(
     // Sign In Dialog
     var showSignInDialog by remember { mutableStateOf(false) }
     var signInDialogDescription by remember { mutableStateOf("") }
+    var onSignInSuccess by remember { mutableStateOf<(String) -> Unit>({}) }
     var showLoadingIndicator by rememberSaveable { mutableStateOf(false) }
 
     BackHandler(enabled = showLoadingIndicator) { }
@@ -86,6 +87,9 @@ fun MapScreen(
                 .collect { isSuccess ->
                     if (isSuccess) {
                         showLoadingIndicator = false
+                        mapViewModel.getUid()?.let { uid ->
+                            onSignInSuccess(uid)
+                        }
                     }
                 }
         }
@@ -167,6 +171,7 @@ fun MapScreen(
                         } ?: run {
                             signInDialogDescription = getString(context, R.string.sign_in_dialog_title_favorite_picks)
                             showSignInDialog = true
+                            onSignInSuccess = onFavoriteClick
                         }
                     },
                     onCenterClick = {
@@ -176,14 +181,19 @@ fun MapScreen(
                         } ?: run {
                             signInDialogDescription = getString(context, R.string.sign_in_dialog_title_add_pick)
                             showSignInDialog = true
+                            onSignInSuccess = {
+                                onCenterClick()
+                                mapViewModel.saveCurLocationForced()
+                            }
                         }
                     },
                     onUserInfoClick = {
-                        mapViewModel.getUid()?.let {
-                            onUserInfoClick(it)
+                        mapViewModel.getUid()?.let { uid ->
+                            onUserInfoClick(uid)
                         } ?: run {
                             signInDialogDescription = getString(context, R.string.sign_in_dialog)
                             showSignInDialog = true
+                            onSignInSuccess = onUserInfoClick
                         }
                     }
                 )
