@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.util"
+    namespace = "com.squirtles.util"
     compileSdk = 34
 
     defaultConfig {
@@ -34,7 +34,6 @@ dependencies {
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.navigation.common.ktx)
     implementation(libs.material)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -42,4 +41,5 @@ dependencies {
 
     // Serialization
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.androidx.navigation.common.ktx)
 }

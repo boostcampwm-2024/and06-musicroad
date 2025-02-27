@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.applemusic"
+    namespace = "com.squirtles.applemusic"
     compileSdk = 34
 
     defaultConfig {

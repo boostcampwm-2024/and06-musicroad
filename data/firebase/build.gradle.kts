@@ -12,7 +12,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.firebase"
+    namespace = "com.squirtles.firebase"
     compileSdk = 34
 
     defaultConfig {
@@ -70,6 +70,6 @@ dependencies {
     implementation(libs.inject)
 
     // Firebase
-    implementation(libs.google.firebase.firestore.ktx)
+    implementation(libs.firebase.firestore.ktx)
     implementation(libs.geofire.android.common)
 }

@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.create"
+    namespace = "com.squirtles.create"
     compileSdk = 34
 
     defaultConfig {
@@ -30,6 +30,12 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    buildFeatures { // Enables Jetpack Compose for this module
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.14"
+    }
 }
 
 dependencies {
@@ -50,18 +56,18 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     // Compose
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.compose.material)
-    implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.material.icons.extended)
-    implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.navigation.compose)
+    implementation(platform(libs.compose.bom))
+    implementation(libs.compose.material)
+    implementation(libs.compose.material3)
+    implementation(libs.compose.material.icons.extended)
+    implementation(libs.compose.ui.tooling.preview)
+    implementation(libs.navigation.compose)
 
     // Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
     implementation(libs.inject)
-    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.hilt.navigation.compose)
 
     // Serialization
     implementation(libs.kotlinx.serialization.json)

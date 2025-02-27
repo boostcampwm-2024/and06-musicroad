@@ -93,7 +93,7 @@ dependencies {
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.firebase.functions.ktx)
     implementation(libs.geofire.android.common)
-    implementation(libs.kotlinx.coroutines.play.services)
+//    implementation(libs.kotlinx.coroutines.play.services)
 
     // Hilt
     implementation(libs.hilt.android)

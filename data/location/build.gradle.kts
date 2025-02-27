@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.location"
+    namespace = "com.squirtles.location"
     compileSdk = 34
 
     defaultConfig {

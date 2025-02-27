@@ -1,5 +1,6 @@
 package com.squirtles.data.applemusic
 
+import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.squirtles.data.applemusic.api.AppleMusicApi
@@ -28,6 +29,8 @@ class SearchSongsPagingSource(
                 val songs = response.body()?.results?.songs?.data
                     ?.map { it.toSong() }
                     ?: emptyList()
+
+                Log.d("SearchSongsPagingSource", "songs: $songs")
 
                 val nextKey = if (response.body()?.results?.songs?.next == null) null else pageIndex + 1
                 LoadResult.Page(

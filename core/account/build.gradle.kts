@@ -13,7 +13,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.account"
+    namespace = "com.squirtles.account"
     compileSdk = 34
 
     defaultConfig {

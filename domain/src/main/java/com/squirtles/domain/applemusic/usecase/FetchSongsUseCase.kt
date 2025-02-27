@@ -6,5 +6,6 @@ import javax.inject.Inject
 class FetchSongsUseCase @Inject constructor(
     private val appleMusicRepository: AppleMusicRepository
 ) {
-    operator fun invoke(searchText: String) = appleMusicRepository.searchSongs(searchText)
+    operator fun invoke(searchText: String)
+    = appleMusicRepository.searchSongs(searchText)
 }

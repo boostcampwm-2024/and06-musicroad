@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.order"
+    namespace = "com.squirtles.order"
     compileSdk = 34
 
     defaultConfig {

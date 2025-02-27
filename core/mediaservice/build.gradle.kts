@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.mediaservice"
+    namespace = "com.squirtles.mediaservice"
     compileSdk = 34
 
     defaultConfig {

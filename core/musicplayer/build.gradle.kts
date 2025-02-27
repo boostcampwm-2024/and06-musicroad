@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.musicplayer"
+    namespace = "com.squirtles.musicplayer"
     compileSdk = 34
 
     defaultConfig {
