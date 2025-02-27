@@ -20,8 +20,7 @@ class DeleteAccountUseCase @Inject constructor(
     private val firebaseRepository: FirebaseRepository
 ) {
     suspend operator fun invoke() = coroutineScope {
-        val currentUser = FirebaseAuth.getInstance().currentUser
-        if (currentUser != null) {
+        FirebaseAuth.getInstance().currentUser?.let { currentUser ->
             try {
                 // 1. 좋아한 픽 삭제
                 val favoritePicks = fetchFavoritePicksUseCase(currentUser.uid).getOrNull() ?: emptyList()
