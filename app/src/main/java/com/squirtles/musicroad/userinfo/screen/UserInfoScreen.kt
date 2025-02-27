@@ -1,6 +1,9 @@
 package com.squirtles.musicroad.userinfo.screen
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,6 +20,7 @@ import androidx.compose.material.icons.outlined.Archive
 import androidx.compose.material.icons.outlined.Map
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.SwitchAccount
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -27,6 +31,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -55,6 +60,7 @@ import com.squirtles.musicroad.common.DialogTextButton
 import com.squirtles.musicroad.common.HorizontalSpacer
 import com.squirtles.musicroad.common.MessageAlertDialog
 import com.squirtles.musicroad.common.VerticalSpacer
+import com.squirtles.musicroad.ui.theme.Black
 import com.squirtles.musicroad.ui.theme.Primary
 import com.squirtles.musicroad.ui.theme.White
 import com.squirtles.musicroad.userinfo.UserInfoViewModel
@@ -80,11 +86,14 @@ fun UserInfoScreen(
     val user by userInfoViewModel.profileUser.collectAsStateWithLifecycle()
 
     var showLogOutDialog by remember { mutableStateOf(false) }
+    var showLoadingIndicator by rememberSaveable { mutableStateOf(false) }
 
     val onSignOutClick: () -> Unit = {
         GoogleId(context).signOut()
         accountViewModel.signOut()
     }
+
+    BackHandler(enabled = showLoadingIndicator) { }
 
     LaunchedEffect(Unit) {
         uid.let {
@@ -96,6 +105,7 @@ fun UserInfoScreen(
                 .flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
                 .collect { isSuccess ->
                     if (isSuccess) {
+                        showLoadingIndicator = false
                         onBackToMapClick()
                     }
                 }
@@ -233,12 +243,29 @@ fun UserInfoScreen(
                     DialogTextButton(
                         onClick = {
                             showLogOutDialog = false
+                            showLoadingIndicator = true
                             onSignOutClick()
                         },
                         text = stringResource(R.string.sign_out_dialog_confirm),
                         textColor = Primary,
                         fontWeight = FontWeight.Bold
                     )
+                }
+            }
+
+            if (showLoadingIndicator) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Black.copy(alpha = 0.5F))
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                            onClick = {}
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
                 }
             }
         }
