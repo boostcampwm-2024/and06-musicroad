@@ -55,6 +55,7 @@ fun NavGraphBuilder.userInfoNavGraph(
         val userName = backStackEntry.toRoute<UserInfoRoute.EditProfile>().userName
         EditProfileScreen(
             currentUserName = userName,
+            onBackToMapClick = onBackToMapClick,
             onBackClick = onBackClick,
         )
     }

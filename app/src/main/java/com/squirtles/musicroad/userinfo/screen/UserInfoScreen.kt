@@ -1,11 +1,9 @@
 package com.squirtles.musicroad.userinfo.screen
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -39,7 +37,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -58,7 +55,6 @@ import com.squirtles.musicroad.common.DialogTextButton
 import com.squirtles.musicroad.common.HorizontalSpacer
 import com.squirtles.musicroad.common.MessageAlertDialog
 import com.squirtles.musicroad.common.VerticalSpacer
-import com.squirtles.musicroad.ui.theme.DarkGray
 import com.squirtles.musicroad.ui.theme.Primary
 import com.squirtles.musicroad.ui.theme.White
 import com.squirtles.musicroad.userinfo.UserInfoViewModel
@@ -84,16 +80,10 @@ fun UserInfoScreen(
     val user by userInfoViewModel.profileUser.collectAsStateWithLifecycle()
 
     var showLogOutDialog by remember { mutableStateOf(false) }
-    var showDeleteAccountDialog by remember { mutableStateOf(false) }
 
     val onSignOutClick: () -> Unit = {
         GoogleId(context).signOut()
         accountViewModel.signOut()
-    }
-
-    val onDeleteAccountClick: () -> Unit = {
-        GoogleId(context).signOut()
-        accountViewModel.deleteAccount()
     }
 
     LaunchedEffect(Unit) {
@@ -103,16 +93,6 @@ fun UserInfoScreen(
 
         launch {
             accountViewModel.signOutSuccess
-                .flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
-                .collect { isSuccess ->
-                    if (isSuccess) {
-                        onBackToMapClick()
-                    }
-                }
-        }
-
-        launch {
-            accountViewModel.deleteAccountSuccess
                 .flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
                 .collect { isSuccess ->
                     if (isSuccess) {
@@ -203,18 +183,6 @@ fun UserInfoScreen(
                             )
                         )
                     )
-
-                    // 회원 탈퇴
-                    Text(
-                        text = stringResource(id = R.string.user_info_setting_delete_user_account),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 24.dp)
-                            .clickable { showDeleteAccountDialog = true },
-                        color = DarkGray,
-                        textAlign = TextAlign.Start,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
                 }
             }
 
@@ -268,36 +236,6 @@ fun UserInfoScreen(
                             onSignOutClick()
                         },
                         text = stringResource(R.string.sign_out_dialog_confirm),
-                        textColor = Primary,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-            }
-
-            if (showDeleteAccountDialog) {
-                MessageAlertDialog(
-                    onDismissRequest = {
-                        showDeleteAccountDialog = false
-                    },
-                    title = stringResource(R.string.delete_account_dialog_title),
-                    body = stringResource(R.string.delete_account_dialog_description),
-                    showBody = true
-                ) {
-                    DialogTextButton(
-                        onClick = {
-                            showDeleteAccountDialog = false
-                        },
-                        text = stringResource(R.string.delete_account_dialog_dismiss)
-                    )
-
-                    HorizontalSpacer(8)
-
-                    DialogTextButton(
-                        onClick = {
-                            showDeleteAccountDialog = false
-                            onDeleteAccountClick()
-                        },
-                        text = stringResource(R.string.delete_account_dialog_confirm),
                         textColor = Primary,
                         fontWeight = FontWeight.Bold
                     )
