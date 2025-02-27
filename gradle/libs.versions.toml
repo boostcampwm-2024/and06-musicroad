@@ -109,7 +109,7 @@ androidx-media3-ui = { module = "androidx.media3:media3-ui", version.ref = "medi
 androidx-media3-session = { group = "androidx.media3", name = "media3-session", version.ref = "media3Ui" }
 androidx-media3-common = { group = "androidx.media3", name = "media3-common", version.ref = "media3Ui" }
 
-# Hilt
+# Di
 inject = { group = "javax.inject", name = "javax.inject", version.ref = "inject" }
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-android-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
@@ -127,6 +127,7 @@ compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling
 compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 compose-runtime-android = { group = "androidx.compose.runtime", name = "runtime-android", version.ref = "compose-runtime-android" }
+kotlinx-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinxImmutable" }
 
 # Paging
 androidx-paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "pagingRuntime" }
@@ -139,7 +140,6 @@ googleid = { module = "com.google.android.libraries.identity.googleid:googleid",
 # Coroutines
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesCore" }
-kotlinx-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinxImmutable" }
 
 # Firebase
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
@@ -194,43 +194,14 @@ ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devto
 
 [bundles]
 androidx-core = [
-    "androidx-core-ktx",
     "androidx-appcompat",
+    "androidx-core-ktx",
     "androidx-lifecycle-runtime-ktx",
 ]
 
-# Compose
-compose = [
-    "compose-ui",
-    "compose-ui-tooling-preview",
-    "compose-runtime-android",
-    "androidx-activity-compose",
-    "androidx-lifecycle-viewmodel-compose",
-]
-compose-debug = [
-    "compose-ui-tooling",
-    "compose-ui-test-manifest",
-    "compose-ui-test-junit4",
-]
-material = [
-    "material",
-    "compose-material",
-    "compose-material3",
-    "compose-material-icons-extended",
-]
-
-navigation = [
-    "navigation-compose",
-    "hilt-navigation-compose"
-]
-
-coroutines = [
-    "kotlinx-coroutines-core",
-    "kotlinx-coroutines-android",
-]
-
-datastore = [
-    "androidx-datastore-preferences",
+analytics = [
+    "firebase-analytics",
+    "firebase-crashlytics",
 ]
 
 auth = [
@@ -239,43 +210,44 @@ auth = [
     "googleid",
 ]
 
-# Network
-retrofit = [
-    "retrofit-core",
-    "retrofit-kotlin-serialization",
-]
-okhttp = [
-    "okhttp",
-    "okhttp-logging",
+compose = [
+    "androidx-activity-compose",
+    "androidx-lifecycle-viewmodel-compose",
+    "compose-runtime-android",
+    "compose-ui",
+    "compose-ui-tooling-preview",
 ]
 
-# Firebase
+compose-debug = [
+    "compose-ui-test-junit4",
+    "compose-ui-test-manifest",
+    "compose-ui-tooling",
+]
+
+coroutines = [
+    "kotlinx-coroutines-android",
+    "kotlinx-coroutines-core",
+]
+
+datastore = [
+    "androidx-datastore-preferences",
+]
+
+di = [
+    "hilt-android",
+    "hilt-android-compiler",
+    "hilt-android-testing",
+    "inject",
+]
+
 firebase = [
     "firebase-firestore-ktx",
     "firebase-functions-ktx",
 ]
-analytics = [
-    "firebase-analytics",
-    "firebase-crashlytics",
-]
+
 geofire = [
     "geofire-android-common",
     "google-firebase-dynamic-module-support",
-]
-
-# Coil
-coil = [
-    "coil",
-    "coil-compose",
-    "coil-network-okhttp",
-]
-
-media3 = [
-    "androidx-media3-exoplayer",
-    "androidx-media3-exoplayer-dash",
-    "androidx-media3-ui",
-    "androidx-media3-session",
-    "androidx-media3-common",
 ]
 
 map = [
@@ -283,6 +255,38 @@ map = [
     "play-services-location",
 ]
 
+material = [
+    "compose-material",
+    "compose-material-icons-extended",
+    "compose-material3",
+    "material",
+]
+
+media3 = [
+    "androidx-media3-common",
+    "androidx-media3-exoplayer",
+    "androidx-media3-exoplayer-dash",
+    "androidx-media3-session",
+    "androidx-media3-ui",
+]
+
+navigation = [
+    "hilt-navigation-compose",
+    "navigation-compose",
+]
+
+network = [
+    "okhttp",
+    "okhttp-logging",
+    "retrofit-core",
+    "retrofit-kotlin-serialization",
+]
+
+coil = [
+    "coil",
+    "coil-compose",
+    "coil-network-okhttp",
+]
 
 # Plugins
 [plugins]
