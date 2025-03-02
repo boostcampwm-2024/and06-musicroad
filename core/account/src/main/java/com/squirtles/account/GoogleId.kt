@@ -11,6 +11,7 @@ import androidx.credentials.GetCredentialResponse
 import androidx.credentials.exceptions.NoCredentialException
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import com.squirtles.localproperties.LocalPropertyProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -20,7 +21,7 @@ class GoogleId(private val context: Context) {
 
     private val googleIdOption: GetGoogleIdOption = GetGoogleIdOption.Builder()
         .setFilterByAuthorizedAccounts(false)
-        .setServerClientId(BuildConfig.GOOGLE_CLIENT_ID)
+        .setServerClientId(LocalPropertyProvider.googleClientId)
         .setAutoSelectEnabled(true)
         .build()
 

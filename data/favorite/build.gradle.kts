@@ -1,9 +1,3 @@
-import java.io.FileInputStream
-import java.util.Properties
-
-var properties = Properties()
-properties.load(FileInputStream("local.properties"))
-
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -26,12 +20,6 @@ android {
     buildTypes {
         debug {
             isMinifyEnabled = false
-
-            buildConfigField(
-                "String",
-                "HTTPS_CALLABLE",
-                "\"${properties.getProperty("HTTPS_CALLABLE_DEBUG")}\""
-            )
         }
 
         release {
@@ -39,12 +27,6 @@ android {
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
-            )
-
-            buildConfigField(
-                "String",
-                "HTTPS_CALLABLE",
-                "\"${properties.getProperty("HTTPS_CALLABLE_RELEASE")}\""
             )
         }
     }
@@ -55,14 +37,12 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
-    buildFeatures {
-        buildConfig = true
-    }
 }
 
 dependencies {
     implementation(projects.data.firebase)
     implementation(projects.domain.favorite)
+    implementation(projects.core.buildconfig)
     // Kotlinx Serialization
     implementation(libs.kotlinx.serialization.json)
 

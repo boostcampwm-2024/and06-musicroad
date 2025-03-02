@@ -1,10 +1,3 @@
-import java.io.FileInputStream
-import java.util.Properties
-
-val properties = Properties().apply {
-    load(FileInputStream(rootProject.file("local.properties")))
-}
-
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -21,12 +14,6 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
-
-        buildConfigField(
-            "String",
-            "GOOGLE_CLIENT_ID",
-            "\"${properties.getProperty("GOOGLE_CLIENT_ID")}\""
-        )
     }
 
     buildTypes {
@@ -50,6 +37,7 @@ android {
 dependencies {
     implementation(projects.domain.user)
     implementation(projects.core.model)
+    implementation(projects.core.buildconfig)
     implementation(libs.androidx.lifecycle.runtime.ktx)
 
     // Hilt

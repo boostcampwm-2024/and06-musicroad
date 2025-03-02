@@ -3,7 +3,6 @@ package com.squirtles.data.favorite
 import com.google.firebase.functions.FirebaseFunctions
 import com.google.firebase.functions.ktx.functions
 import com.google.firebase.ktx.Firebase
-import com.squirtles.data.BuildConfig
 import com.squirtles.localproperties.LocalPropertyProvider
 import kotlinx.coroutines.tasks.await
 import javax.inject.Singleton

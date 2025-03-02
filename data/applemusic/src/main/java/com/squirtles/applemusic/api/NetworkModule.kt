@@ -1,6 +1,6 @@
 package com.squirtles.applemusic.api
 
-import com.squirtles.applemusic.BuildConfig
+import com.squirtles.localproperties.LocalPropertyProvider
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,7 +25,7 @@ object NetworkModule {
         return OkHttpClient.Builder()
             .addInterceptor { chain ->
                 val newRequest = chain.request().newBuilder()
-                    .addHeader("Authorization", "Bearer ${BuildConfig.APPLE_MUSIC_API_TOKEN}")
+                    .addHeader("Authorization", "Bearer ${LocalPropertyProvider.appleMusicApiToken}")
                     .build()
                 chain.proceed(newRequest)
             }

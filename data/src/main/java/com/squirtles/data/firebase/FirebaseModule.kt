@@ -1,7 +1,6 @@
 package com.squirtles.data.firebase
 
 import com.google.firebase.firestore.FirebaseFirestore
-import com.squirtles.data.BuildConfig
 import com.squirtles.localproperties.LocalPropertyProvider
 import dagger.Module
 import dagger.Provides

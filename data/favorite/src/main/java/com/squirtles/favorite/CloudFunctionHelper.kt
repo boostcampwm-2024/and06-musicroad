@@ -3,6 +3,7 @@ package com.squirtles.favorite
 import com.google.firebase.functions.FirebaseFunctions
 import com.google.firebase.functions.ktx.functions
 import com.google.firebase.ktx.Firebase
+import com.squirtles.localproperties.LocalPropertyProvider
 import kotlinx.coroutines.tasks.await
 import javax.inject.Singleton
 
@@ -14,7 +15,7 @@ class CloudFunctionHelper {
         return try {
             val data = hashMapOf("pickId" to pickId)
             val result = functions
-                .getHttpsCallable(BuildConfig.HTTPS_CALLABLE)
+                .getHttpsCallable(LocalPropertyProvider.httpsCallable)
                 .call(data)
                 .await()
 

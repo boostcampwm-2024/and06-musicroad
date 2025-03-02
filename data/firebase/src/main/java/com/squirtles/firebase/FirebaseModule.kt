@@ -1,6 +1,7 @@
 package com.squirtles.firebase
 
 import com.google.firebase.firestore.FirebaseFirestore
+import com.squirtles.localproperties.LocalPropertyProvider
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,6 +15,6 @@ object FirebaseModule {
     @Provides
     @Singleton
     fun provideFirebaseFirestore(): FirebaseFirestore {
-        return FirebaseFirestore.getInstance(BuildConfig.FIRESTORE_DB_ID)
+        return FirebaseFirestore.getInstance(LocalPropertyProvider.firestoreDbId)
     }
 }

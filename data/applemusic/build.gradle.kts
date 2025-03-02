@@ -1,9 +1,3 @@
-import java.io.FileInputStream
-import java.util.Properties
-
-var properties = Properties()
-properties.load(FileInputStream("local.properties"))
-
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -21,12 +15,6 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
-
-        buildConfigField(
-            "String",
-            "APPLE_MUSIC_API_TOKEN",
-            "\"${properties.getProperty("APPLE_MUSIC_API_TOKEN")}\""
-        )
     }
 
     buildTypes {
@@ -42,14 +30,12 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
-    buildFeatures {
-        buildConfig = true
-    }
 }
 
 dependencies {
     implementation(projects.domain.applemusic)
     implementation(projects.core.model)
+    implementation(projects.core.buildconfig)
     implementation(libs.androidx.paging.runtime)
     // Kotlinx Serialization
     implementation(libs.kotlinx.serialization.json)

@@ -1,9 +1,3 @@
-import java.io.FileInputStream
-import java.util.Properties
-
-var properties = Properties()
-properties.load(FileInputStream("local.properties"))
-
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -25,12 +19,6 @@ android {
     buildTypes {
         debug {
             isMinifyEnabled = false
-
-            buildConfigField(
-                "String",
-                "FIRESTORE_DB_ID",
-                "\"${properties.getProperty("FIRESTORE_DB_ID_DEBUG")}\""
-            )
         }
 
         release {
@@ -39,12 +27,6 @@ android {
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
-            )
-
-            buildConfigField(
-                "String",
-                "FIRESTORE_DB_ID",
-                "\"${properties.getProperty("FIRESTORE_DB_ID_RELEASE")}\""
             )
         }
     }
@@ -55,13 +37,12 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
-    buildFeatures {
-        buildConfig = true
-    }
+
 }
 
 dependencies {
     implementation(projects.core.model)
+    implementation(projects.core.buildconfig)
 
     // hilt
     implementation(libs.hilt.android)
