@@ -1,9 +1,11 @@
 package com.squirtles.convention
 
+import com.squirtles.convention.extensions.androidTestImplementation
 import com.squirtles.convention.extensions.getBundle
 import com.squirtles.convention.extensions.getLibrary
 import com.squirtles.convention.extensions.implementation
 import com.squirtles.convention.extensions.ksp
+import com.squirtles.convention.extensions.kspTest
 import com.squirtles.convention.extensions.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -18,8 +20,10 @@ class HiltPlugin : Plugin<Project> {
             }
 
             dependencies {
-                implementation(libs.getBundle("di"))
                 ksp(libs.getLibrary("hilt.android.compiler"))
+                kspTest(libs.getLibrary("hilt.android.compiler"))
+                implementation(libs.getLibrary("hilt.android"))
+                androidTestImplementation(libs.getLibrary("hilt.android.testing"))
             }
         }
     }

@@ -21,7 +21,9 @@ dependencies {
 //    implementation(platform(libs.compose.bom))
 //    implementation(libs.compose.runtime.android)
 //    implementation(libs.compose.ui.tooling.preview)
+    implementation(platform(libs.compose.bom))
     implementation(libs.bundles.compose)
+    implementation(libs.bundles.compose.debug)
     implementation(libs.bundles.material)
 
     // Coil

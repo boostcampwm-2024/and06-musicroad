@@ -1,7 +1,6 @@
 pluginManagement {
 
     includeBuild("build-logic")
-    gradle.startParameter.excludedTaskNames.addAll(listOf(":build-logic:convention:testClasses"))
 
     repositories {
         google {
@@ -21,8 +20,12 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven("https://repository.map.naver.com/archive/maven")
+        gradlePluginPortal()
     }
 }
+
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+gradle.startParameter.excludedTaskNames.addAll(listOf(":build-logic:convention:testClasses"))
 
 rootProject.name = "MusicRoad"
 include(":app")

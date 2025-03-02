@@ -3,6 +3,7 @@ package com.squirtles.convention
 import com.android.build.gradle.LibraryExtension
 import com.squirtles.convention.extensions.configureKotlinAndroid
 import com.squirtles.convention.extensions.configureKotlinCoroutine
+import com.squirtles.convention.extensions.getBundle
 import com.squirtles.convention.extensions.getLibrary
 import com.squirtles.convention.extensions.implementation
 import com.squirtles.convention.extensions.libs
@@ -19,6 +20,10 @@ class AndroidLibraryPlugin : Plugin<Project> {
 			extensions.configure<LibraryExtension> {
 				configureKotlinAndroid(this)
 				configureKotlinCoroutine(this)
+			}
+
+			dependencies {
+				implementation(libs.getBundle("androidx-core"))
 			}
 		}
 	}

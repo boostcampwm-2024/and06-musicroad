@@ -17,7 +17,6 @@ android {
     }
 
     defaultConfig {
-
         buildConfigField(
             "String",
             "GOOGLE_CLIENT_ID",
@@ -64,8 +63,4 @@ android {
             )
         }
     }
-}
-
-dependencies {
-
 }

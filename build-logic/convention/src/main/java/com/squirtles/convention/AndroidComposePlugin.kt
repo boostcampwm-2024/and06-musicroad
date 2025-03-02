@@ -1,4 +1,4 @@
-package com.boostcamp.mapisode.convention
+package com.squirtles.convention
 
 import com.android.build.gradle.LibraryExtension
 import com.squirtles.convention.extensions.configureComposeAndroid

@@ -151,10 +151,10 @@ kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firebaseFirestoreKtx" }
 firebase-functions-ktx = { group = "com.google.firebase", name = "firebase-functions-ktx", version.ref = "firebaseFunctionsKtx" }
+google-firebase-dynamic-module-support = { module = "com.google.firebase:firebase-dynamic-module-support", version.ref = "firebaseDynamicModuleSupportVersion" }
 
 # goefire
 geofire-android-common = { module = "com.firebase:geofire-android-common", version.ref = "geofireAndroidCommon" }
-google-firebase-dynamic-module-support = { module = "com.google.firebase:firebase-dynamic-module-support", version.ref = "firebaseDynamicModuleSupportVersion" }
 
 # Analytics
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
@@ -221,13 +221,13 @@ compose = [
     "androidx-lifecycle-viewmodel-compose",
     "compose-runtime-android",
     "compose-ui",
+    "compose-ui-tooling",
     "compose-ui-tooling-preview",
 ]
 
 compose-debug = [
     "compose-ui-test-junit4",
     "compose-ui-test-manifest",
-    "compose-ui-tooling",
 ]
 
 coroutines = [
@@ -239,13 +239,6 @@ datastore = [
     "androidx-datastore-preferences",
 ]
 
-di = [
-    "hilt-android",
-    "hilt-android-compiler",
-    "hilt-android-testing",
-    "inject",
-]
-
 exoplayer = [
     "androidx-media3-exoplayer",
     "androidx-media3-exoplayer-dash",
@@ -254,10 +247,6 @@ exoplayer = [
 firebase = [
     "firebase-firestore-ktx",
     "firebase-functions-ktx",
-]
-
-geofire = [
-    "geofire-android-common",
     "google-firebase-dynamic-module-support",
 ]
 
@@ -299,6 +288,11 @@ coil = [
     "coil-network-okhttp",
 ]
 
+test = [
+    "androidx-junit",
+    "androidx-espresso-core",
+]
+
 # Plugins
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -316,3 +310,5 @@ musicroad-android-application = { id = "musicroad.android.application", version 
 musicroad-java-library = { id = "musicroad.java.library", version = "unspecified" }
 musicroad-android-library = { id = "musicroad.android.library", version = "unspecified" }
 musicroad-compose-library = { id = "musicroad.android.compose", version = "unspecified" }
+musicroad-hilt = { id = "musicroad.hilt", version = "unspecified" }
+musicroad-data = { id = "musicroad.data" }

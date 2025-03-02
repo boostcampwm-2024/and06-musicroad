@@ -10,3 +10,13 @@ plugins {
     alias(libs.plugins.firebase.crashlytics) apply false
     alias(libs.plugins.jetbrains.kotlin.jvm) apply false
 }
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+        maven {
+            url = uri("https://repository.map.naver.com/archive/maven")
+        }
+    }
+}

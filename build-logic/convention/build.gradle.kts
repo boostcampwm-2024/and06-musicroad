@@ -4,6 +4,11 @@ plugins {
 
 group = "com.squirtles.build-logic"
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
 dependencies {
     compileOnly(libs.android.gradlePlugin)
     compileOnly(libs.android.tools.common)
@@ -36,6 +41,11 @@ gradlePlugin {
         register("hilt") {
             id = "musicroad.hilt"
             implementationClass = "com.squirtles.convention.HiltPlugin"
+        }
+
+        register("data") {
+            id = "musicroad.data"
+            implementationClass = "com.squirtles.convention.MusicRoadDataPlugin"
         }
     }
 }
