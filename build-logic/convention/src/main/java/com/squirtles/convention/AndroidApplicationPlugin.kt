@@ -7,6 +7,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 
+// app module
 class AndroidApplicationPlugin: Plugin<Project> {
     override fun apply(target: Project) {
         target.run {

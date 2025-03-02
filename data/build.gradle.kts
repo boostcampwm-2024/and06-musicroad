@@ -21,30 +21,11 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
-
-        buildConfigField(
-            "String",
-            "APPLE_MUSIC_API_TOKEN",
-            "\"${properties.getProperty("APPLE_MUSIC_API_TOKEN")}\""
-        )
-
     }
 
     buildTypes {
         debug {
             isMinifyEnabled = false
-
-            buildConfigField(
-                "String",
-                "FIRESTORE_DB_ID",
-                "\"${properties.getProperty("FIRESTORE_DB_ID_DEBUG")}\""
-            )
-
-            buildConfigField(
-                "String",
-                "HTTPS_CALLABLE",
-                "\"${properties.getProperty("HTTPS_CALLABLE_DEBUG")}\""
-            )
         }
 
         release {
@@ -53,26 +34,14 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-
-            buildConfigField(
-                "String",
-                "FIRESTORE_DB_ID",
-                "\"${properties.getProperty("FIRESTORE_DB_ID_RELEASE")}\""
-            )
-
-            buildConfigField(
-                "String",
-                "HTTPS_CALLABLE",
-                "\"${properties.getProperty("HTTPS_CALLABLE_RELEASE")}\""
-            )
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
     buildFeatures {
         buildConfig = true
@@ -81,6 +50,7 @@ android {
 
 dependencies {
     implementation(projects.domain)
+    implementation(projects.core.buildconfig)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -93,7 +63,6 @@ dependencies {
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.firebase.functions.ktx)
     implementation(libs.geofire.android.common)
-//    implementation(libs.kotlinx.coroutines.play.services)
 
     // Hilt
     implementation(libs.hilt.android)

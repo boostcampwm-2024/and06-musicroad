@@ -48,7 +48,7 @@ android {
             )
         }
 
-        getByName("debug") {
+        getByName("release") {
             isMinifyEnabled = false
 
             buildConfigField(

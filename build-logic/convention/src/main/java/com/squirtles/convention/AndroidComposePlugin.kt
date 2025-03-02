@@ -12,8 +12,8 @@ import org.gradle.kotlin.dsl.dependencies
 
 class AndroidComposePlugin : Plugin<Project> {
 	override fun apply(target: Project) {
-		with(target) {
-			pluginManager.apply {
+		target.run {
+			pluginManager.run {
 				apply("musicroad.android.library")
 				apply("org.jetbrains.kotlin.plugin.compose")
 			}

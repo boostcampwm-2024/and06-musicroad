@@ -12,6 +12,10 @@ internal fun Project.configureComposeAndroid(commonExtension: CommonExtension<*,
 			compose = true
 		}
 
+		composeOptions {
+			kotlinCompilerExtensionVersion = libs.getVersion("compose-compiler").requiredVersion
+		}
+
 		dependencies {
 			val composeBom = libs.getLibrary("compose.bom")
 			implementation(platform(composeBom))

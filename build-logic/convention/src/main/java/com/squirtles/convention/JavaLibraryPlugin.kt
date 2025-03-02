@@ -21,8 +21,8 @@ class JavaLibraryPlugin : Plugin<Project> {
 			}
 
 			extensions.configure<JavaPluginExtension> {
-				sourceCompatibility = JavaVersion.VERSION_1_8
-				targetCompatibility = JavaVersion.VERSION_1_8
+				sourceCompatibility = JavaVersion.VERSION_17
+				targetCompatibility = JavaVersion.VERSION_17
 			}
 
 			extensions.configure<KotlinProjectExtension> {
@@ -30,7 +30,7 @@ class JavaLibraryPlugin : Plugin<Project> {
 			}
 
 			dependencies {
-				implementation(libs.getLibrary("javax.inject"))
+				implementation(libs.getLibrary("inject"))
 			}
 		}
 	}
