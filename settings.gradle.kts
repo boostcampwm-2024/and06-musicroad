@@ -1,6 +1,7 @@
 pluginManagement {
 
     includeBuild("build-logic")
+    gradle.startParameter.excludedTaskNames.addAll(listOf(":build-logic:convention:testClasses"))
 
     repositories {
         google {
@@ -54,3 +55,4 @@ include(":core:musicplayer")
 include(":core:account")
 include(":feature:create")
 include(":feature:favorite")
+include(":core:localproperties")
