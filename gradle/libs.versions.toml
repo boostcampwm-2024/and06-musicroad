@@ -4,7 +4,8 @@
 compileSdk = "34"
 minSdk = "26"
 targetSdk = "34"
-jvmTarget = "1.8"
+jvmTarget = "17"
+jdkVersion = "17"
 
 # App Version
 versionCode = "10100"
@@ -29,6 +30,7 @@ androidx-core-splashscreen = "1.0.1"
 media3Ui = "1.4.1"
 
 # Compose
+compose-compiler = "1.5.14"
 androidx-compose-animation = "1.7.5"
 activityCompose = "1.9.3"
 composeBom = "2024.10.01"
@@ -90,6 +92,8 @@ okhttp = "4.12.0"
 retrofit = "2.11.0"
 
 material = "1.12.0"
+composeMaterial3 = "1.3.1"
+composeMaterialIconsExtended = "1.7.8"
 
 [libraries]
 # AndroidX
@@ -103,11 +107,13 @@ androidx-navigation-common-ktx = { group = "androidx.navigation", name = "naviga
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "androidx-core-splashscreen" }
 
 # Media3
-androidx-media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "media3Ui" }
-androidx-media3-exoplayer-dash = { module = "androidx.media3:media3-exoplayer-dash", version.ref = "media3Ui" }
 androidx-media3-ui = { module = "androidx.media3:media3-ui", version.ref = "media3Ui" }
 androidx-media3-session = { group = "androidx.media3", name = "media3-session", version.ref = "media3Ui" }
 androidx-media3-common = { group = "androidx.media3", name = "media3-common", version.ref = "media3Ui" }
+
+# Exoplayer
+androidx-media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "media3Ui" }
+androidx-media3-exoplayer-dash = { module = "androidx.media3:media3-exoplayer-dash", version.ref = "media3Ui" }
 
 # Di
 inject = { group = "javax.inject", name = "javax.inject", version.ref = "inject" }
@@ -165,9 +171,9 @@ play-services-location = { module = "com.google.android.gms:play-services-locati
 
 # Material Design
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "composeMaterial3" }
 compose-material = { group = "androidx.wear.compose", name = "compose-material", version.ref = "composeMaterial" }
-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
+compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "composeMaterialIconsExtended" }
 
 # Network
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp" }
@@ -240,6 +246,11 @@ di = [
     "inject",
 ]
 
+exoplayer = [
+    "androidx-media3-exoplayer",
+    "androidx-media3-exoplayer-dash",
+]
+
 firebase = [
     "firebase-firestore-ktx",
     "firebase-functions-ktx",
@@ -302,3 +313,6 @@ jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrai
 
 # Custom Plugins
 musicroad-android-application = { id = "musicroad.android.application", version = "unspecified" }
+musicroad-java-library = { id = "musicroad.java.library", version = "unspecified" }
+musicroad-android-library = { id = "musicroad.android.library", version = "unspecified" }
+musicroad-compose-library = { id = "musicroad.android.compose", version = "unspecified" }
