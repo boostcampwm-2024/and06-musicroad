@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
@@ -42,6 +43,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -50,60 +52,90 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.flowWithLifecycle
 import com.squirtles.musicroad.R
+import com.squirtles.musicroad.account.AccountViewModel
+import com.squirtles.musicroad.account.GoogleId
 import com.squirtles.musicroad.common.Constants.COLOR_STOPS
+import com.squirtles.musicroad.common.DialogTextButton
+import com.squirtles.musicroad.common.HorizontalSpacer
+import com.squirtles.musicroad.common.MessageAlertDialog
 import com.squirtles.musicroad.ui.theme.Black
+import com.squirtles.musicroad.ui.theme.DarkGray
 import com.squirtles.musicroad.ui.theme.Gray
 import com.squirtles.musicroad.ui.theme.MusicRoadTheme
+import com.squirtles.musicroad.ui.theme.Primary
 import com.squirtles.musicroad.ui.theme.White
 import com.squirtles.musicroad.userinfo.UserInfoViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.regex.Pattern
 
 @Composable
 internal fun EditProfileScreen(
+    currentUserName: String,
+    onBackToMapClick: () -> Unit,
     onBackClick: () -> Unit,
-    userInfoViewModel: UserInfoViewModel = hiltViewModel()
+    userInfoViewModel: UserInfoViewModel = hiltViewModel(),
+    accountViewModel: AccountViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val focusManager = LocalFocusManager.current
-    val userName = remember { mutableStateOf(userInfoViewModel.currentUser?.userName ?: "") }
+    val userName = remember { mutableStateOf(currentUserName) }
     val nickNameErrorMessage = remember { mutableStateOf("") }
-    var showCreateIndicator by rememberSaveable { mutableStateOf(false) }
+    var showLoadingIndicator by rememberSaveable { mutableStateOf(false) }
+    var showDeleteAccountDialog by remember { mutableStateOf(false) }
 
-    BackHandler(enabled = showCreateIndicator) { }
+    val onDeleteAccountClick: () -> Unit = {
+        GoogleId(context).signOut()
+        accountViewModel.deleteAccount()
+    }
+
+    BackHandler(enabled = showLoadingIndicator) { }
 
     LaunchedEffect(Unit) {
-        userInfoViewModel.updateSuccess
-            .flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
-            .collect { isSuccess ->
-                focusManager.clearFocus()
-                delay(100)
-                if (isSuccess) {
-                    Toast.makeText(
-                        context,
-                        context.getString(R.string.setting_profile_update_nickname_success),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    onBackClick()
-                } else {
-                    showCreateIndicator = false
-                    Toast.makeText(
-                        context,
-                        context.getString(R.string.setting_profile_update_nickname_failure),
-                        Toast.LENGTH_SHORT
-                    ).show()
+        launch {
+            userInfoViewModel.updateSuccess
+                .flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+                .collect { isSuccess ->
+                    focusManager.clearFocus()
+                    delay(100)
+                    if (isSuccess) {
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.setting_profile_update_nickname_success),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        onBackClick()
+                    } else {
+                        showLoadingIndicator = false
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.setting_profile_update_nickname_failure),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
-            }
+        }
+
+        launch {
+            accountViewModel.deleteAccountSuccess
+                .flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+                .collect { isSuccess ->
+                    if (isSuccess) {
+                        showLoadingIndicator = false
+                        onBackToMapClick()
+                    }
+                }
+        }
     }
 
     Scaffold(
         topBar = {
             EditProfileAppBar(
                 confirmEnabled = nickNameErrorMessage.value.isEmpty() &&
-                        userInfoViewModel.currentUser?.userName != userName.value,
+                        currentUserName != userName.value,
                 onConfirmClick = {
-                    showCreateIndicator = true
+                    showLoadingIndicator = true
                     userInfoViewModel.updateUsername(userName.value)
                 },
                 onBackClick = onBackClick
@@ -116,11 +148,24 @@ internal fun EditProfileScreen(
                 .background(Brush.verticalGradient(colorStops = COLOR_STOPS))
                 .padding(innerPadding)
         ) {
+            // 프로필 수정
             EditProfileContents(userName, nickNameErrorMessage)
+
+            // 회원 탈퇴
+            Text(
+                text = stringResource(id = R.string.user_info_setting_delete_user_account),
+                modifier = Modifier
+                    .padding(vertical = 20.dp)
+                    .clickable { showDeleteAccountDialog = true }
+                    .align(Alignment.BottomCenter),
+                color = DarkGray,
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.bodyMedium
+            )
         }
     }
 
-    if (showCreateIndicator) {
+    if (showLoadingIndicator) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -133,6 +178,37 @@ internal fun EditProfileScreen(
             contentAlignment = Alignment.Center
         ) {
             CircularProgressIndicator()
+        }
+    }
+
+    if (showDeleteAccountDialog) {
+        MessageAlertDialog(
+            onDismissRequest = {
+                showDeleteAccountDialog = false
+            },
+            title = stringResource(R.string.delete_account_dialog_title),
+            body = stringResource(R.string.delete_account_dialog_description),
+            showBody = true
+        ) {
+            DialogTextButton(
+                onClick = {
+                    showDeleteAccountDialog = false
+                },
+                text = stringResource(R.string.delete_account_dialog_dismiss)
+            )
+
+            HorizontalSpacer(8)
+
+            DialogTextButton(
+                onClick = {
+                    showLoadingIndicator = true
+                    showDeleteAccountDialog = false
+                    onDeleteAccountClick()
+                },
+                text = stringResource(R.string.delete_account_dialog_confirm),
+                textColor = Primary,
+                fontWeight = FontWeight.Bold
+            )
         }
     }
 }
@@ -196,7 +272,7 @@ private fun EditProfileContents(
     val context = LocalContext.current
     Column(
         modifier = Modifier
-            .fillMaxSize()
+            .wrapContentHeight()
             .padding(vertical = 30.dp, horizontal = 30.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {

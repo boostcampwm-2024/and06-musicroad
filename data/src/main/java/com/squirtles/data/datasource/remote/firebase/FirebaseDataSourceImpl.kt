@@ -38,17 +38,15 @@ class FirebaseDataSourceImpl @Inject constructor(
 
     private val cloudFunctionHelper = CloudFunctionHelper()
 
-    override suspend fun createGoogleIdUser(userId: String, userName: String?, userProfileImage: String?): User? {
+    override suspend fun createGoogleIdUser(uid: String, email: String, userName: String?, userProfileImage: String?): User? {
         return suspendCancellableCoroutine { continuation ->
-            val documentReference = db.collection("users").document(userId)
-            documentReference.set(FirebaseUser(name = userName, profileImage = userProfileImage))
+            val documentReference = db.collection("users").document(uid)
+            documentReference.set(FirebaseUser(email = email, name = userName, profileImage = userProfileImage))
                 .addOnSuccessListener {
                     documentReference.get()
                         .addOnSuccessListener { documentSnapshot ->
                             val savedUser = documentSnapshot.toObject<FirebaseUser>()
-                            continuation.resume(
-                                savedUser?.toUser()?.copy(userId = documentReference.id)
-                            )
+                            continuation.resume(savedUser?.toUser()?.copy(uid = documentReference.id))
                         }
                         .addOnFailureListener { exception ->
                             continuation.resumeWithException(exception)
@@ -61,12 +59,12 @@ class FirebaseDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun fetchUser(userId: String): User? {
+    override suspend fun fetchUser(uid: String): User? {
         return suspendCancellableCoroutine { continuation ->
-            db.collection("users").document(userId).get()
+            db.collection("users").document(uid).get()
                 .addOnSuccessListener { document ->
                     val firebaseUser = document.toObject<FirebaseUser>()
-                    continuation.resume(firebaseUser?.toUser()?.copy(userId = userId))
+                    continuation.resume(firebaseUser?.toUser()?.copy(uid = uid))
                 }
                 .addOnFailureListener { exception ->
                     continuation.resumeWithException(exception)
@@ -74,10 +72,10 @@ class FirebaseDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateUserName(userId: String, newUserName: String): Boolean {
+    override suspend fun updateUserName(uid: String, newUserName: String): Boolean {
         return suspendCancellableCoroutine { continuation ->
             db.runTransaction { transaction ->
-                val userRef = db.collection("users").document(userId)
+                val userRef = db.collection("users").document(uid)
                 val userDocument = transaction.get(userRef)
                 transaction.update(userRef, "name", newUserName)
 
@@ -91,6 +89,14 @@ class FirebaseDataSourceImpl @Inject constructor(
             }.addOnFailureListener { exception ->
                 continuation.resumeWithException(exception)
             }
+        }
+    }
+
+    override suspend fun deleteUser(uid: String): Boolean {
+        return suspendCancellableCoroutine { continuation ->
+            db.collection("users").document(uid).delete()
+                .addOnSuccessListener { continuation.resume(true) }
+                .addOnFailureListener { exception -> continuation.resumeWithException(exception) }
         }
     }
 
@@ -196,7 +202,7 @@ class FirebaseDataSourceImpl @Inject constructor(
                 .addOnSuccessListener { documentReference ->
                     val pickId = documentReference.id
                     // 유저의 픽 정보 업데이트
-                    updateCurrentUserPick(pick.createdBy.userId, pickId)
+                    updateCurrentUserPick(pick.createdBy.uid, pickId)
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful) {
                                 continuation.resume(pickId)
@@ -213,9 +219,9 @@ class FirebaseDataSourceImpl @Inject constructor(
                 }
         }
 
-    override suspend fun deletePick(pickId: String, userId: String): Boolean {
+    override suspend fun deletePick(pickId: String, uid: String): Boolean {
         val pickDocument = db.collection(COLLECTION_PICKS).document(pickId)
-        val userDocument = db.collection(COLLECTION_USERS).document(userId)
+        val userDocument = db.collection(COLLECTION_USERS).document(uid)
         val favoriteDocuments = fetchFavoriteDocuments(pickId)
 
         return suspendCancellableCoroutine { continuation ->
@@ -236,8 +242,8 @@ class FirebaseDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun fetchMyPicks(userId: String): List<Pick> {
-        val userDocument = fetchUserDocument(userId)
+    override suspend fun fetchMyPicks(uid: String): List<Pick> {
+        val userDocument = fetchUserDocument(uid)
         if (userDocument.exists().not()) throw Exception("No user info in database")
 
         val tasks = mutableListOf<Task<DocumentSnapshot>>()
@@ -266,8 +272,8 @@ class FirebaseDataSourceImpl @Inject constructor(
         return myPicks.reversed()
     }
 
-    override suspend fun fetchFavoritePicks(userId: String): List<Pick> {
-        val favoriteDocuments = fetchFavoritesByUserId(userId)
+    override suspend fun fetchFavoritePicks(uid: String): List<Pick> {
+        val favoriteDocuments = fetchFavoritesByUid(uid)
 
         val tasks = mutableListOf<Task<DocumentSnapshot>>()
         val favorites = mutableListOf<Pick>()
@@ -294,16 +300,16 @@ class FirebaseDataSourceImpl @Inject constructor(
         return favorites
     }
 
-    override suspend fun fetchIsFavorite(pickId: String, userId: String): Boolean {
-        val favoriteDocument = fetchFavoriteByPickIdAndUserId(pickId, userId)
+    override suspend fun fetchIsFavorite(pickId: String, uid: String): Boolean {
+        val favoriteDocument = fetchFavoriteByPickIdAndUid(pickId, uid)
         return favoriteDocument.isEmpty.not()
     }
 
-    override suspend fun createFavorite(pickId: String, userId: String): Boolean {
+    override suspend fun createFavorite(pickId: String, uid: String): Boolean {
         return suspendCancellableCoroutine { continuation ->
             val firebaseFavorite = FirebaseFavorite(
                 pickId = pickId,
-                userId = userId
+                uid = uid
             )
 
             db.collection(COLLECTION_FAVORITES)
@@ -326,8 +332,8 @@ class FirebaseDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun deleteFavorite(pickId: String, userId: String): Boolean {
-        val favoriteDocument = fetchFavoriteByPickIdAndUserId(pickId, userId)
+    override suspend fun deleteFavorite(pickId: String, uid: String): Boolean {
+        val favoriteDocument = fetchFavoriteByPickIdAndUid(pickId, uid)
         return suspendCancellableCoroutine { continuation ->
             favoriteDocument.forEach { document ->
                 db.collection(COLLECTION_FAVORITES).document(document.id)
@@ -355,19 +361,19 @@ class FirebaseDataSourceImpl @Inject constructor(
         }
     }
 
-    private fun updateCurrentUserPick(userId: String, pickId: String): Task<Void> {
-        val userDoc = db.collection("users").document(userId)
+    private fun updateCurrentUserPick(uid: String, pickId: String): Task<Void> {
+        val userDoc = db.collection("users").document(uid)
         return userDoc.update("myPicks", FieldValue.arrayUnion(pickId))
     }
 
-    private suspend fun fetchFavoriteByPickIdAndUserId(
+    private suspend fun fetchFavoriteByPickIdAndUid(
         pickId: String,
-        userId: String
+        uid: String
     ): QuerySnapshot {
         return suspendCancellableCoroutine { continuation ->
             db.collection(COLLECTION_FAVORITES)
                 .whereEqualTo(FIELD_PICK_ID, pickId)
-                .whereEqualTo(FIELD_USER_ID, userId)
+                .whereEqualTo(FIELD_USER_ID, uid)
                 .get()
                 .addOnSuccessListener { result ->
                     continuation.resume(result)
@@ -383,10 +389,10 @@ class FirebaseDataSourceImpl @Inject constructor(
         }
     }
 
-    private suspend fun fetchFavoritesByUserId(userId: String): QuerySnapshot {
+    private suspend fun fetchFavoritesByUid(uid: String): QuerySnapshot {
         return suspendCancellableCoroutine { continuation ->
             db.collection(COLLECTION_FAVORITES)
-                .whereEqualTo(FIELD_USER_ID, userId)
+                .whereEqualTo(FIELD_USER_ID, uid)
                 .orderBy(FIELD_ADDED_AT, Query.Direction.DESCENDING)
                 .get()
                 .addOnSuccessListener { result ->
@@ -403,9 +409,9 @@ class FirebaseDataSourceImpl @Inject constructor(
         }
     }
 
-    private suspend fun fetchUserDocument(userId: String): DocumentSnapshot {
+    private suspend fun fetchUserDocument(uid: String): DocumentSnapshot {
         return suspendCancellableCoroutine { continuation ->
-            db.collection(COLLECTION_USERS).document(userId)
+            db.collection(COLLECTION_USERS).document(uid)
                 .get()
                 .addOnSuccessListener { document ->
                     continuation.resume(document)
@@ -460,7 +466,7 @@ class FirebaseDataSourceImpl @Inject constructor(
         private const val COLLECTION_USERS = "users"
 
         private const val FIELD_PICK_ID = "pickId"
-        private const val FIELD_USER_ID = "userId"
+        private const val FIELD_USER_ID = "uid"
         private const val FIELD_ADDED_AT = "addedAt"
         private const val FIELD_MY_PICKS = "myPicks"
     }

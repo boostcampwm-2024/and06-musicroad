@@ -13,7 +13,7 @@ import com.squirtles.domain.usecase.favorite.DeleteFavoriteUseCase
 import com.squirtles.domain.usecase.mypick.DeletePickUseCase
 import com.squirtles.domain.usecase.pick.FetchIsFavoriteUseCase
 import com.squirtles.domain.usecase.pick.FetchPickUseCase
-import com.squirtles.domain.usecase.user.GetCurrentUserUseCase
+import com.squirtles.domain.usecase.user.GetCurrentUidUseCase
 import com.squirtles.musicroad.utils.throttleFirst
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
@@ -29,7 +29,7 @@ class DetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val fetchPickUseCase: FetchPickUseCase,
     private val fetchIsFavoriteUseCase: FetchIsFavoriteUseCase,
-    private val getCurrentUserUseCase: GetCurrentUserUseCase,
+    private val getCurrentUidUseCase: GetCurrentUidUseCase,
     private val deletePickUseCase: DeletePickUseCase,
     private val createFavoriteUseCase: CreateFavoriteUseCase,
     private val deleteFavoriteUseCase: DeleteFavoriteUseCase,
@@ -51,18 +51,18 @@ class DetailViewModel @Inject constructor(
             actionClick
                 .throttleFirst(1000)
                 .collect { (pickId, isAdding) ->
-                    getUserId()?.let { userId ->
+                    getUid()?.let { uid ->
                         if (isAdding) {
-                            addToFavoritePicks(pickId, userId)
+                            addToFavoritePicks(pickId, uid)
                         } else {
-                            deleteFromFavoritePicks(pickId, userId)
+                            deleteFromFavoritePicks(pickId, uid)
                         }
                     }
                 }
         }
     }
 
-    fun getUserId() = getCurrentUserUseCase()?.userId
+    fun getUid() = getCurrentUidUseCase()
 
     fun fetchPick(pickId: String) {
         viewModelScope.launch {
@@ -70,7 +70,7 @@ class DetailViewModel @Inject constructor(
 
             val fetchPick = async { fetchPickUseCase(pickId) }
 
-            val fetchIsFavoriteResult: Result<Boolean> = getUserId()?.let {
+            val fetchIsFavoriteResult: Result<Boolean> = getUid()?.let {
                 async { fetchIsFavoriteUseCase(pickId, it) }.await()
             } ?: Result.success(false) // 비회원일시 항상 false
             val fetchPickResult = fetchPick.await()
@@ -100,9 +100,9 @@ class DetailViewModel @Inject constructor(
 
     fun deletePick(pickId: String) {
         viewModelScope.launch {
-            getUserId()?.let { userId ->
+            getUid()?.let { uid ->
                 _pickDetailUiState.emit(PickDetailUiState.Loading)
-                deletePickUseCase(pickId, userId)
+                deletePickUseCase(pickId, uid)
                     .onSuccess {
                         _pickDetailUiState.emit(PickDetailUiState.Deleted)
                     }
@@ -113,9 +113,9 @@ class DetailViewModel @Inject constructor(
         }
     }
 
-    private fun addToFavoritePicks(pickId: String, userId: String) {
+    private fun addToFavoritePicks(pickId: String, uid: String) {
         viewModelScope.launch {
-            createFavoriteUseCase(pickId, userId)
+            createFavoriteUseCase(pickId, uid)
                 .onSuccess {
                     _favoriteAction.emit(FavoriteAction.ADDED)
                     val currentUiState = _pickDetailUiState.value as? PickDetailUiState.Success
@@ -129,9 +129,9 @@ class DetailViewModel @Inject constructor(
         }
     }
 
-    private fun deleteFromFavoritePicks(pickId: String, userId: String) {
+    private fun deleteFromFavoritePicks(pickId: String, uid: String) {
         viewModelScope.launch {
-            deleteFavoriteUseCase(pickId, userId)
+            deleteFavoriteUseCase(pickId, uid)
                 .onSuccess {
                     _favoriteAction.emit(FavoriteAction.DELETED)
                     val currentUiState = _pickDetailUiState.value as? PickDetailUiState.Success
@@ -166,7 +166,7 @@ class DetailViewModel @Inject constructor(
                 ),
                 comment = "",
                 createdAt = "",
-                createdBy = Creator(userId = "", userName = "짱구"),
+                createdBy = Creator(uid = "", userName = "짱구"),
                 favoriteCount = 0,
                 location = LocationPoint(1.0, 1.0),
                 musicVideoUrl = "",

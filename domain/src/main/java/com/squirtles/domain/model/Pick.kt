@@ -23,6 +23,6 @@ data class LocationPoint(
 }
 
 data class Creator(
-    val userId: String,
-    val userName: String,
+    val uid: String,
+    val userName: String
 )

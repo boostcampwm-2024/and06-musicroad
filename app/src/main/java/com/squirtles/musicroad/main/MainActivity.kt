@@ -14,7 +14,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.core.content.PermissionChecker
@@ -24,6 +23,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.compose.rememberNavController
+import com.google.firebase.auth.FirebaseAuth
 import com.squirtles.musicroad.R
 import com.squirtles.musicroad.main.navigation.MainNavHost
 import com.squirtles.musicroad.main.navigation.MainNavigator
@@ -99,18 +99,19 @@ class MainActivity : AppCompatActivity() {
                         }
 
                         is LoadingState.Success -> {
-                            Log.d("MainActivity", "Success: ${state.userId}")
+                            Log.d("MainActivity", "Success: ${state.uid}")
+                            splashScreen.setKeepOnScreenCondition { false }
+                            cancel()
+                        }
+
+                        is LoadingState.UserNotFoundError -> {
+                            FirebaseAuth.getInstance().signOut()
                             splashScreen.setKeepOnScreenCondition { false }
                             cancel()
                         }
 
                         is LoadingState.NetworkError -> {
                             showToast(getString(R.string.main_network_error_message))
-                            finish()
-                        }
-
-                        is LoadingState.UserNotFoundError -> {
-                            showToast(getString(R.string.main_user_not_found_message))
                             finish()
                         }
 

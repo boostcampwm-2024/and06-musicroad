@@ -40,7 +40,7 @@ import com.squirtles.musicroad.ui.theme.MusicRoadTheme
 @Composable
 fun InfoWindow(
     pick: Pick,
-    userId: String?,
+    uid: String?,
     navigateToPick: (String) -> Unit,
     calculateDistance: (Double, Double) -> String
 ) {
@@ -74,7 +74,7 @@ fun InfoWindow(
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    if (pick.createdBy.userId != userId) {
+                    if (pick.createdBy.uid != uid) {
                         CreatedByOtherUserText(
                             userName = pick.createdBy.userName,
                             modifier = Modifier.weight(weight = 1f, fill = false),
@@ -140,12 +140,12 @@ private fun InfoWindowPreview() {
                 ),
                 comment = "강남역 거리는 ditto 듣기 좋네요 ^-^!",
                 createdAt = "1970.01.21",
-                createdBy = Creator(userId = "", userName = "짱구"),
+                createdBy = Creator(uid = "", userName = "짱구"),
                 favoriteCount = 100,
                 location = LocationPoint(1.0, 1.0),
                 musicVideoUrl = "",
             ),
-            userId = "",
+            uid = "",
             navigateToPick = { },
             calculateDistance = { _, _ ->
                 TODO()

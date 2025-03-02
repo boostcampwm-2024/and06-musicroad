@@ -12,8 +12,8 @@ interface LocalDataSource {
     val favoriteListOrder: Order
     val myListOrder: Order
 
-    fun readUserIdDataStore(): Flow<String?>
-    suspend fun saveUserIdDataStore(userId: String)
+    fun readUidDataStore(): Flow<String?>
+    suspend fun saveUidDataStore(uid: String)
     suspend fun saveCurrentUser(user: User)
     suspend fun clearUser()
     suspend fun saveCurrentLocation(location: Location)

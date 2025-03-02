@@ -13,7 +13,7 @@ import com.squirtles.domain.model.Pick
 import com.squirtles.domain.usecase.location.GetLastLocationUseCase
 import com.squirtles.domain.usecase.location.SaveLastLocationUseCase
 import com.squirtles.domain.usecase.pick.FetchPickUseCase
-import com.squirtles.domain.usecase.user.GetCurrentUserUseCase
+import com.squirtles.domain.usecase.user.GetCurrentUidUseCase
 import com.squirtles.musicroad.map.marker.MarkerKey
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,7 +33,7 @@ class MapViewModel @Inject constructor(
     getLastLocationUseCase: GetLastLocationUseCase,
     private val saveLastLocationUseCase: SaveLastLocationUseCase,
     private val fetchPickUseCase: FetchPickUseCase,
-    private val getCurrentUserUseCase: GetCurrentUserUseCase
+    private val getCurrentUidUseCase: GetCurrentUidUseCase
 ) : ViewModel() {
 
     private val _centerLatLng: MutableStateFlow<LatLng?> = MutableStateFlow(null)
@@ -59,7 +59,7 @@ class MapViewModel @Inject constructor(
     // Firestore 데이터 쿼리 작업 최소화 및 위치데이터 공유 용도
     val lastLocation: StateFlow<Location?> = getLastLocationUseCase()
 
-    fun getUserId() = getCurrentUserUseCase()?.userId
+    fun getUid() = getCurrentUidUseCase()
 
     fun setLastCameraPosition(cameraPosition: CameraPosition) {
         _lastCameraPosition = cameraPosition

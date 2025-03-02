@@ -13,21 +13,27 @@ class FirebaseRepositoryImpl @Inject constructor(
     private val firebaseRemoteDataSource: FirebaseRemoteDataSource
 ) : FirebaseRepository {
 
-    override suspend fun createGoogleIdUser(userId: String, userName: String?, userProfileImage: String?): Result<User> {
+    override suspend fun createGoogleIdUser(uid: String, email: String, userName: String?, userProfileImage: String?): Result<User> {
         return handleResult(FirebaseException.CreatedUserFailedException()) {
-            firebaseRemoteDataSource.createGoogleIdUser(userId, userName, userProfileImage)
+            firebaseRemoteDataSource.createGoogleIdUser(uid, email, userName, userProfileImage)
         }
     }
 
-    override suspend fun fetchUser(userId: String): Result<User> {
+    override suspend fun fetchUser(uid: String): Result<User> {
         return handleResult(FirebaseException.UserNotFoundException()) {
-            firebaseRemoteDataSource.fetchUser(userId)
+            firebaseRemoteDataSource.fetchUser(uid)
         }
     }
 
-    override suspend fun updateUserName(userId: String, newUserName: String): Result<Boolean> {
+    override suspend fun updateUserName(uid: String, newUserName: String): Result<Boolean> {
         return handleResult {
-            firebaseRemoteDataSource.updateUserName(userId, newUserName)
+            firebaseRemoteDataSource.updateUserName(uid, newUserName)
+        }
+    }
+
+    override suspend fun deleteUser(uid: String): Result<Boolean> {
+        return handleResult(FirebaseException.UserNotFoundException()) {
+            firebaseRemoteDataSource.deleteUser(uid)
         }
     }
 
@@ -54,39 +60,39 @@ class FirebaseRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun deletePick(pickId: String, userId: String): Result<Boolean> {
+    override suspend fun deletePick(pickId: String, uid: String): Result<Boolean> {
         return handleResult {
-            firebaseRemoteDataSource.deletePick(pickId, userId)
+            firebaseRemoteDataSource.deletePick(pickId, uid)
         }
     }
 
-    override suspend fun fetchMyPicks(userId: String): Result<List<Pick>> {
+    override suspend fun fetchMyPicks(uid: String): Result<List<Pick>> {
         return handleResult {
-            firebaseRemoteDataSource.fetchMyPicks(userId)
+            firebaseRemoteDataSource.fetchMyPicks(uid)
         }
     }
 
-    override suspend fun fetchFavoritePicks(userId: String): Result<List<Pick>> {
+    override suspend fun fetchFavoritePicks(uid: String): Result<List<Pick>> {
         return handleResult {
-            firebaseRemoteDataSource.fetchFavoritePicks(userId)
+            firebaseRemoteDataSource.fetchFavoritePicks(uid)
         }
     }
 
-    override suspend fun fetchIsFavorite(pickId: String, userId: String): Result<Boolean> {
+    override suspend fun fetchIsFavorite(pickId: String, uid: String): Result<Boolean> {
         return handleResult {
-            firebaseRemoteDataSource.fetchIsFavorite(pickId, userId)
+            firebaseRemoteDataSource.fetchIsFavorite(pickId, uid)
         }
     }
 
-    override suspend fun createFavorite(pickId: String, userId: String): Result<Boolean> {
+    override suspend fun createFavorite(pickId: String, uid: String): Result<Boolean> {
         return handleResult {
-            firebaseRemoteDataSource.createFavorite(pickId, userId)
+            firebaseRemoteDataSource.createFavorite(pickId, uid)
         }
     }
 
-    override suspend fun deleteFavorite(pickId: String, userId: String): Result<Boolean> {
+    override suspend fun deleteFavorite(pickId: String, uid: String): Result<Boolean> {
         return handleResult {
-            firebaseRemoteDataSource.deleteFavorite(pickId, userId)
+            firebaseRemoteDataSource.deleteFavorite(pickId, uid)
         }
     }
 

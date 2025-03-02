@@ -8,12 +8,12 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.squirtles.musicroad.common.picklist.PickListScreenContents
 import com.squirtles.musicroad.common.picklist.PickListType
-import com.squirtles.musicroad.picklist.PickListScreenContents
 
 @Composable
 fun MyPickScreen(
-    userId: String,
+    uid: String,
     onBackClick: () -> Unit,
     onItemClick: (String) -> Unit,
     myPickListViewModel: MyPickListViewModel = hiltViewModel()
@@ -23,11 +23,11 @@ fun MyPickScreen(
     var showOrderBottomSheet by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        myPickListViewModel.fetchPickList(userId)
+        myPickListViewModel.fetchPickList(uid)
     }
 
     PickListScreenContents(
-        userId = userId,
+        uid = uid,
         showOrderBottomSheet = showOrderBottomSheet,
         selectedPicksId = selectedPicksId,
         pickListType = PickListType.CREATED,
@@ -40,6 +40,6 @@ fun MyPickScreen(
         deselectAllPicks = myPickListViewModel::deselectAllPicks,
         toggleSelectedPick = myPickListViewModel::toggleSelectedPick,
         deleteSelectedPicks = myPickListViewModel::deleteSelectedPicks,
-        getUserId = { myPickListViewModel.getUserId().toString() },
+        getUid = { myPickListViewModel.getUid().toString() },
     )
 }

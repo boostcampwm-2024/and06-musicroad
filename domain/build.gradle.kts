@@ -53,6 +53,9 @@ dependencies {
     implementation(libs.androidx.media3.common)
     implementation(libs.androidx.media3.session)
 
+    // Firebase
+    implementation(libs.firebase.auth.ktx)
+
     // Serialization
     implementation(libs.kotlinx.serialization.json)
 }

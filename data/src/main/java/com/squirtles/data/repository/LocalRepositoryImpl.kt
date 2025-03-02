@@ -11,21 +11,12 @@ import javax.inject.Inject
 class LocalRepositoryImpl @Inject constructor(
     private val localDataSource: LocalDataSource,
 ) : LocalRepository {
-    override val currentUser get() = localDataSource.currentUser
     override val lastLocation get() = localDataSource.lastLocation
     override val favoriteListOrder get() = localDataSource.favoriteListOrder
     override val myListOrder get() = localDataSource.myListOrder
 
-    override fun readUserIdDataStore(): Flow<String?> {
-        return localDataSource.readUserIdDataStore()
-    }
-
-    override suspend fun saveUserIdDataStore(userId: String) {
-        localDataSource.saveUserIdDataStore(userId)
-    }
-
-    override suspend fun saveCurrentUser(user: User) {
-        localDataSource.saveCurrentUser(user)
+    override fun readUidDataStore(): Flow<String?> {
+        return localDataSource.readUidDataStore()
     }
 
     override suspend fun clearUser(): Result<Unit> {

@@ -110,11 +110,16 @@ fun PickDetailScreen(
     LaunchedEffect(Unit) {
         detailViewModel.fetchPick(pickId)
 
-        accountViewModel.signInSuccess
-            .flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
-            .collect { isSuccess ->
-                if (isSuccess) detailViewModel.fetchPick(pickId)
-            }
+        launch {
+            accountViewModel.signInSuccess
+                .flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+                .collect { isSuccess ->
+                    if (isSuccess) {
+                        showProcessIndicator = false
+                        detailViewModel.fetchPick(pickId)
+                    }
+                }
+        }
     }
 
     when (uiState) {
@@ -133,8 +138,8 @@ fun PickDetailScreen(
             val lifecycleOwner = LocalLifecycleOwner.current
             val pick = (uiState as PickDetailUiState.Success).pick
             val isFavorite = (uiState as PickDetailUiState.Success).isFavorite
-            val isNonMember = detailViewModel.getUserId() == null
-            val isCreatedBySelf = detailViewModel.getUserId() == pick.createdBy.userId
+            val isNonMember = detailViewModel.getUid() == null
+            val isCreatedBySelf = detailViewModel.getUid() == pick.createdBy.uid
             var favoriteCount by rememberSaveable { mutableIntStateOf(pick.favoriteCount) }
             val onActionClick: () -> Unit = {
                 when {
@@ -215,9 +220,9 @@ fun PickDetailScreen(
                     DETAIL_PICK_TAB -> {
                         PickDetailContents(
                             pick = pick,
-                            currentUserId = detailViewModel.getUserId(),
+                            currentUid = detailViewModel.getUid(),
                             isFavorite = isFavorite,
-                            pickUserId = pick.createdBy.userId,
+                            pickUid = pick.createdBy.uid,
                             pickUserName = pick.createdBy.userName,
                             favoriteCount = favoriteCount,
                             isMusicVideoAvailable = isMusicVideoAvailable,
@@ -284,9 +289,9 @@ fun PickDetailScreen(
             // Show default pick
             PickDetailContents(
                 pick = DEFAULT_PICK,
-                currentUserId = null,
+                currentUid = null,
                 isFavorite = false,
-                pickUserId = "",
+                pickUid = "",
                 pickUserName = "",
                 favoriteCount = 0,
                 isMusicVideoAvailable = false,
@@ -348,10 +353,11 @@ fun PickDetailScreen(
         SignInAlertDialog(
             onDismissRequest = { showSignInDialog = false },
             onGoogleSignInClick = {
+                showSignInDialog = false
+                showProcessIndicator = true
                 GoogleId(context).signIn(
-                    onSuccess = { credential ->
-                        accountViewModel.signIn(credential)
-                        showSignInDialog = false
+                    onSuccess = { uid, credential ->
+                        accountViewModel.signIn(uid, credential)
                     }
                 )
             },
@@ -364,8 +370,8 @@ fun PickDetailScreen(
 private fun PickDetailContents(
     pick: Pick,
     isFavorite: Boolean,
-    currentUserId: String?,
-    pickUserId: String,
+    currentUid: String?,
+    pickUid: String,
     pickUserName: String,
     favoriteCount: Int,
     isMusicVideoAvailable: Boolean,
@@ -374,7 +380,7 @@ private fun PickDetailContents(
     onBackClick: () -> Unit,
     onActionClick: () -> Unit
 ) {
-    val isCreatedBySelf = remember { currentUserId == pickUserId }
+    val isCreatedBySelf = remember { currentUid == pickUid }
     val scrollState = rememberScrollState()
     val dynamicBackgroundColor = Color(pick.song.bgColor)
     val onDynamicBackgroundColor = if (dynamicBackgroundColor.luminance() >= 0.5f) Black else White
@@ -407,7 +413,7 @@ private fun PickDetailContents(
                 modifier = Modifier.statusBarsPadding(),
                 isCreatedBySelf = isCreatedBySelf,
                 isFavorite = isFavorite,
-                userId = pickUserId,
+                uid = pickUid,
                 userName = pickUserName,
                 onDynamicBackgroundColor = onDynamicBackgroundColor,
                 onUserInfoClick = onUserInfoClick,
@@ -523,9 +529,9 @@ fun Context.showShortToast(message: String) {
 private fun PickDetailPreview() {
     PickDetailContents(
         pick = DEFAULT_PICK,
-        currentUserId = null,
+        currentUid = null,
         isFavorite = false,
-        pickUserId = "",
+        pickUid = "",
         pickUserName = "짱구",
         favoriteCount = 0,
         isMusicVideoAvailable = true,

@@ -224,7 +224,7 @@ private fun VideoPlayerOverlayPreview() {
             ),
             comment = "강남역 거리는 Super Shy 듣기 좋네요 ^-^!",
             createdAt = "2024.11.02",
-            createdBy = Creator(userId = "", userName = "짱구"),
+            createdBy = Creator(uid = "", userName = "짱구"),
             favoriteCount = 100,
             location = LocationPoint(1.0, 1.0),
             musicVideoUrl = "",
