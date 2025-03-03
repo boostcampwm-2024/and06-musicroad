@@ -96,6 +96,17 @@ internal fun <T : ClusteringKey> buildClusterer(
                     }
                     true
                 }
+
+                if (mapViewModel.clickedMarkerState.value.prevClickedMarker?.position == marker.position) {
+                    mapViewModel.clickedMarkerState.value.clusterPickList?.let {
+                        mapViewModel.setClickedMarkerState(
+                            context = context,
+                            marker = marker,
+                            clusterTag = info.tag.toString()
+                        )
+                    }
+                }
+
                 // 클러스터 마커를 클릭한 채로 configuration change 시 크기 유지
                 if (info.tag.toString()
                     == mapViewModel.clickedMarkerState.value.clusterPickList?.joinToString(",") { it.id }
@@ -131,6 +142,17 @@ internal fun <T : ClusteringKey> buildClusterer(
                         }
                         true
                     }
+
+                    // 이거 있으면 2개짜리 클러스터 마커 누른 상태에서 이 중에 있는 거 삭제되면 바텀 시트가 인포윈도우로 바뀜
+                    // 이거 없으면 위 상황에서 지도의 마커는 클러스터 마커에서 단말 마커로 바뀌는데 여전히 바텀 시트에는 2개가 떠 있음
+                    if (mapViewModel.clickedMarkerState.value.prevClickedMarker?.position == marker.position) {
+                        mapViewModel.setClickedMarkerState(
+                            context = context,
+                            marker = marker,
+                            pickId = pick.id
+                        )
+                    }
+
                     // 단말 마커를 클릭한 채로 configuration change 시 크기 유지
                     if (pick.id == mapViewModel.clickedMarkerState.value.curPickId) {
                         mapViewModel.setClickedMarker(context, marker)

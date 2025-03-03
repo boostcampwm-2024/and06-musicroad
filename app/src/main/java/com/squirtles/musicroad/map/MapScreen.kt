@@ -106,29 +106,35 @@ fun MapScreen(
                 verticalArrangement = Arrangement.Bottom,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                clickedMarkerState.prevClickedMarker?.let {
-                    if (clickedMarkerState.curPickId != null) { // 단말 마커 클릭 시
-                        showBottomSheet = false
-                        mapViewModel.picks[clickedMarkerState.curPickId]?.let { pick ->
-                            InfoWindow(
-                                pick = pick,
-                                userId = mapViewModel.getUserId(),
-                                navigateToPick = { pickId ->
-                                    onPickSummaryClick(pickId)
-                                },
-                                calculateDistance = { lat, lng ->
-                                    mapViewModel.calculateDistance(lat, lng).let { distance ->
-                                        when {
-                                            distance >= 1000.0 -> "%.1fkm".format(distance / 1000.0)
-                                            distance >= 0 -> "%.0fm".format(distance)
-                                            else -> ""
+                if (mapViewModel.lastCameraPosition != null &&
+                    clickedMarkerState.prevClickedMarker?.position == mapViewModel.lastCameraPosition?.target
+                ) {
+                    mapViewModel.resetClickedMarkerState(context)
+                } else {
+                    clickedMarkerState.prevClickedMarker?.let {
+                        if (clickedMarkerState.curPickId != null) { // 단말 마커 클릭 시
+                            showBottomSheet = false
+                            mapViewModel.picks[clickedMarkerState.curPickId]?.let { pick ->
+                                InfoWindow(
+                                    pick = pick,
+                                    userId = mapViewModel.getUserId(),
+                                    navigateToPick = { pickId ->
+                                        onPickSummaryClick(pickId)
+                                    },
+                                    calculateDistance = { lat, lng ->
+                                        mapViewModel.calculateDistance(lat, lng).let { distance ->
+                                            when {
+                                                distance >= 1000.0 -> "%.1fkm".format(distance / 1000.0)
+                                                distance >= 0 -> "%.0fm".format(distance)
+                                                else -> ""
+                                            }
                                         }
                                     }
-                                }
-                            )
+                                )
+                            }
+                        } else { // 클러스터 마커 클릭 시
+                            showBottomSheet = true
                         }
-                    } else { // 클러스터 마커 클릭 시
-                        showBottomSheet = true
                     }
                 }
 

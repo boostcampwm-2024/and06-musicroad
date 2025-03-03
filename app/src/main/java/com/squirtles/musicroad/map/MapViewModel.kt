@@ -20,6 +20,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import javax.inject.Inject
 
 data class MarkerState(
@@ -35,6 +37,8 @@ class MapViewModel @Inject constructor(
     private val fetchPickUseCase: FetchPickUseCase,
     private val getCurrentUserUseCase: GetCurrentUserUseCase
 ) : ViewModel() {
+
+    private val mutex = Mutex()
 
     private val _centerLatLng: MutableStateFlow<LatLng?> = MutableStateFlow(null)
     val centerLatLng = _centerLatLng.asStateFlow()
@@ -121,10 +125,12 @@ class MapViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             val prevClickedMarker = _clickedMarkerState.value.prevClickedMarker
-            if (prevClickedMarker == marker) return@launch
+            // 클릭한 마커와 클릭되어 있는 마커가 다를 때만 크기 변경
+            if (prevClickedMarker != marker) {
+                prevClickedMarker?.toggleSizeByClick(context, false)
+                marker.toggleSizeByClick(context, true)
+            }
 
-            prevClickedMarker?.toggleSizeByClick(context, false)
-            marker.toggleSizeByClick(context, true)
             val pickList = clusterTag?.split(",")?.mapNotNull { id -> picks[id] }
             _clickedMarkerState.emit(MarkerState(marker, pickList, pickId))
         }
@@ -143,26 +149,33 @@ class MapViewModel @Inject constructor(
             _centerLatLng.value?.run {
                 val radiusInM = leftTop.distanceTo(this)
                 fetchPickUseCase(this.latitude, this.longitude, radiusInM)
-                    .onSuccess { pickList ->
-                        val newKeyTagMap: MutableMap<MarkerKey, String> = mutableMapOf()
-                        pickList.forEach { pick ->
-                            newKeyTagMap[MarkerKey(pick)] = pick.id
-                            _picks[pick.id] = pick
-                        }
-                        _clickedMarkerState.value.clusterPickList?.let { clusterPickList -> // 클러스터 마커가 선택되어 있는 경우
-                            val updatedPickList = mutableListOf<Pick>()
-                            clusterPickList.forEach { pick ->
-                                _picks[pick.id]?.let { updatedPick ->
-                                    updatedPickList.add(updatedPick)
-                                }
+                    .collect { pickList ->
+                        mutex.withLock {
+                            val newKeyTagMap: MutableMap<MarkerKey, String> = mutableMapOf()
+                            pickList.forEach { pick ->
+                                newKeyTagMap[MarkerKey(pick)] = pick.id
+                                _picks[pick.id] = pick
                             }
-                            _clickedMarkerState.emit(_clickedMarkerState.value.copy(clusterPickList = updatedPickList.toList())) // 최신 픽 정보로 clusterPickList 업데이트
+
+                            // 업데이트된 리스트에 기존 픽이 없으면 삭제된 것이므로 _picks와 clusterer에서 삭제
+                            // 이거 없으면 다른 기기에서 실제로 삭제는 되어 잇는데 지도에 그대로 남아잇음
+                            val deletedKeyList = _picks.keys
+                                .filter { pickId ->
+                                    pickId !in newKeyTagMap.values
+                                }
+                                .mapNotNull { pickId ->
+                                    _picks[pickId]
+                                }
+                                .onEach { pick ->
+                                    _picks.remove(pick.id)
+                                }
+                                .map { pick ->
+                                    MarkerKey(pick)
+                                }
+
+                            clusterer?.addAll(newKeyTagMap)
+                            clusterer?.removeAll(deletedKeyList)
                         }
-                        clusterer?.addAll(newKeyTagMap)
-                    }
-                    .onFailure {
-                        // TODO: NoSuchPickInRadiusException일 때
-                        Log.e("MapViewModel", "${it.message}")
                     }
             }
         }
