@@ -43,7 +43,7 @@ fun ClusterBottomSheet(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     clusterPickList: List<Pick>?,
-    userId: String?,
+    uid: String?,
     calculateDistance: (Double, Double) -> String,
     onClickItem: (String) -> Unit
 ) {
@@ -74,7 +74,7 @@ fun ClusterBottomSheet(
                     BottomSheetItem(
                         song = pick.song,
                         pickLocation = pick.location,
-                        createdUserName = pick.createdBy.userName.takeIf { pick.createdBy.userId != userId },
+                        createdUserName = pick.createdBy.userName.takeIf { pick.createdBy.uid != uid },
                         comment = pick.comment,
                         favoriteCount = pick.favoriteCount,
                         calculateDistance = calculateDistance,

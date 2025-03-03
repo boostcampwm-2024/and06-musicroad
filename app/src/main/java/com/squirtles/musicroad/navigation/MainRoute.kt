@@ -8,8 +8,8 @@ sealed interface MainRoute : Route {
     data object Search : MainRoute
 
     @Serializable
-    data class Favorite(val userId: String) : MainRoute
+    data class Favorite(val uid: String) : MainRoute
 
     @Serializable
-    data class UserInfo(val userId: String) : MainRoute
+    data class UserInfo(val uid: String) : MainRoute
 }

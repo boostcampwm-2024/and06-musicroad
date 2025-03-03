@@ -107,6 +107,7 @@
     <string name="user_info_setting_profile_menu_title">프로필</string>
     <string name="user_info_setting_notification_menu_title">알림</string>
     <string name="user_info_setting_sign_out_menu_title">로그아웃</string>
+    <string name="user_info_setting_delete_user_account">회원 탈퇴</string>
     <string name="user_info_setting_profile_menu_icon_description">프로필 설정 메뉴 아이콘</string>
     <string name="user_info_setting_notification_menu_icon_description">알림 메뉴 아이콘</string>
     <string name="user_info_setting_sign_out_menu_icon_description">로그아웃 메뉴 아이콘</string>
@@ -145,4 +146,10 @@
     <string name="sign_out_dialog_title">로그아웃 하시겠습니까?</string>
     <string name="sign_out_dialog_dismiss">취소</string>
     <string name="sign_out_dialog_confirm">로그아웃</string>
+
+
+    <string name="delete_account_dialog_title">정말 탈퇴하시겠습니까?</string>
+    <string name="delete_account_dialog_description">탈퇴 시 회원 정보와 픽 데이터가 삭제되며, 복구할 수 없습니다.</string>
+    <string name="delete_account_dialog_dismiss">취소</string>
+    <string name="delete_account_dialog_confirm">탈퇴</string>
 </resources>

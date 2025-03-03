@@ -7,5 +7,5 @@ import javax.inject.Inject
 class FetchFavoritePicksUseCase @Inject constructor(
     private val firebaseRepository: FirebaseRepository
 ) : FetchPickListUseCaseInterface {
-    override suspend operator fun invoke(userId: String) = firebaseRepository.fetchFavoritePicks(userId)
+    override suspend operator fun invoke(uid: String) = firebaseRepository.fetchFavoritePicks(uid)
 }

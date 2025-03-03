@@ -43,6 +43,7 @@ splashscreen = "1.0.1"
 uiViewbinding = "1.7.5"
 pagingComposeAndroid = "3.3.4"
 kotlinxImmutable = "0.3.7"
+firebaseAuthKtx = "22.3.1"
 
 [libraries]
 # AndroidX
@@ -85,6 +86,7 @@ firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firebaseFirestoreKtx" }
 firebase-functions-ktx = { group = "com.google.firebase", name = "firebase-functions-ktx", version.ref = "firebaseFunctionsKtx" }
+firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx", version.ref = "firebaseAuthKtx" }
 kotlinx-coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlinxCoroutinesPlayServices" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
 

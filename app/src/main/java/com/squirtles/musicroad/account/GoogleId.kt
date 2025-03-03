@@ -11,6 +11,8 @@ import androidx.credentials.GetCredentialResponse
 import androidx.credentials.exceptions.NoCredentialException
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 import com.squirtles.musicroad.BuildConfig
 import com.squirtles.musicroad.R
 import kotlinx.coroutines.CoroutineScope
@@ -30,30 +32,42 @@ class GoogleId(private val context: Context) {
         .addCredentialOption(googleIdOption)
         .build()
 
-    private fun handleSignIn(result: GetCredentialResponse, onSuccess: (GoogleIdTokenCredential) -> Unit) {
+    private fun signInWithGoogle(result: GetCredentialResponse, onSuccess: (String, GoogleIdTokenCredential) -> Unit) {
         when (val data = result.credential) {
             is CustomCredential -> {
                 if (data.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
                     val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(data.data)
-                    Log.d("GoogleId", "data.type : ${googleIdTokenCredential.id}")
-                    Log.d("GoogleId", "data.type : ${googleIdTokenCredential.displayName}")
-                    Log.d("GoogleId", "data.type : ${googleIdTokenCredential.profilePictureUri.toString()}")
-                    onSuccess(googleIdTokenCredential)
+                    Log.d("SignIn", "token : ${googleIdTokenCredential.idToken}")
+                    signInWithFirebase(googleIdTokenCredential, onSuccess)
                 }
             }
         }
     }
 
-    fun signIn(onSuccess: (GoogleIdTokenCredential) -> Unit) {
+    private fun signInWithFirebase(googleIdTokenCredential: GoogleIdTokenCredential, onSuccess: (String, GoogleIdTokenCredential) -> Unit) {
+        val credential = GoogleAuthProvider.getCredential(googleIdTokenCredential.idToken, null)
+        FirebaseAuth.getInstance().signInWithCredential(credential)
+            .addOnSuccessListener { authResult ->
+                authResult.user?.uid?.let { uid ->
+                    Log.d("SignIn", "Firebase 인증 uid : $uid")
+                    onSuccess(uid, googleIdTokenCredential)
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.e("SignIn", "Firebase 인증 실패", exception)
+            }
+    }
+
+    fun signIn(onSuccess: (String, GoogleIdTokenCredential) -> Unit) {
         CoroutineScope(Dispatchers.Main).launch {
             runCatching {
                 val result = credentialManager.getCredential(context, request)
-                handleSignIn(result, onSuccess)
+                signInWithGoogle(result, onSuccess)
             }.onFailure { exception ->
                 when (exception) {
                     is NoCredentialException -> Toast.makeText(context, context.getString(R.string.google_id_no_credential_exception_message), Toast.LENGTH_SHORT).show()
                 }
-                Log.e("GoogleId", "Google SignIn Error : $exception")
+                Log.e("SignIn", "Google SignIn Error : $exception")
             }
         }
     }

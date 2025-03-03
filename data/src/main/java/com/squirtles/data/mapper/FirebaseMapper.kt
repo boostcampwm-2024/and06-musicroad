@@ -38,7 +38,7 @@ internal fun FirebasePick.toPick(): Pick = Pick(
     comment = comment.toString(),
     favoriteCount = favoriteCount,
     createdBy = Creator(
-        userId = createdBy?.get("userId") ?: "",
+        uid = createdBy?.get("uid") ?: "",
         userName = createdBy?.get("userName") ?: ""
     ),
     createdAt = createdAt?.toDate()?.formatTimestamp() ?: "",
@@ -59,7 +59,7 @@ internal fun Pick.toFirebasePick(): FirebasePick = FirebasePick(
     artistName = song.artistName,
     artwork = mapOf("url" to song.imageUrl, "bgColor" to song.bgColor.toRgbString()),
     comment = comment,
-    createdBy = mapOf("userId" to createdBy.userId, "userName" to createdBy.userName),
+    createdBy = mapOf("uid" to createdBy.uid, "userName" to createdBy.userName),
     externalUrl = song.externalUrl,
     favoriteCount = favoriteCount,
     genreNames = song.genreNames,
@@ -73,7 +73,8 @@ internal fun Pick.toFirebasePick(): FirebasePick = FirebasePick(
 )
 
 internal fun FirebaseUser.toUser(): User = User(
-    userId = "",
+    uid = "",
+    email = email ?: "",
     userName = name ?: "",
     userProfileImage = profileImage,
     myPicks = myPicks

@@ -9,11 +9,11 @@ import androidx.compose.runtime.setValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.squirtles.musicroad.common.picklist.PickListType
-import com.squirtles.musicroad.picklist.PickListScreenContents
+import com.squirtles.musicroad.common.picklist.PickListScreenContents
 
 @Composable
 fun FavoriteScreen(
-    userId: String,
+    uid: String,
     onBackClick: () -> Unit,
     onItemClick: (String) -> Unit,
     favoriteListViewModel: FavoriteListViewModel = hiltViewModel()
@@ -23,11 +23,11 @@ fun FavoriteScreen(
     var showOrderBottomSheet by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        favoriteListViewModel.fetchPickList(userId)
+        favoriteListViewModel.fetchPickList(uid)
     }
 
     PickListScreenContents(
-        userId = userId,
+        uid = uid,
         showOrderBottomSheet = showOrderBottomSheet,
         selectedPicksId = selectedPicksId,
         pickListType = PickListType.FAVORITE,
@@ -40,8 +40,8 @@ fun FavoriteScreen(
         deselectAllPicks = favoriteListViewModel::deselectAllPicks,
         toggleSelectedPick = favoriteListViewModel::toggleSelectedPick,
         deleteSelectedPicks = favoriteListViewModel::deleteSelectedPicks,
-        getUserId = {
-            favoriteListViewModel.getUserId().toString()
+        getUid = {
+            favoriteListViewModel.getUid().toString()
         }
     )
 }

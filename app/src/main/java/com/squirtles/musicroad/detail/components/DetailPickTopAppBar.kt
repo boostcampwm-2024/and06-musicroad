@@ -29,7 +29,7 @@ fun DetailPickTopAppBar(
     modifier: Modifier = Modifier,
     isCreatedBySelf: Boolean,
     isFavorite: Boolean,
-    userId: String,
+    uid: String,
     userName: String,
     onDynamicBackgroundColor: Color,
     onUserInfoClick: (String) -> Unit,
@@ -42,7 +42,7 @@ fun DetailPickTopAppBar(
                 modifier = Modifier.clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null,
-                    onClick = { onUserInfoClick(userId) }
+                    onClick = { onUserInfoClick(uid) }
                 ),
                 verticalAlignment = Alignment.CenterVertically
             ) {
