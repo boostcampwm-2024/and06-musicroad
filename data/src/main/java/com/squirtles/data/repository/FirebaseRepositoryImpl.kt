@@ -20,7 +20,6 @@ class FirebaseRepositoryImpl @Inject constructor(
 ) : FirebaseRepository {
 
     private val latestNearPickMutex = Mutex()
-    private val latestNearPick = mutableMapOf<String, Pick>()
 
     override suspend fun createGoogleIdUser(
         userId: String,
@@ -55,6 +54,8 @@ class FirebaseRepositoryImpl @Inject constructor(
         lng: Double,
         radiusInM: Double
     ): Flow<List<Pick>> {
+        val latestNearPick = mutableMapOf<String, Pick>()
+
         return firebaseRemoteDataSource.fetchPicksInArea(lat, lng, radiusInM)
             .map { pickList ->
                 latestNearPickMutex.withLock {
