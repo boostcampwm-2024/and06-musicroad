@@ -44,7 +44,11 @@ class FirebaseDataSourceImpl @Inject constructor(
 
     private val cloudFunctionHelper = CloudFunctionHelper()
 
-    override suspend fun createGoogleIdUser(userId: String, userName: String?, userProfileImage: String?): User? {
+    override suspend fun createGoogleIdUser(
+        userId: String,
+        userName: String?,
+        userProfileImage: String?
+    ): User? {
         return suspendCancellableCoroutine { continuation ->
             val documentReference = db.collection("users").document(userId)
             documentReference.set(FirebaseUser(name = userName, profileImage = userProfileImage))

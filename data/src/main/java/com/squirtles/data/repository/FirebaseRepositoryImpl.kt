@@ -22,6 +22,11 @@ class FirebaseRepositoryImpl @Inject constructor(
     private val latestNearPickMutex = Mutex()
     private val latestNearPick = mutableMapOf<String, Pick>()
 
+    override suspend fun createGoogleIdUser(
+        userId: String,
+        userName: String?,
+        userProfileImage: String?
+    ): Result<User> {
         return handleResult(FirebaseException.CreatedUserFailedException()) {
             firebaseRemoteDataSource.createGoogleIdUser(userId, userName, userProfileImage)
         }

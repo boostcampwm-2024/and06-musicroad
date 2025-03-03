@@ -123,7 +123,8 @@ internal fun <T : ClusteringKey> buildClusterer(
 
                 val pick = (info.key as MarkerKey).pick
                 val leafMarkerIconView = LeafMarkerIconView(context).apply {
-                    val color = if (pick.createdBy.userId == mapViewModel.getUserId()) Blue else Primary
+                    val color =
+                        if (pick.createdBy.userId == mapViewModel.getUserId()) Blue else Primary
                     setPaintColor(color.toArgb())
                 }
                 leafMarkerIconView.setLeafMarkerIcon(pick) {
