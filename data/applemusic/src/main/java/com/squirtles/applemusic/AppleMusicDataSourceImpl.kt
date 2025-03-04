@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 class AppleMusicDataSourceImpl @Inject constructor(
     private val appleMusicApi: AppleMusicApi
-) : AppleMusicRemoteDataSource {
+) : AppleMusicDataSource {
 
     override fun searchSongs(searchText: String): Flow<PagingData<Song>> {
         return Pager(

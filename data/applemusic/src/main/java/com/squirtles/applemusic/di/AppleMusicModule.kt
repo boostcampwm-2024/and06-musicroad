@@ -1,7 +1,7 @@
 package com.squirtles.applemusic.di
 
 import com.squirtles.applemusic.AppleMusicDataSourceImpl
-import com.squirtles.applemusic.AppleMusicRemoteDataSource
+import com.squirtles.applemusic.AppleMusicDataSource
 import com.squirtles.applemusic.AppleMusicRepository
 import com.squirtles.applemusic.AppleMusicRepositoryImpl
 import com.squirtles.applemusic.api.AppleMusicApi
@@ -36,11 +36,11 @@ object AppleMusicModule{
 
     @Provides
     @Singleton
-    fun provideAppleMusicRepository(appleMusicDataSource: AppleMusicRemoteDataSource): AppleMusicRepository =
+    fun provideAppleMusicRepository(appleMusicDataSource: AppleMusicDataSource): AppleMusicRepository =
         AppleMusicRepositoryImpl(appleMusicDataSource)
 
     @Provides
     @Singleton
-    fun provideAppleMusicDataSource(api: AppleMusicApi): AppleMusicRemoteDataSource =
+    fun provideAppleMusicDataSource(api: AppleMusicApi): AppleMusicDataSource =
         AppleMusicDataSourceImpl(api)
 }

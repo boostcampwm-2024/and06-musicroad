@@ -7,15 +7,11 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class AppleMusicRepositoryImpl @Inject constructor(
-    private val appleMusicDataSource: AppleMusicRemoteDataSource
+    private val appleMusicDataSource: AppleMusicDataSource
 ) : AppleMusicRepository {
 
     override fun searchSongs(searchText: String): Flow<PagingData<Song>> =
         appleMusicDataSource.searchSongs(searchText)
-
-    override suspend fun searchSongById(songId: String): Result<Song> {
-        TODO("Not yet implemented")
-    }
 
     override suspend fun searchMusicVideos(searchText: String): Result<List<MusicVideo>> {
         return handleResult(AppleMusicException.NotFoundException()) {
