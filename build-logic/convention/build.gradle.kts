@@ -28,8 +28,8 @@ gradlePlugin {
             implementationClass = "com.squirtles.convention.AndroidLibraryPlugin"
         }
 
-        register("androidCompose") {
-            id = "musicroad.android.compose"
+        register("composeLibrary") {
+            id = "musicroad.compose.library"
             implementationClass = "com.squirtles.convention.AndroidComposePlugin"
         }
 
@@ -46,6 +46,11 @@ gradlePlugin {
         register("data") {
             id = "musicroad.data"
             implementationClass = "com.squirtles.convention.MusicRoadDataPlugin"
+        }
+
+        register("feature") {
+            id = "musicroad.feature"
+            implementationClass = "com.squirtles.convention.MusicRoadFeaturePlugin"
         }
     }
 }

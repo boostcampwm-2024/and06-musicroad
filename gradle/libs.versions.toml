@@ -264,8 +264,6 @@ material = [
 
 media3 = [
     "androidx-media3-common",
-    "androidx-media3-exoplayer",
-    "androidx-media3-exoplayer-dash",
     "androidx-media3-session",
     "androidx-media3-ui",
 ]
@@ -309,6 +307,7 @@ jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrai
 musicroad-android-application = { id = "musicroad.android.application", version = "unspecified" }
 musicroad-java-library = { id = "musicroad.java.library", version = "unspecified" }
 musicroad-android-library = { id = "musicroad.android.library", version = "unspecified" }
-musicroad-compose-library = { id = "musicroad.android.compose", version = "unspecified" }
+musicroad-compose-library = { id = "musicroad.compose.library", version = "unspecified" }
 musicroad-hilt = { id = "musicroad.hilt", version = "unspecified" }
-musicroad-data = { id = "musicroad.data" }
+musicroad-data = { id = "musicroad.data", version = "unspecified" }
+musicroad-feature = { id = "musicroad.feature", version = "unspecified" }
