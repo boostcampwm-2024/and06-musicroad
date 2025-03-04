@@ -1,18 +1,9 @@
 plugins {
-    alias(libs.plugins.musicroad.android.library)
+    alias(libs.plugins.musicroad.compose.library)
 }
 
 android {
     namespace = "com.squirtles.picklist"
-    compileSdk = 34
-
-    buildFeatures {
-        compose = true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.14"
-    }
 }
 
 dependencies {
@@ -21,13 +12,6 @@ dependencies {
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.bundles.test)
-
-    // Compose
-    implementation(platform(libs.compose.bom))
-    implementation(libs.bundles.compose)
-    implementation(libs.bundles.compose.debug)
-
-    implementation(libs.bundles.material)
 
     // Coil
     implementation(libs.bundles.coil)

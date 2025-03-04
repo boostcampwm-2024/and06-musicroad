@@ -10,6 +10,7 @@ android {
 dependencies {
     implementation(projects.domain.player)
     implementation(projects.core.model)
+    implementation(libs.material)
 
     // ExoPlayer
     implementation(libs.bundles.exoplayer)

@@ -1,18 +1,9 @@
 plugins {
-    alias(libs.plugins.musicroad.android.library)
-//    alias(libs.plugins.musicroad.compose.library)
+    alias(libs.plugins.musicroad.compose.library)
 }
 
 android {
     namespace = "com.squirtles.common"
-
-    buildFeatures {
-        compose = true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.14"
-    }
 }
 
 dependencies {
@@ -21,10 +12,10 @@ dependencies {
 //    implementation(platform(libs.compose.bom))
 //    implementation(libs.compose.runtime.android)
 //    implementation(libs.compose.ui.tooling.preview)
-    implementation(platform(libs.compose.bom))
-    implementation(libs.bundles.compose)
-    implementation(libs.bundles.compose.debug)
-    implementation(libs.bundles.material)
+//    implementation(platform(libs.compose.bom))
+//    implementation(libs.bundles.compose)
+//    implementation(libs.bundles.compose.debug)
+//    implementation(libs.bundles.material)
 
     // Coil
     implementation(libs.bundles.coil)

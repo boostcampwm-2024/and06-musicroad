@@ -1,15 +1,9 @@
 plugins {
-    id("java-library")
-    alias(libs.plugins.jetbrains.kotlin.jvm)
-}
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+    id(libs.plugins.musicroad.java.library.get().pluginId)
 }
 
 dependencies {
     implementation(projects.core.model)
-    implementation(libs.inject)
+
     implementation(libs.kotlinx.coroutines.core)
 }
