@@ -1,7 +1,6 @@
 package com.squirtles.convention
 
 import com.squirtles.convention.extensions.androidTestImplementation
-import com.squirtles.convention.extensions.getBundle
 import com.squirtles.convention.extensions.getLibrary
 import com.squirtles.convention.extensions.implementation
 import com.squirtles.convention.extensions.ksp
@@ -14,7 +13,7 @@ import org.gradle.kotlin.dsl.dependencies
 class HiltPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
-            pluginManager.apply {
+            pluginManager.run {
                 apply("dagger.hilt.android.plugin")
                 apply("com.google.devtools.ksp")
             }

@@ -4,7 +4,6 @@ import com.android.build.gradle.LibraryExtension
 import com.squirtles.convention.extensions.configureKotlinAndroid
 import com.squirtles.convention.extensions.configureKotlinCoroutine
 import com.squirtles.convention.extensions.getBundle
-import com.squirtles.convention.extensions.getLibrary
 import com.squirtles.convention.extensions.implementation
 import com.squirtles.convention.extensions.libs
 import org.gradle.api.Plugin

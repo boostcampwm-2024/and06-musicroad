@@ -10,7 +10,7 @@ import org.gradle.kotlin.dsl.configure
 // app module
 class AndroidApplicationPlugin: Plugin<Project> {
     override fun apply(target: Project) {
-        target.run {
+        with(target) {
             pluginManager.run {
                 apply("com.android.application")
                 apply("org.jetbrains.kotlin.android")
