@@ -106,6 +106,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.compose.ui)
     implementation(libs.androidx.core.splashscreen)
+    implementation(libs.material)
 //    implementation(libs.androidx.compose.animation)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
