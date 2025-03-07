@@ -40,9 +40,9 @@ internal class MainNavigator(
         )
     }
 
-    fun navigateFavorite(userId: String) {
+    fun navigateFavorite(uid: String) {
         navController.navigateFavorite(
-            userId = userId,
+            uid = uid,
             navOptions {
                 launchSingleTop = true
             }
@@ -63,22 +63,23 @@ internal class MainNavigator(
         )
     }
 
-    fun navigateMyPicks(userId: String) {
+    fun navigateMyPicks(uid: String) {
         navController.navigateMyPicks(
-            userId = userId,
+            uid = uid,
             navOptions = navOptions { launchSingleTop = true }
         )
     }
 
-    fun navigateUserInfo(userId: String) {
+    fun navigateUserInfo(uid: String) {
         navController.navigateUserInfo(
-            userId = userId,
+            uid = uid,
             navOptions = navOptions { launchSingleTop = true }
         )
     }
 
-    fun navigateEditProfile() {
+    fun navigateEditProfile(userName: String) {
         navController.navigateEditProfile(
+            userName = userName,
             navOptions = navOptions { launchSingleTop = true }
         )
     }

@@ -5,6 +5,6 @@ import com.google.firebase.firestore.ServerTimestamp
 
 data class FirebaseFavorite(
     val pickId: String? = null,
-    val userId: String? = null,
+    val uid: String? = null,
     @ServerTimestamp val addedAt: Timestamp? = null,
 )

@@ -136,6 +136,7 @@ dependencies {
     // Firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
+    implementation(libs.firebase.auth.ktx)
     implementation(libs.google.firebase.dynamic.module.support)
     implementation(libs.firebase.crashlytics)
 

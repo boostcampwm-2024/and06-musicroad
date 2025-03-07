@@ -1,6 +1,9 @@
 package com.squirtles.musicroad.userinfo.screen
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,6 +20,7 @@ import androidx.compose.material.icons.outlined.Archive
 import androidx.compose.material.icons.outlined.Map
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.SwitchAccount
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -27,6 +31,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -55,20 +60,22 @@ import com.squirtles.musicroad.common.DialogTextButton
 import com.squirtles.musicroad.common.HorizontalSpacer
 import com.squirtles.musicroad.common.MessageAlertDialog
 import com.squirtles.musicroad.common.VerticalSpacer
+import com.squirtles.musicroad.ui.theme.Black
 import com.squirtles.musicroad.ui.theme.Primary
 import com.squirtles.musicroad.ui.theme.White
 import com.squirtles.musicroad.userinfo.UserInfoViewModel
 import com.squirtles.musicroad.userinfo.components.MenuItem
 import com.squirtles.musicroad.userinfo.components.UserInfoMenus
+import kotlinx.coroutines.launch
 
 @Composable
 fun UserInfoScreen(
-    userId: String,
+    uid: String,
     onBackClick: () -> Unit,
     onBackToMapClick: () -> Unit,
     onFavoritePicksClick: (String) -> Unit,
     onMyPicksClick: (String) -> Unit,
-    onEditProfileClick: () -> Unit,
+    onEditProfileClick: (String) -> Unit,
     onEditNotificationClick: () -> Unit,
     userInfoViewModel: UserInfoViewModel = hiltViewModel(),
     accountViewModel: AccountViewModel = hiltViewModel()
@@ -79,30 +86,36 @@ fun UserInfoScreen(
     val user by userInfoViewModel.profileUser.collectAsStateWithLifecycle()
 
     var showLogOutDialog by remember { mutableStateOf(false) }
+    var showLoadingIndicator by rememberSaveable { mutableStateOf(false) }
 
     val onSignOutClick: () -> Unit = {
         GoogleId(context).signOut()
         accountViewModel.signOut()
     }
 
+    BackHandler(enabled = showLoadingIndicator) { }
+
     LaunchedEffect(Unit) {
-        userId?.let {
-            userInfoViewModel.getUserById(userId)
+        uid.let {
+            userInfoViewModel.getUserById(uid)
         }
 
-        accountViewModel.signOutSuccess
-            .flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
-            .collect { isSuccess ->
-                if (isSuccess) {
-                    onBackToMapClick()
+        launch {
+            accountViewModel.signOutSuccess
+                .flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+                .collect { isSuccess ->
+                    if (isSuccess) {
+                        showLoadingIndicator = false
+                        onBackToMapClick()
+                    }
                 }
-            }
+        }
     }
 
     Scaffold(
         topBar = {
             DefaultTopAppBar(
-                title = if (userId == null) stringResource(id = R.string.profile_sign_in_title) else user.userName,
+                title = user.userName,
                 onBackClick = onBackClick
             )
         }
@@ -145,18 +158,18 @@ fun UserInfoScreen(
                             imageVector = Icons.Outlined.Archive,
                             contentDescription = stringResource(R.string.user_info_favorite_menu_icon_description),
                             menuTitle = stringResource(R.string.user_info_favorite_menu_title),
-                            onMenuClick = { onFavoritePicksClick(userId) }
+                            onMenuClick = { onFavoritePicksClick(uid) }
                         ),
                         MenuItem(
                             imageVector = Icons.Default.MusicNote,
                             contentDescription = stringResource(R.string.user_info_created_by_self_menu_icon_description),
                             menuTitle = stringResource(R.string.user_info_created_by_self_menu_title),
-                            onMenuClick = { onMyPicksClick(userId) }
+                            onMenuClick = { onMyPicksClick(uid) }
                         )
                     )
                 )
 
-                if (userId == userInfoViewModel.currentUser?.userId) {
+                if (uid == userInfoViewModel.currentUid) {
                     UserInfoMenus(
                         title = stringResource(R.string.user_info_setting_category_title),
                         menus = listOf(
@@ -164,7 +177,7 @@ fun UserInfoScreen(
                                 imageVector = Icons.Outlined.SwitchAccount,
                                 contentDescription = stringResource(R.string.user_info_setting_profile_menu_icon_description),
                                 menuTitle = stringResource(R.string.user_info_setting_profile_menu_title),
-                                onMenuClick = onEditProfileClick
+                                onMenuClick = { onEditProfileClick(user.userName) }
                             ),
                             MenuItem(
                                 imageVector = Icons.Outlined.Notifications,
@@ -230,12 +243,29 @@ fun UserInfoScreen(
                     DialogTextButton(
                         onClick = {
                             showLogOutDialog = false
+                            showLoadingIndicator = true
                             onSignOutClick()
                         },
                         text = stringResource(R.string.sign_out_dialog_confirm),
                         textColor = Primary,
                         fontWeight = FontWeight.Bold
                     )
+                }
+            }
+
+            if (showLoadingIndicator) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Black.copy(alpha = 0.5F))
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                            onClick = {}
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
                 }
             }
         }

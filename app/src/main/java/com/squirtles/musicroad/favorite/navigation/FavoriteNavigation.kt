@@ -8,8 +8,8 @@ import androidx.navigation.toRoute
 import com.squirtles.musicroad.favorite.FavoriteScreen
 import com.squirtles.musicroad.navigation.MainRoute
 
-fun NavController.navigateFavorite(userId: String, navOptions: NavOptions? = null) {
-    navigate(MainRoute.Favorite(userId), navOptions)
+fun NavController.navigateFavorite(uid: String, navOptions: NavOptions? = null) {
+    navigate(MainRoute.Favorite(uid), navOptions)
 }
 
 fun NavGraphBuilder.favoriteNavGraph(
@@ -17,10 +17,10 @@ fun NavGraphBuilder.favoriteNavGraph(
     onItemClick: (String) -> Unit,
 ) {
     composable<MainRoute.Favorite> { backStackEntry ->
-        val userId = backStackEntry.toRoute<MainRoute.Favorite>().userId
+        val uid = backStackEntry.toRoute<MainRoute.Favorite>().uid
 
         FavoriteScreen(
-            userId = userId,
+            uid = uid,
             onBackClick = onBackClick,
             onItemClick = onItemClick,
         )

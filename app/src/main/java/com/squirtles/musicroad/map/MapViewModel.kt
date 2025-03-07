@@ -13,7 +13,7 @@ import com.squirtles.domain.model.Pick
 import com.squirtles.domain.location.usecase.GetLastLocationUseCase
 import com.squirtles.domain.location.usecase.SaveLastLocationUseCase
 import com.squirtles.domain.pick.usecase.FetchPickUseCase
-import com.squirtles.domain.user.usecase.GetCurrentUserUseCase
+import com.squirtles.domain.usecase.user.GetCurrentUidUseCase
 import com.squirtles.musicroad.map.marker.MarkerKey
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,12 +22,18 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+data class MarkerState(
+    val prevClickedMarker: Marker? = null, // 이전에 클릭한 마커(클러스터 마커 & 단말 마커)
+    val clusterPickList: List<Pick>? = null, // 클러스터 마커의 픽 정보
+    val curPickId: String? = null // 현재 선택한 마커의 pick id
+)
+
 @HiltViewModel
 class MapViewModel @Inject constructor(
     getLastLocationUseCase: GetLastLocationUseCase,
     private val saveLastLocationUseCase: SaveLastLocationUseCase,
     private val fetchPickUseCase: FetchPickUseCase,
-    private val getCurrentUserUseCase: GetCurrentUserUseCase
+    private val getCurrentUidUseCase: GetCurrentUidUseCase
 ) : ViewModel() {
 
     private val _centerLatLng: MutableStateFlow<LatLng?> = MutableStateFlow(null)
@@ -52,7 +58,7 @@ class MapViewModel @Inject constructor(
     // Firestore 데이터 쿼리 작업 최소화 및 위치데이터 공유 용도
     val lastLocation: StateFlow<Location?> = getLastLocationUseCase()
 
-    fun getUserId() = getCurrentUserUseCase()?.userId
+    fun getUid() = getCurrentUidUseCase()
 
     fun setLastCameraPosition(cameraPosition: CameraPosition) {
         _lastCameraPosition = cameraPosition
@@ -187,9 +193,3 @@ class MapViewModel @Inject constructor(
         private const val MARKER_SCALE = 1.5
     }
 }
-
-data class MarkerState(
-    val prevClickedMarker: Marker? = null, // 이전에 클릭한 마커(클러스터 마커 & 단말 마커)
-    val clusterPickList: List<Pick>? = null, // 클러스터 마커의 픽 정보
-    val curPickId: String? = null // 현재 선택한 마커의 pick id
-)

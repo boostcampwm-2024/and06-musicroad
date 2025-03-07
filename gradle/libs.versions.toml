@@ -58,6 +58,7 @@ firebaseFirestoreKtx = "25.1.1"
 firebaseFunctionsKtx = "21.1.0"
 firebaseCrashlytics = "3.0.2"
 geofireAndroidCommon = "3.2.0"
+firebaseAuthKtx = "22.3.1"
 
 # Hilt
 hilt = "2.51.1"
@@ -151,6 +152,7 @@ kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firebaseFirestoreKtx" }
 firebase-functions-ktx = { group = "com.google.firebase", name = "firebase-functions-ktx", version.ref = "firebaseFunctionsKtx" }
+firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx", version.ref = "firebaseAuthKtx" }
 google-firebase-dynamic-module-support = { module = "com.google.firebase:firebase-dynamic-module-support", version.ref = "firebaseDynamicModuleSupportVersion" }
 
 # goefire

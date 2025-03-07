@@ -19,6 +19,9 @@ dependencies {
 
     implementation(libs.bundles.media3)
 
+    // Firebase
+    implementation(libs.firebase.auth.ktx)
+
     // Serialization
     implementation(libs.kotlinx.serialization.json)
 }

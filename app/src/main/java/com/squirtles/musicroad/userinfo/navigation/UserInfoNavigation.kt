@@ -12,20 +12,20 @@ import com.squirtles.musicroad.userinfo.screen.EditNotificationSettingScreen
 import com.squirtles.musicroad.userinfo.screen.EditProfileScreen
 import com.squirtles.musicroad.userinfo.screen.UserInfoScreen
 
-fun NavController.navigateUserInfo(userId: String, navOptions: NavOptions? = null) {
-    navigate(MainRoute.UserInfo(userId), navOptions)
+fun NavController.navigateUserInfo(uid: String, navOptions: NavOptions? = null) {
+    navigate(MainRoute.UserInfo(uid), navOptions)
 }
 
-fun NavController.navigateEditProfile(navOptions: NavOptions? = null) {
-    navigate(UserInfoRoute.EditProfile, navOptions)
+fun NavController.navigateEditProfile(userName: String, navOptions: NavOptions? = null) {
+    navigate(UserInfoRoute.EditProfile(userName), navOptions)
 }
 
 fun NavController.navigateEditNotificationSetting(navOptions: NavOptions? = null) {
     navigate(UserInfoRoute.EditNotification, navOptions)
 }
 
-fun NavController.navigateMyPicks(userId: String, navOptions: NavOptions) {
-    navigate(UserInfoRoute.MyPicks(userId), navOptions)
+fun NavController.navigateMyPicks(uid: String, navOptions: NavOptions) {
+    navigate(UserInfoRoute.MyPicks(uid), navOptions)
 }
 
 fun NavGraphBuilder.userInfoNavGraph(
@@ -34,14 +34,14 @@ fun NavGraphBuilder.userInfoNavGraph(
     onBackToMapClick: () -> Unit,
     onFavoritePicksClick: (String) -> Unit,
     onMyPicksClick: (String) -> Unit,
-    onEditProfileClick: () -> Unit,
+    onEditProfileClick: (String) -> Unit,
     onEditNotificationClick: () -> Unit,
 ) {
     composable<MainRoute.UserInfo> { backStackEntry ->
-        val userId = backStackEntry.toRoute<MainRoute.UserInfo>().userId
+        val uid = backStackEntry.toRoute<MainRoute.UserInfo>().uid
 
         UserInfoScreen(
-            userId = userId,
+            uid = uid,
             onBackClick = onBackClick,
             onBackToMapClick = onBackToMapClick,
             onFavoritePicksClick = onFavoritePicksClick,
@@ -51,8 +51,11 @@ fun NavGraphBuilder.userInfoNavGraph(
         )
     }
 
-    composable<UserInfoRoute.EditProfile> {
+    composable<UserInfoRoute.EditProfile> { backStackEntry ->
+        val userName = backStackEntry.toRoute<UserInfoRoute.EditProfile>().userName
         EditProfileScreen(
+            currentUserName = userName,
+            onBackToMapClick = onBackToMapClick,
             onBackClick = onBackClick,
         )
     }
@@ -64,10 +67,10 @@ fun NavGraphBuilder.userInfoNavGraph(
     }
 
     composable<UserInfoRoute.MyPicks> { backStackEntry ->
-        val userId = backStackEntry.toRoute<UserInfoRoute.MyPicks>().userId
+        val uid = backStackEntry.toRoute<UserInfoRoute.MyPicks>().uid
 
         MyPickScreen(
-            userId = userId,
+            uid = uid,
             onBackClick = onBackClick,
             onItemClick = onItemClick
         )

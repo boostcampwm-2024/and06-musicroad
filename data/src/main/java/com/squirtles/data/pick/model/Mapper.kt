@@ -12,25 +12,9 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-internal fun Pick.toFirebasePick(): FirebasePick = FirebasePick(
-    id = id,
-    albumName = song.albumName,
-    artistName = song.artistName,
-    artwork = mapOf("url" to song.imageUrl, "bgColor" to song.bgColor.toRgbString()),
-    comment = comment,
-    createdBy = mapOf("userId" to createdBy.userId, "userName" to createdBy.userName),
-    externalUrl = song.externalUrl,
-    favoriteCount = favoriteCount,
-    genreNames = song.genreNames,
-    geoHash = location.toGeoHash(),
-    location = GeoPoint(location.latitude, location.longitude),
-    previewUrl = song.previewUrl,
-    musicVideoUrl = musicVideoUrl,
-    musicVideoThumbnail = musicVideoThumbnailUrl,
-    songId = song.id,
-    songName = song.songName,
-)
-
+/**
+ * using when get pick from firebase and convert to domain data
+ */
 internal fun FirebasePick.toPick(): Pick = Pick(
     id = id.toString(),
     song = Song(
@@ -49,7 +33,7 @@ internal fun FirebasePick.toPick(): Pick = Pick(
     comment = comment.toString(),
     favoriteCount = favoriteCount,
     createdBy = Creator(
-        userId = createdBy?.get("userId") ?: "",
+        uid = createdBy?.get("uid") ?: "",
         userName = createdBy?.get("userName") ?: ""
     ),
     createdAt = createdAt?.toDate()?.formatTimestamp() ?: "",
@@ -59,6 +43,28 @@ internal fun FirebasePick.toPick(): Pick = Pick(
     ),
     musicVideoUrl = musicVideoUrl ?: "",
     musicVideoThumbnailUrl = musicVideoThumbnail ?: ""
+)
+
+/**
+ * using when create pick in firebase
+ */
+internal fun Pick.toFirebasePick(): FirebasePick = FirebasePick(
+    id = id,
+    albumName = song.albumName,
+    artistName = song.artistName,
+    artwork = mapOf("url" to song.imageUrl, "bgColor" to song.bgColor.toRgbString()),
+    comment = comment,
+    createdBy = mapOf("uid" to createdBy.uid, "userName" to createdBy.userName),
+    externalUrl = song.externalUrl,
+    favoriteCount = favoriteCount,
+    genreNames = song.genreNames,
+    geoHash = location.toGeoHash(),
+    location = GeoPoint(location.latitude, location.longitude),
+    previewUrl = song.previewUrl,
+    musicVideoUrl = musicVideoUrl,
+    musicVideoThumbnail = musicVideoThumbnailUrl,
+    songId = song.id,
+    songName = song.songName,
 )
 
 private fun Int.toRgbString(): String {

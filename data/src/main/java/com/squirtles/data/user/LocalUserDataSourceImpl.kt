@@ -1,12 +1,16 @@
-package com.squirtles.data.user
+package com.squirtles.data.datasource.local
 
 import android.content.Context
+import android.location.Location
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.squirtles.domain.user.LocalUserDataSource
 import com.squirtles.domain.model.User
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -28,10 +32,10 @@ class LocalUserDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun saveUserIdDataStore(userId: String) {
+    override suspend fun saveUidDataStore(uid: String) {
         val dataStoreKey = stringPreferencesKey(USER_ID_KEY)
         context.dataStore.edit { preferences ->
-            preferences[dataStoreKey] = userId
+            preferences[dataStoreKey] = uid
         }
     }
 
