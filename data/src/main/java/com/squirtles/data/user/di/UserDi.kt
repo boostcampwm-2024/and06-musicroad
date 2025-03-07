@@ -2,9 +2,9 @@ package com.squirtles.data.user.di
 
 import android.content.Context
 import com.google.firebase.firestore.FirebaseFirestore
+import com.squirtles.data.datasource.local.LocalUserDataSourceImpl
 import com.squirtles.data.user.FirebaseUserDataSourceImpl
 import com.squirtles.data.user.FirebaseUserRepositoryImpl
-import com.squirtles.data.user.LocalUserDataSourceImpl
 import com.squirtles.data.user.LocalUserRepositoryImpl
 import com.squirtles.domain.user.FirebaseUserDataSource
 import com.squirtles.domain.user.FirebaseUserRepository

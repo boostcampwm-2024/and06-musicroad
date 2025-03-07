@@ -25,7 +25,7 @@ class LocalUserDataSourceImpl @Inject constructor(
     override val currentUser: User?
         get() = _currentUser
 
-    override fun readUserIdDataStore(): Flow<String?> {
+    override fun readUidDataStore(): Flow<String?> {
         val dataStoreKey = stringPreferencesKey(USER_ID_KEY)
         return context.dataStore.data.map { preferences ->
             preferences[dataStoreKey]

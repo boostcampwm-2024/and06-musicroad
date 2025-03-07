@@ -12,12 +12,13 @@ class FirebaseUserRepositoryImpl(
 ) : FirebaseUserRepository {
 
     override suspend fun createGoogleIdUser(
-        userId: String,
+        uid: String,
+        email: String,
         userName: String?,
         userProfileImage: String?
     ): Result<User> {
         return handleResult(FirebaseException.CreatedUserFailedException()) {
-            userDataSource.createGoogleIdUser(userId, userName, userProfileImage)
+            userDataSource.createGoogleIdUser(uid, email, userName, userProfileImage)
         }
     }
 
@@ -30,6 +31,12 @@ class FirebaseUserRepositoryImpl(
     override suspend fun updateUserName(userId: String, newUserName: String): Result<Boolean> {
         return handleResult {
             userDataSource.updateUserName(userId, newUserName)
+        }
+    }
+
+    override suspend fun deleteUser(uid: String): Result<Boolean> {
+        return handleResult(FirebaseException.UserNotFoundException()) {
+            userDataSource.deleteUser(uid)
         }
     }
 }

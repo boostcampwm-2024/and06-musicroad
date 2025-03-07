@@ -18,17 +18,15 @@ class FirebaseUserDataSourceImpl @Inject constructor(
     private val db: FirebaseFirestore
 ): FirebaseUserDataSource {
 
-    override suspend fun createGoogleIdUser(userId: String, userName: String?, userProfileImage: String?): User? {
+    override suspend fun createGoogleIdUser(uid: String, email: String, userName: String?, userProfileImage: String?): User? {
         return suspendCancellableCoroutine { continuation ->
-            val documentReference = db.collection("users").document(userId)
-            documentReference.set(FirebaseUser(name = userName, profileImage = userProfileImage))
+            val documentReference = db.collection("users").document(uid)
+            documentReference.set(FirebaseUser(email = email, name = userName, profileImage = userProfileImage))
                 .addOnSuccessListener {
                     documentReference.get()
                         .addOnSuccessListener { documentSnapshot ->
                             val savedUser = documentSnapshot.toObject<FirebaseUser>()
-                            continuation.resume(
-                                savedUser?.toUser()?.copy(userId = documentReference.id)
-                            )
+                            continuation.resume(savedUser?.toUser()?.copy(uid = documentReference.id))
                         }
                         .addOnFailureListener { exception ->
                             continuation.resumeWithException(exception)
@@ -41,12 +39,12 @@ class FirebaseUserDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun fetchUser(userId: String): User? {
+    override suspend fun fetchUser(uid: String): User? {
         return suspendCancellableCoroutine { continuation ->
-            db.collection("users").document(userId).get()
+            db.collection("users").document(uid).get()
                 .addOnSuccessListener { document ->
                     val firebaseUser = document.toObject<FirebaseUser>()
-                    continuation.resume(firebaseUser?.toUser()?.copy(userId = userId))
+                    continuation.resume(firebaseUser?.toUser()?.copy(uid = uid))
                 }
                 .addOnFailureListener { exception ->
                     continuation.resumeWithException(exception)
@@ -54,10 +52,10 @@ class FirebaseUserDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateUserName(userId: String, newUserName: String): Boolean {
+    override suspend fun updateUserName(uid: String, newUserName: String): Boolean {
         return suspendCancellableCoroutine { continuation ->
             db.runTransaction { transaction ->
-                val userRef = db.collection("users").document(userId)
+                val userRef = db.collection("users").document(uid)
                 val userDocument = transaction.get(userRef)
                 transaction.update(userRef, "name", newUserName)
 
@@ -74,4 +72,11 @@ class FirebaseUserDataSourceImpl @Inject constructor(
         }
     }
 
+    override suspend fun deleteUser(uid: String): Boolean {
+        return suspendCancellableCoroutine { continuation ->
+            db.collection("users").document(uid).delete()
+                .addOnSuccessListener { continuation.resume(true) }
+                .addOnFailureListener { exception -> continuation.resumeWithException(exception) }
+        }
+    }
 }

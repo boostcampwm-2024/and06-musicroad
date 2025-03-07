@@ -4,7 +4,7 @@ import com.squirtles.domain.order.usecase.GetMyPickListOrderUseCase
 import com.squirtles.domain.order.usecase.SaveMyPickListOrderUseCase
 import com.squirtles.domain.pick.usecase.DeletePickUseCase
 import com.squirtles.domain.pick.usecase.FetchMyPicksUseCase
-import com.squirtles.domain.usecase.user.GetCurrentUidUseCase
+import com.squirtles.domain.user.usecase.GetCurrentUidUseCase
 import com.squirtles.musicroad.common.picklist.PickListViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject

@@ -4,10 +4,8 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.squirtles.domain.firebase.FirebaseException
-import com.squirtles.domain.user.usecase.FetchUserUseCase
-import com.squirtles.domain.user.usecase.GetUserIdFromDataStoreUseCase
-import com.squirtles.domain.usecase.user.FetchUserByIdUseCase
-import com.squirtles.domain.usecase.user.GetCurrentUidUseCase
+import com.squirtles.domain.user.usecase.FetchUserByIdUseCase
+import com.squirtles.domain.user.usecase.GetCurrentUidUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

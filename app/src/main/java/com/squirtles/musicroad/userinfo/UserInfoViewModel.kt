@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.squirtles.domain.model.User
 import com.squirtles.domain.user.usecase.FetchUserByIdUseCase
-import com.squirtles.domain.usecase.user.GetCurrentUidUseCase
+import com.squirtles.domain.user.usecase.GetCurrentUidUseCase
 import com.squirtles.domain.user.usecase.UpdateUserNameUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow

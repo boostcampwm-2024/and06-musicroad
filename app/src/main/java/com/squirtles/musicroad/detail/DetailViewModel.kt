@@ -13,7 +13,7 @@ import com.squirtles.domain.model.Pick
 import com.squirtles.domain.model.Song
 import com.squirtles.domain.pick.usecase.DeletePickUseCase
 import com.squirtles.domain.pick.usecase.FetchPickUseCase
-import com.squirtles.domain.usecase.user.GetCurrentUidUseCase
+import com.squirtles.domain.user.usecase.GetCurrentUidUseCase
 import com.squirtles.musicroad.utils.throttleFirst
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async

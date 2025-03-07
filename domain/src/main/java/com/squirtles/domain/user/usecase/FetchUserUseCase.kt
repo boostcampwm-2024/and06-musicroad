@@ -11,7 +11,7 @@ class FetchUserUseCase @Inject constructor(
     suspend operator fun invoke(userId: String): Result<User> {
         val user = fetchUserByIdUseCase(userId) // userId가 있으면 Firestore에서 유저 가져오기
             .onSuccess { user ->
-                localUserRepository.saveUserIdDataStore(user.userId)
+                localUserRepository.saveUserIdDataStore(user.uid)
                 localUserRepository.saveCurrentUser(user) // Firestore에서 가져온 user를 LocalDataSource에 저장
             }
         return user

@@ -9,7 +9,7 @@ import com.squirtles.domain.picklist.FetchPickListUseCaseInterface
 import com.squirtles.domain.picklist.GetPickListOrderUseCaseInterface
 import com.squirtles.domain.picklist.RemovePickUseCaseInterface
 import com.squirtles.domain.picklist.SavePickListOrderUseCaseInterface
-import com.squirtles.domain.usecase.user.GetCurrentUidUseCase
+import com.squirtles.domain.user.usecase.GetCurrentUidUseCase
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow

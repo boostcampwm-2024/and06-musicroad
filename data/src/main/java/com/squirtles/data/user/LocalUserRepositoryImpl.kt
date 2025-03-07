@@ -14,11 +14,11 @@ class LocalUserRepositoryImpl @Inject constructor(
     override val currentUser get() = userDataSource.currentUser
 
     override fun readUserIdDataStore(): Flow<String?> {
-        return userDataSource.readUserIdDataStore()
+        return userDataSource.readUidDataStore()
     }
 
     override suspend fun saveUserIdDataStore(userId: String) {
-        userDataSource.saveUserIdDataStore(userId)
+        userDataSource.saveUidDataStore(userId)
     }
 
     override suspend fun saveCurrentUser(user: User) {

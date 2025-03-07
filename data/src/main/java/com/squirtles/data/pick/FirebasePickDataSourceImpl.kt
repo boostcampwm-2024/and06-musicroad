@@ -82,7 +82,7 @@ class FirebasePickDataSourceImpl @Inject constructor(
         val firebasePick = pick.toFirebasePick()
         return runCatching {
             val pickRef = addDocument(FirebaseCollections.Picks, firebasePick).getOrThrow()
-            updateCurrentUserPick(pick.createdBy.userId, pickRef.id)
+            updateCurrentUserPick(pick.createdBy.uid, pickRef.id)
             pickRef.id
         }.onFailure {
             Log.e(TAG_LOG, "Failed to create a pick", it)

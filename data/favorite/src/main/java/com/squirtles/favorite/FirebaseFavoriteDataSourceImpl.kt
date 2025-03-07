@@ -26,7 +26,7 @@ class FirebaseFavoriteDataSourceImpl @Inject constructor(
     override suspend fun createFavorite(pickId: String, userId: String): Result<String> {
         val firebaseFavorite = FirebaseFavorite(
             pickId = pickId,
-            userId = userId
+            uid = userId
         )
         return runCatching {
             val addResult = addDocument(FirebaseCollections.Favorites, firebaseFavorite)
