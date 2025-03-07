@@ -1,4 +1,4 @@
-package com.squirtles.picklist
+package com.squirtles.picklist.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -25,11 +25,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import com.squirtles.common.ui.Constants
+import com.squirtles.common.ui.Constants.DEFAULT_PADDING
 import com.squirtles.common.ui.theme.Dark
 import com.squirtles.common.ui.theme.Primary
 import com.squirtles.common.ui.theme.White
 import com.squirtles.model.Order
+import com.squirtles.picklist.R
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -111,7 +112,7 @@ private fun BottomSheetMenu(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() }
-            .padding(Constants.DEFAULT_PADDING),
+            .padding(DEFAULT_PADDING),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
