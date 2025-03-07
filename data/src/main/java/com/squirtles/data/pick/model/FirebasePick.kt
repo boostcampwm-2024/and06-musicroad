@@ -1,18 +1,8 @@
 package com.squirtles.data.pick.model
 
-import androidx.core.graphics.toColorInt
-import com.firebase.geofire.GeoFireUtils
-import com.firebase.geofire.GeoLocation
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.firestore.ServerTimestamp
-import com.squirtles.domain.model.Creator
-import com.squirtles.domain.model.LocationPoint
-import com.squirtles.domain.model.Pick
-import com.squirtles.domain.model.Song
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 /**
  * Firestore에 저장된 pick document를 불러와 변환하기위한 데이터 클래스

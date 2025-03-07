@@ -1,7 +1,6 @@
-package com.squirtles.order
+package com.squirtles.location
 
 import android.location.Location
-import com.squirtles.location.LocalLocationRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

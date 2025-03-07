@@ -1,4 +1,4 @@
-package com.squirtles.firebase
+package com.squirtles.data.firebase
 
 sealed class FirebaseException(override val message: String) : Exception() {
     data class CreatedUserFailedException(override val message: String = "Failed to create user") : FirebaseException(message)

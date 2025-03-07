@@ -30,7 +30,7 @@ import com.squirtles.common.ui.theme.White
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun MessageAlertDialog(
+fun MessageAlertDialog(
     onDismissRequest: () -> Unit,
     title: String,
     body: String,
@@ -77,7 +77,7 @@ internal fun MessageAlertDialog(
 }
 
 @Composable
-internal fun DialogTextButton(
+fun DialogTextButton(
     onClick: () -> Unit,
     text: String,
     textColor: Color = Black,

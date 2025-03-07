@@ -12,18 +12,14 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.toObject
-import com.squirtles.data.firebase.FirebaseDataSourceConstants.COLLECTION_FAVORITES
-import com.squirtles.data.firebase.FirebaseDataSourceConstants.COLLECTION_PICKS
-import com.squirtles.data.firebase.FirebaseDataSourceConstants.COLLECTION_USERS
-import com.squirtles.data.firebase.FirebaseDataSourceConstants.FIELD_ADDED_AT
-import com.squirtles.data.firebase.FirebaseDataSourceConstants.FIELD_MY_PICKS
-import com.squirtles.data.firebase.FirebaseDataSourceConstants.FIELD_PICK_ID
-import com.squirtles.data.firebase.FirebaseDataSourceConstants.FIELD_USER_ID
-import com.squirtles.data.firebase.FirebaseDataSourceConstants.TAG_LOG
+import com.squirtles.data.favorite.model.FirebaseFavorite
+import com.squirtles.data.firebase.BaseFirebaseDataSource
+import com.squirtles.data.firebase.FirebaseCollections
+import com.squirtles.data.firebase.FirebaseDocumentFields
 import com.squirtles.data.pick.model.FirebasePick
-import com.squirtles.data.user.model.FirebaseUser
 import com.squirtles.data.pick.model.toFirebasePick
 import com.squirtles.data.pick.model.toPick
+import com.squirtles.data.user.model.FirebaseUser
 import com.squirtles.domain.model.Pick
 import com.squirtles.domain.pick.FirebasePickDataSource
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -36,21 +32,16 @@ import kotlin.coroutines.resumeWithException
 @Singleton
 class FirebasePickDataSourceImpl @Inject constructor(
     private val db: FirebaseFirestore
-) : FirebasePickDataSource {
+) : BaseFirebaseDataSource(db), FirebasePickDataSource {
 
     /* Fetches a pick by ID from Firestore */
-    override suspend fun fetchPick(pickID: String): Pick? {
-        return suspendCancellableCoroutine { continuation ->
-            db.collection("picks").document(pickID).get()
-                .addOnSuccessListener { document ->
-                    val firestorePick = document.toObject<FirebasePick>()?.copy(id = pickID)
-                    val resultPick = firestorePick?.toPick()
-                    continuation.resume(resultPick)
-                }
-                .addOnFailureListener { exception ->
-                    Log.e("FirebaseDataSourceImpl", "Failed to fetch a pick", exception)
-                    continuation.resumeWithException(exception)
-                }
+    override suspend fun fetchPick(pickId: String): Result<Pick> {
+        return runCatching {
+            val pickSnap = fetchDocumentSnapshot(FirebaseCollections.Picks, pickId).getOrThrow()
+            val firestorePick = pickSnap.toObject<FirebasePick>()?.copy(id = pickId)
+            firestorePick?.toPick()!!
+        }.onFailure { exception ->
+            Log.e(TAG_LOG, "Failed to fetch a pick", exception)
         }
     }
 
@@ -59,191 +50,105 @@ class FirebasePickDataSourceImpl @Inject constructor(
         lat: Double,
         lng: Double,
         radiusInM: Double
-    ): List<Pick> {
+    ): Result<List<Pick>> {
         val center = GeoLocation(lat, lng)
         val bounds = GeoFireUtils.getGeoHashQueryBounds(center, radiusInM)
 
-        val queries: MutableList<Query> = ArrayList()
-        val tasks: MutableList<Task<QuerySnapshot>> = ArrayList()
-        val matchingPicks: MutableList<Pick> = ArrayList()
-
-        bounds.forEach { bound ->
-            val query = db.collection("picks")
-                .orderBy("geoHash")
-                .startAt(bound.startHash)
-                .endAt(bound.endHash)
-            queries.add(query)
-        }
-
-        try {
-            queries.forEach { query ->
-                tasks.add(query.get())
+        return runCatching {
+            val queryResults = bounds.map { bound ->
+                queryDocumentsInRange(
+                    collection = FirebaseCollections.Picks,
+                    field = FirebaseDocumentFields.GeoHash,
+                    start = bound.startHash,
+                    end = bound.endHash
+                )
             }
-            Tasks.whenAllComplete(tasks).await()
-        } catch (exception: Exception) {
-            Log.e("FirebaseDataSourceImpl", "Failed to fetch picks", exception)
-            throw exception
-        }
 
-        tasks.forEach { task ->
-            val snap = task.result
-            snap.documents.forEach { doc ->
-                if (isAccurate(doc, center, radiusInM)) {
-                    doc.toObject<FirebasePick>()?.run {
-                        matchingPicks.add(this.toPick().copy(id = doc.id))
+            queryResults.flatMap { querySnapshot ->
+                querySnapshot.getOrThrow().documents
+                    .filter { doc ->
+                        isAccurate(doc, center, radiusInM)
+                    }.mapNotNull { doc ->
+                        doc.toObject<FirebasePick>()?.toPick()?.copy(id = doc.id)
                     }
-                }
             }
+        }.onFailure { e ->
+            Log.e(TAG_LOG, "Failed to fetch picks", e)
         }
-
-        return matchingPicks
     }
 
     /* Creates a new pick in Firestore */
-    override suspend fun createPick(pick: Pick): String =
-        suspendCancellableCoroutine { continuation ->
-            val firebasePick = pick.toFirebasePick()
-
-            // add() 메소드는 Cloud Firestore에서 ID를 자동으로 생성
-            db.collection("picks").add(firebasePick)
-                .addOnSuccessListener { documentReference ->
-                    val pickId = documentReference.id
-                    // 유저의 픽 정보 업데이트
-                    updateCurrentUserPick(pick.createdBy.userId, pickId)
-                        .addOnCompleteListener { task ->
-                            if (task.isSuccessful) {
-                                continuation.resume(pickId)
-                            } else {
-                                continuation.resumeWithException(
-                                    task.exception ?: Exception("Failed to updating user pick info")
-                                )
-                            }
-                        }
-                }
-                .addOnFailureListener { exception ->
-                    Log.e("FirebaseDataSourceImpl", "Failed to create a pick", exception)
-                    continuation.resumeWithException(exception)
-                }
+    override suspend fun createPick(pick: Pick): Result<String> {
+        val firebasePick = pick.toFirebasePick()
+        return runCatching {
+            val pickRef = addDocument(FirebaseCollections.Picks, firebasePick).getOrThrow()
+            updateCurrentUserPick(pick.createdBy.userId, pickRef.id)
+            pickRef.id
+        }.onFailure {
+            Log.e(TAG_LOG, "Failed to create a pick", it)
         }
+    }
 
-    override suspend fun deletePick(pickId: String, userId: String): Boolean {
-        val pickDocument = db.collection(COLLECTION_PICKS).document(pickId)
-        val userDocument = db.collection(COLLECTION_USERS).document(userId)
-        val favoriteDocuments = fetchFavoriteDocuments(pickId)
+    override suspend fun deletePick(pickId: String, userId: String): Result<String> {
+        val pickDocument = fetchDocumentReference(FirebaseCollections.Picks, pickId)
+        val userDocument = fetchDocumentReference(FirebaseCollections.Users, userId)
 
-        return suspendCancellableCoroutine { continuation ->
+        return runCatching {
+            val favoriteDocuments = fetchFavoriteDocumentRefsByPick(pickId).getOrThrow()
+
             db.runTransaction { transaction ->
                 transaction.delete(pickDocument)
-
-                favoriteDocuments.forEach { document ->
-                    transaction.delete(document)
+                favoriteDocuments.forEach { docRef ->
+                    transaction.delete(docRef)
                 }
+                transaction.update(userDocument, FirebaseDocumentFields.MyPicks.name, FieldValue.arrayRemove(pickId))
+            }.await()
 
-                transaction.update(userDocument, FIELD_MY_PICKS, FieldValue.arrayRemove(pickId))
-            }.addOnSuccessListener { _ ->
-                continuation.resume(true)
-            }.addOnFailureListener { e ->
-                Log.w(TAG_LOG, "Transaction failure.", e)
-                continuation.resumeWithException(e)
+            pickDocument.id
+        }.onFailure {
+            Log.e(TAG_LOG, "Failed to delete a pick", it)
+        }
+    }
+
+    override suspend fun fetchMyPicks(userId: String): Result<List<Pick>> {
+        return runCatching {
+            val userDocument = fetchDocumentSnapshot(FirebaseCollections.Users, userId).getOrThrow()
+            userDocument.toObject<FirebaseUser>()?.myPicks!!.map {
+                fetchPick(it).getOrThrow()
+            }.reversed()
+        }
+    }
+
+    override suspend fun fetchFavoritePicks(userId: String): Result<List<Pick>> {
+        return runCatching {
+            val favoriteDocuments = fetchFavoritesByUserId(userId)
+            favoriteDocuments.map { docSnap ->
+                fetchPick(docSnap.toObject<FirebaseFavorite>()?.pickId.toString()).getOrThrow()
             }
         }
     }
 
-    override suspend fun fetchMyPicks(userId: String): List<Pick> {
-        val userDocument = fetchUserDocument(userId)
-        if (userDocument.exists().not()) throw Exception("No user info in database")
-
-        val tasks = mutableListOf<Task<DocumentSnapshot>>()
-        val myPicks = mutableListOf<Pick>()
-
-        try {
-            userDocument.toObject<FirebaseUser>()?.myPicks?.forEach { pickId ->
-                tasks.add(
-                    db.collection(COLLECTION_PICKS)
-                        .document(pickId)
-                        .get()
-                )
-            }
-            Tasks.whenAllComplete(tasks).await()
-        } catch (exception: Exception) {
-            Log.e("FirebaseDataSourceImpl", "Failed to fetch my picks", exception)
-            throw exception
-        }
-
-        tasks.forEach { task ->
-            task.result.toObject<FirebasePick>()?.run {
-                myPicks.add(this.toPick().copy(id = task.result.id))
-            }
-        }
-
-        return myPicks.reversed()
-    }
-
-    private fun updateCurrentUserPick(userId: String, pickId: String): Task<Void> {
-        val userDoc = db.collection("users").document(userId)
-        return userDoc.update("myPicks", FieldValue.arrayUnion(pickId))
-    }
-
-    private suspend fun fetchFavoriteDocuments(pickId: String): List<DocumentReference> {
-        return suspendCancellableCoroutine { continuation ->
-            db.collection(COLLECTION_FAVORITES)
-                .whereEqualTo(FIELD_PICK_ID, pickId)
-                .get()
-                .addOnSuccessListener { querySnapShot ->
-                    val documentIds = querySnapShot.documents.map { it.id }
-                    val documentRefs = mutableListOf<DocumentReference>()
-                    documentIds.forEach { id ->
-                        documentRefs.add(db.collection(COLLECTION_FAVORITES).document(id))
-                    }
-                    continuation.resume(documentRefs)
-                }
-                .addOnFailureListener { e ->
-                    Log.w(TAG_LOG, "Failed to fetch favorite documents id", e)
-                    continuation.resumeWithException(e)
-                }
+    private suspend fun updateCurrentUserPick(userId: String, pickId: String): Result<Void> {
+        return runCatching {
+            updateDocument(
+                collection = FirebaseCollections.Users,
+                documentId = userId,
+                field = FirebaseDocumentFields.MyPicks,
+                value = FieldValue.arrayUnion(pickId)
+            ).getOrThrow()
+        }.onFailure { e ->
+            Log.e(TAG_LOG, "Failed to update user picks", e)
         }
     }
 
-    private suspend fun fetchUserDocument(userId: String): DocumentSnapshot {
-        return suspendCancellableCoroutine { continuation ->
-            db.collection(COLLECTION_USERS).document(userId)
-                .get()
-                .addOnSuccessListener { document ->
-                    continuation.resume(document)
-                }
-                .addOnFailureListener { exception ->
-                    Log.e("FirebaseDataSourceImpl", "Failed to get user document", exception)
-                    continuation.resumeWithException(exception)
-                }
+    private suspend fun fetchFavoriteDocumentRefsByPick(pickId: String): Result<List<DocumentReference>> {
+        return runCatching {
+            queryDocumentsEquals(
+                collection = FirebaseCollections.Favorites,
+                fields = listOf(FirebaseDocumentFields.PickId),
+                values = listOf(pickId),
+            ).getOrThrow().documents.map { it.reference }
         }
-    }
-
-    override suspend fun fetchFavoritePicks(userId: String): List<Pick> {
-        val favoriteDocuments = fetchFavoritesByUserId(userId)
-
-        val tasks = mutableListOf<Task<DocumentSnapshot>>()
-        val favorites = mutableListOf<Pick>()
-
-        try {
-            favoriteDocuments.forEach { doc ->
-                tasks.add(
-                    db.collection(COLLECTION_PICKS)
-                        .document(doc.data[FIELD_PICK_ID].toString())
-                        .get()
-                )
-            }
-            Tasks.whenAllComplete(tasks).await()
-        } catch (exception: Exception) {
-            Log.e("FirebaseDataSourceImpl", "Failed to get favorite picks", exception)
-            throw exception
-        }
-        tasks.forEach { task ->
-            task.result.toObject<FirebasePick>()?.run {
-                favorites.add(this.toPick().copy(id = task.result.id))
-            }
-        }
-
-        return favorites
     }
 
     /**
@@ -251,7 +156,7 @@ class FirebasePickDataSourceImpl @Inject constructor(
      * 이러한 추가 읽기로 인해 앱에 비용과 지연 시간이 추가됩니다.
      */
     private fun isAccurate(doc: DocumentSnapshot, center: GeoLocation, radiusInM: Double): Boolean {
-        val location = doc.getGeoPoint("location") ?: return false
+        val location = doc.getGeoPoint(FirebaseDocumentFields.Location.name) ?: return false
 
         val docLocation = GeoLocation(location.latitude, location.longitude)
         val distanceInM = GeoFireUtils.getDistanceBetween(docLocation, center)
@@ -259,12 +164,12 @@ class FirebasePickDataSourceImpl @Inject constructor(
         return distanceInM <= radiusInM
     }
 
-    private suspend fun fetchFavoritesByUserId(userId: String): QuerySnapshot {
-        val query = db.collection(COLLECTION_FAVORITES)
-            .whereEqualTo(FIELD_USER_ID, userId)
-            .orderBy(FIELD_ADDED_AT, Query.Direction.DESCENDING)
-
-        return executeQuery(query)
+    private suspend fun fetchFavoritesByUserId(userId: String): List<DocumentSnapshot> {
+        return queryDocumentsEquals(
+            collection = FirebaseCollections.Favorites,
+            fields = listOf(FirebaseDocumentFields.UserId),
+            values = listOf(userId)
+        ).getOrThrow().documents
     }
 
     private suspend fun executeQuery(query: Query): QuerySnapshot {
@@ -274,9 +179,14 @@ class FirebasePickDataSourceImpl @Inject constructor(
                     continuation.resume(result)
                 }
                 .addOnFailureListener { exception ->
-                    Log.w("FirebaseDataSourceImpl", "Error fetching favorite documents", exception)
+                    Log.w(TAG_LOG, "Error fetching favorite documents", exception)
                     continuation.resumeWithException(exception)
                 }
         }
     }
+
+    companion object {
+        private const val TAG_LOG = "FirebasePickDataSourceImpl"
+    }
 }
+

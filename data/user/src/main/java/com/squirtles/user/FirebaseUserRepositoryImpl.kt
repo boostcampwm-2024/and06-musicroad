@@ -15,20 +15,23 @@ class FirebaseUserRepositoryImpl(
         userName: String?,
         userProfileImage: String?
     ): Result<User> {
-        return handleResult(FirebaseException.CreatedUserFailedException()) {
-            userDataSource.createGoogleIdUser(userId, userName, userProfileImage)
-        }
+        return userDataSource.createGoogleIdUser(userId, userName, userProfileImage)
+            .onFailure {
+                throw FirebaseException.CreatedUserFailedException()
+            }
     }
 
     override suspend fun fetchUser(userId: String): Result<User> {
-        return handleResult(FirebaseException.UserNotFoundException()) {
-            userDataSource.fetchUser(userId)
-        }
+        return userDataSource.fetchUser(userId)
+            .onFailure {
+                throw FirebaseException.FetchUserFailedException()
+            }
     }
 
     override suspend fun updateUserName(userId: String, newUserName: String): Result<Boolean> {
-        return handleResult {
-            userDataSource.updateUserName(userId, newUserName)
-        }
+        return userDataSource.updateUserName(userId, newUserName)
+            .onFailure {
+                throw FirebaseException.UpdateUserFailedException()
+            }
     }
 }

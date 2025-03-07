@@ -1,12 +1,18 @@
 package com.squirtles.firebase
 
-object FirebaseDataSourceConstants {
-    const val TAG_LOG = "FirebaseDataSourceImpl"
-    const val COLLECTION_FAVORITES = "favorites"
-    const val COLLECTION_PICKS = "picks"
-    const val COLLECTION_USERS = "users"
-    const val FIELD_PICK_ID = "pickId"
-    const val FIELD_USER_ID = "userId"
-    const val FIELD_ADDED_AT = "addedAt"
-    const val FIELD_MY_PICKS = "myPicks"
+sealed class FirebaseCollections(val name: String) {
+    data object Favorites: FirebaseCollections("favorites")
+    data object Picks: FirebaseCollections("picks")
+    data object Users: FirebaseCollections("users")
+}
+
+sealed class FirebaseDocumentFields(val name: String) {
+    data object AddedAt: FirebaseDocumentFields("addedAt")
+    data object PickId: FirebaseDocumentFields("pickId")
+    data object UserId: FirebaseDocumentFields("userId")
+    data object MyPicks: FirebaseDocumentFields("myPicks")
+    data object Name: FirebaseDocumentFields("name")
+    data object Location: FirebaseDocumentFields("location")
+    data object GeoHash: FirebaseDocumentFields("geoHash")
+    data object CreatedUserName: FirebaseDocumentFields("createdBy.userName")
 }

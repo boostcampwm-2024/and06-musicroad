@@ -53,9 +53,9 @@ class DetailViewModel @Inject constructor(
                 .collect { (pickId, isAdding) ->
                     getUserId()?.let { userId ->
                         if (isAdding) {
-                            addToFavoritePicks(pickId, userId)
+                            addFavorite(pickId, userId)
                         } else {
-                            deleteFromFavoritePicks(pickId, userId)
+                            deleteFavorite(pickId, userId)
                         }
                     }
                 }
@@ -113,7 +113,7 @@ class DetailViewModel @Inject constructor(
         }
     }
 
-    private fun addToFavoritePicks(pickId: String, userId: String) {
+    private fun addFavorite(pickId: String, userId: String) {
         viewModelScope.launch {
             createFavoriteUseCase(pickId, userId)
                 .onSuccess {
@@ -129,7 +129,7 @@ class DetailViewModel @Inject constructor(
         }
     }
 
-    private fun deleteFromFavoritePicks(pickId: String, userId: String) {
+    private fun deleteFavorite(pickId: String, userId: String) {
         viewModelScope.launch {
             deleteFavoriteUseCase(pickId, userId)
                 .onSuccess {

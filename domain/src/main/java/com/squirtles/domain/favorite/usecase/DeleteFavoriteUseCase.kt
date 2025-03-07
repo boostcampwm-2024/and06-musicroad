@@ -7,6 +7,6 @@ import javax.inject.Inject
 class DeleteFavoriteUseCase @Inject constructor(
     private val favoriteRepository: FirebaseFavoriteRepository
 ) : RemovePickUseCaseInterface {
-    override suspend operator fun invoke(pickId: String, userId: String) =
+    override suspend operator fun invoke(pickId: String, userId: String): Result<String> =
         favoriteRepository.deleteFavorite(pickId, userId)
 }

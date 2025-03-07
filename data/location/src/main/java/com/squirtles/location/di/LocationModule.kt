@@ -1,7 +1,7 @@
-package com.squirtles.order.di
+package com.squirtles.location.di
 
 import com.squirtles.location.LocalLocationRepository
-import com.squirtles.order.LocalLocationRepositoryImpl
+import com.squirtles.location.LocalLocationRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
