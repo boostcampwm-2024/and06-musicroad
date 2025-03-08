@@ -41,7 +41,7 @@ fun FavoriteScreen(
         toggleSelectedPick = favoriteListViewModel::toggleSelectedPick,
         deleteSelectedPicks = favoriteListViewModel::deleteSelectedPicks,
         getUserId = {
-            favoriteListViewModel.getUserId().toString()
+            favoriteListViewModel.getUid().toString()
         }
     )
 }

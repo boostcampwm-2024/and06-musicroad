@@ -6,6 +6,6 @@ import javax.inject.Inject
 class CreateFavoriteUseCase @Inject constructor(
     private val favoriteRepository: FirebaseFavoriteRepository
 ) {
-    suspend operator fun invoke(pickId: String, userId: String) =
-        favoriteRepository.createFavorite(pickId, userId)
+    suspend operator fun invoke(pickId: String, uid: String) =
+        favoriteRepository.createFavorite(pickId, uid)
 }

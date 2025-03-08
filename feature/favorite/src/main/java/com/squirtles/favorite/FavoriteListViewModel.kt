@@ -5,7 +5,7 @@ import com.squirtles.order.usecase.GetFavoriteListOrderUseCase
 import com.squirtles.order.usecase.SaveFavoriteListOrderUseCase
 import com.squirtles.pick.usecase.FetchFavoritePicksUseCase
 import com.squirtles.picklist.PickListViewModel
-import com.squirtles.user.usecase.GetCurrentUserUseCase
+import com.squirtles.user.usecase.GetCurrentUidUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -15,11 +15,11 @@ class FavoriteListViewModel @Inject constructor(
     getFavoriteListOrderUseCase: GetFavoriteListOrderUseCase,
     saveFavoriteListOrderUseCase: SaveFavoriteListOrderUseCase,
     deleteFavoriteUseCase: DeleteFavoriteUseCase,
-    getCurrentUserUseCase: GetCurrentUserUseCase
+    getCurrentUidUseCase: GetCurrentUidUseCase
 ) : PickListViewModel(
     fetchPickListUseCase = fetchFavoritePicksUseCase,
     getPickListOrderUseCase = getFavoriteListOrderUseCase,
     savePickListOrderUseCase = saveFavoriteListOrderUseCase,
     removePickUseCase = deleteFavoriteUseCase,
-    getCurrentUserUseCase = getCurrentUserUseCase
+    getCurrentUidUseCase = getCurrentUidUseCase
 )

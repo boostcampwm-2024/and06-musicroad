@@ -1,20 +1,18 @@
 package com.squirtles.user
 
 import android.util.Log
-import com.squirtles.firebase.model.FirebaseUser
-import com.squirtles.firebase.model.toUser
-import com.squirtles.model.User
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.toObject
 import com.squirtles.firebase.BaseFirebaseDataSource
 import com.squirtles.firebase.FirebaseCollections
 import com.squirtles.firebase.FirebaseDocumentFields
-import kotlinx.coroutines.suspendCancellableCoroutine
+import com.squirtles.firebase.model.FirebaseUser
+import com.squirtles.firebase.model.toUser
+import com.squirtles.model.User
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
 
 @Singleton
 class FirebaseUserDataSourceImpl @Inject constructor(
@@ -22,52 +20,58 @@ class FirebaseUserDataSourceImpl @Inject constructor(
 ) : BaseFirebaseDataSource(db), FirebaseUserDataSource {
 
     override suspend fun createGoogleIdUser(
-        userId: String,
+        uid: String,
+        email: String,
         userName: String?,
         userProfileImage: String?
     ): Result<User> {
         return runCatching {
-            val firebaseUser = FirebaseUser(name = userName, profileImage = userProfileImage)
-            setDocument(FirebaseCollections.Users, userId, firebaseUser)
-
-            val docSnap = fetchDocumentSnapshot(FirebaseCollections.Users, userId).getOrThrow()
-            docSnap.toObject<FirebaseUser>()?.toUser()!!
+            val newUser = FirebaseUser(email = email, name = userName, profileImage = userProfileImage)
+            setDocument(FirebaseCollections.Users, uid, newUser)
+            newUser.toUser().copy(uid = uid)
         }.onFailure { e ->
             Log.e(TAG_LOG, e.message.toString())
         }
     }
 
-    override suspend fun fetchUser(userId: String): Result<User> {
+    override suspend fun fetchUser(uid: String): Result<User> {
         return runCatching {
-            val docSnap = fetchDocumentSnapshot(FirebaseCollections.Users, userId).getOrThrow()
-            docSnap.toObject<FirebaseUser>()?.toUser()!!
+            val userDocSnap = fetchDocumentSnapshot(FirebaseCollections.Users, uid).getOrThrow()
+            userDocSnap.toObject<FirebaseUser>()?.toUser()?.copy(uid = uid)!!
         }.onFailure { e ->
             Log.e(TAG_LOG, "Failed to fetch a user", e)
         }
     }
 
-    override suspend fun updateUserName(userId: String, newUserName: String): Result<Boolean> {
+    override suspend fun updateUserName(uid: String, newUserName: String): Result<Boolean> {
         return runCatching {
-            val userSnap = fetchDocumentSnapshot(FirebaseCollections.Users, userId).getOrThrow()
-
+            val userDocSnap = fetchDocumentSnapshot(FirebaseCollections.Users, uid).getOrThrow()
             db.runTransaction { transaction ->
-                transaction.update(userSnap.reference, FirebaseDocumentFields.Name.name, newUserName)
-                val myPicks = userSnap.get(FirebaseDocumentFields.MyPicks.name)?.let { it as List<String> } ?: emptyList()
+                transaction.update(userDocSnap.reference, FirebaseDocumentFields.Name.name, newUserName)
 
-                // 해당 유저의 모든 pick의 등록 유저 정보 업데이트
+                val myPicks = userDocSnap.toObject<FirebaseUser>()?.myPicks
+                requireNotNull(myPicks)
                 myPicks.forEach { pickId ->
                     val pickRef = fetchDocumentReference(FirebaseCollections.Picks, pickId)
                     transaction.update(pickRef, FirebaseDocumentFields.CreatedUserName.name, newUserName)
                 }
-            }.await()
-
+            }
             true
+        }.onFailure { e ->
+            Log.e(TAG_LOG, "Failed to update a user name", e)
+        }
+    }
+
+    override suspend fun deleteUser(uid: String): Result<Void> {
+        return runCatching {
+            FirebaseAuth.getInstance().currentUser?.delete()?.await()
+            return deleteDocument(FirebaseCollections.Users, uid)
         }.onFailure {
-            Log.e(TAG_LOG, "Failed to update a user name", it)
+            Log.e(TAG_LOG, "Failed to delete a user", it)
         }
     }
 
     companion object {
-        private const val TAG_LOG = "FirebaseUserDataSourceImpl"
+        const val TAG_LOG = "FirebaseUserDataSourceImpl"
     }
 }

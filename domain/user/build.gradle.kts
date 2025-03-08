@@ -4,6 +4,9 @@ plugins {
 
 dependencies {
     implementation(projects.core.model)
+    implementation(projects.domain.picklist)
+    implementation(projects.domain.pick)
+    implementation(projects.domain.favorite)
 
     implementation(libs.kotlinx.coroutines.core)
 }

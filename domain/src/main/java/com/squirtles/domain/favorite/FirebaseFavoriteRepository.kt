@@ -1,6 +1,5 @@
 package com.squirtles.domain.favorite
 
-import com.squirtles.domain.firebase.FirebaseRepository
 import com.squirtles.domain.model.Pick
 
 interface FirebaseFavoriteRepository {

@@ -17,26 +17,18 @@ class FirebaseUserRepositoryImpl(
         userName: String?,
         userProfileImage: String?
     ): Result<User> {
-        return handleResult(FirebaseException.CreatedUserFailedException()) {
-            userDataSource.createGoogleIdUser(uid, email, userName, userProfileImage)
-        }
+        return userDataSource.createGoogleIdUser(uid, email, userName, userProfileImage)
     }
 
     override suspend fun fetchUser(userId: String): Result<User> {
-        return handleResult(FirebaseException.UserNotFoundException()) {
-            userDataSource.fetchUser(userId)
-        }
+        return userDataSource.fetchUser(userId)
     }
 
     override suspend fun updateUserName(userId: String, newUserName: String): Result<Boolean> {
-        return handleResult {
-            userDataSource.updateUserName(userId, newUserName)
-        }
+        return userDataSource.updateUserName(userId, newUserName)
     }
 
-    override suspend fun deleteUser(uid: String): Result<Boolean> {
-        return handleResult(FirebaseException.UserNotFoundException()) {
-            userDataSource.deleteUser(uid)
-        }
+    override suspend fun deleteUser(uid: String): Result<Void> {
+        return userDataSource.deleteUser(uid)
     }
 }

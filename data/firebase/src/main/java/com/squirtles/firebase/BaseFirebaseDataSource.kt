@@ -9,7 +9,7 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.tasks.await
 
-open class BaseFirebaseDataSource(
+open class  BaseFirebaseDataSource(
     private val db: FirebaseFirestore
 ) {
     protected fun fetchCollection(collection: FirebaseCollections): CollectionReference = db.collection(collection.name)

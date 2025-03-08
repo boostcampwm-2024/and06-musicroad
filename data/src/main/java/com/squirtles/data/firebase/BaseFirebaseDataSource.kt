@@ -9,7 +9,7 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.tasks.await
 
-open class BaseFirebaseDataSource(
+open class  BaseFirebaseDataSource(
     private val db: FirebaseFirestore
 ) {
     protected fun fetchCollection(collection: FirebaseCollections): CollectionReference = db.collection(collection.name)
@@ -74,6 +74,20 @@ open class BaseFirebaseDataSource(
         }.onFailure {
             Log.e("FirebaseDataSource", "Failed to update document", it)
             throw FirebaseException.UpdateDocumentFailedException(docId = documentId, collection = collection.name)
+        }
+    }
+
+    protected suspend fun updateDocument(
+        collection: FirebaseCollections,
+        documentReference: DocumentReference,
+        field: FirebaseDocumentFields,
+        value: Any
+    ): Result<Void> {
+        return runCatching {
+            documentReference.update(field.name, value).await()
+        }.onFailure {
+            Log.e("FirebaseDataSource", "Failed to update document", it)
+            throw FirebaseException.UpdateDocumentFailedException(docId = documentReference.id, collection = collection.name)
         }
     }
 

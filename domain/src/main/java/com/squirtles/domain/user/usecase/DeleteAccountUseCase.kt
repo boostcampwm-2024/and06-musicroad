@@ -3,7 +3,6 @@ package com.squirtles.domain.user.usecase
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.squirtles.domain.favorite.usecase.DeleteFavoriteUseCase
-import com.squirtles.domain.firebase.FirebaseRepository
 import com.squirtles.domain.pick.usecase.DeletePickUseCase
 import com.squirtles.domain.pick.usecase.FetchFavoritePicksUseCase
 import com.squirtles.domain.pick.usecase.FetchMyPicksUseCase

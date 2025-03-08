@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.squirtles.model.Order
 import com.squirtles.model.Pick
-import com.squirtles.user.usecase.GetCurrentUserUseCase
+import com.squirtles.user.usecase.GetCurrentUidUseCase
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,7 +17,7 @@ abstract class PickListViewModel(
     val getPickListOrderUseCase: GetPickListOrderUseCaseInterface,
     val savePickListOrderUseCase: SavePickListOrderUseCaseInterface,
     val removePickUseCase: RemovePickUseCaseInterface,
-    val getCurrentUserUseCase: GetCurrentUserUseCase
+    val getCurrentUidUseCase: GetCurrentUidUseCase
 ) : ViewModel() {
 
     private var pickList: List<Pick> = emptyList()
@@ -28,9 +28,9 @@ abstract class PickListViewModel(
     private val _selectedPicksId = MutableStateFlow<Set<String>>(emptySet())
     val selectedPicksId = _selectedPicksId.asStateFlow()
 
-    fun fetchPickList(userId: String) {
+    fun fetchPickList(uid: String) {
         viewModelScope.launch {
-            fetchPickListUseCase(userId)
+            fetchPickListUseCase(uid)
                 .onSuccess { picks ->
                     pickList = picks
                     sortPickList(getPickListOrderUseCase())
@@ -69,18 +69,18 @@ abstract class PickListViewModel(
         _selectedPicksId.value = emptySet()
     }
 
-    fun deleteSelectedPicks(userId: String) {
+    fun deleteSelectedPicks(uid: String) {
         viewModelScope.launch {
             _pickListUiState.value = PickListUiState.Loading
 
             val deleteJobList = _selectedPicksId.value.map { pickId ->
-                async { removePickUseCase(pickId, userId) }
+                async { removePickUseCase(pickId, uid) }
             }.awaitAll()
 
             deselectAllPicks()
 
             if (deleteJobList.all { it.isSuccess }) {
-                fetchPickList(userId)
+                fetchPickList(uid)
             } else {
                 _pickListUiState.value = PickListUiState.Error
                 Log.e("PickListViewModel", "[픽 목록] 다중 삭제 오류")
@@ -97,5 +97,5 @@ abstract class PickListViewModel(
         }
     }
 
-    fun getUserId() = getCurrentUserUseCase()?.userId
+    fun getUid() = getCurrentUidUseCase()
 }
