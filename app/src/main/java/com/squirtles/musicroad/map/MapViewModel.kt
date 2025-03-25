@@ -183,11 +183,9 @@ class MapViewModel @Inject constructor(
 
     fun requestPickNotificationArea(location: Location, notiRadius: Double) {
         viewModelScope.launch {
-            val nearPickSet = mutableSetOf<Pick>()
             fetchPickUseCase(location.latitude, location.longitude, notiRadius)
                 .collect { pickList ->
-                    nearPickSet.addAll(pickList)
-                    _nearPicks.emit(nearPickSet.toList())
+                    _nearPicks.emit(pickList)
                 }
         }
     }
