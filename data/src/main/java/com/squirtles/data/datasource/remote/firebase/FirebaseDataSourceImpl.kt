@@ -22,6 +22,7 @@ import com.squirtles.data.mapper.toPick
 import com.squirtles.data.mapper.toUser
 import com.squirtles.domain.firebase.FirebaseRemoteDataSource
 import com.squirtles.domain.firebase.PickType
+import com.squirtles.domain.firebase.PickWithType
 import com.squirtles.domain.model.Pick
 import com.squirtles.domain.model.User
 import kotlinx.coroutines.CoroutineScope
@@ -150,7 +151,7 @@ class FirebaseDataSourceImpl @Inject constructor(
         lat: Double,
         lng: Double,
         radiusInM: Double
-    ): Flow<List<Pair<PickType, Pick>>> = callbackFlow {
+    ): Flow<List<PickWithType>> = callbackFlow {
         val listeners = mutableListOf<ListenerRegistration>()
         try {
             val center = GeoLocation(lat, lng)
@@ -170,16 +171,27 @@ class FirebaseDataSourceImpl @Inject constructor(
                     }
 
                     Log.d("DataSource", "datasource 개수 : ${snapshots?.documents?.size}")
-                    val pickData = mutableListOf<Pair<PickType, Pick>>()
+                    val pickData = mutableListOf<PickWithType>()
                     for (dc in snapshots!!.documentChanges) {
                         if (isAccurate(dc.document, center, radiusInM)) {
                             dc.document.toObject<FirebasePick>().run {
                                 when (dc.type) {
                                     DocumentChange.Type.ADDED, DocumentChange.Type.MODIFIED -> {
-                                        pickData.add(PickType.UPDATED to this.toPick().copy(id = dc.document.id))
+                                        pickData.add(
+                                            PickWithType(
+                                                type = PickType.UPDATED,
+                                                pick = this.toPick().copy(id = dc.document.id)
+                                            )
+                                        )
                                     }
+
                                     DocumentChange.Type.REMOVED -> {
-                                        pickData.add(PickType.REMOVED to this.toPick().copy(id = dc.document.id))
+                                        pickData.add(
+                                            PickWithType(
+                                                type = PickType.REMOVED,
+                                                pick = this.toPick().copy(id = dc.document.id)
+                                            )
+                                        )
                                     }
                                 }
                             }

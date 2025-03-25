@@ -4,6 +4,11 @@ import com.squirtles.domain.model.Pick
 import com.squirtles.domain.model.User
 import kotlinx.coroutines.flow.Flow
 
+data class PickWithType(
+    val type: PickType,
+    val pick: Pick
+)
+
 enum class PickType {
     UPDATED, REMOVED
 }
@@ -15,7 +20,7 @@ interface FirebaseRemoteDataSource {
     suspend fun deleteUser(uid: String): Boolean
 
     suspend fun fetchPick(pickID: String): Pick?
-    suspend fun fetchPicksInArea(lat: Double, lng: Double, radiusInM: Double): Flow<List<Pair<PickType, Pick>>>
+    suspend fun fetchPicksInArea(lat: Double, lng: Double, radiusInM: Double): Flow<List<PickWithType>>
     suspend fun createPick(pick: Pick): String
     suspend fun deletePick(pickId: String, uid: String): Boolean
 

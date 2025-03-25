@@ -61,13 +61,14 @@ class FirebaseRepositoryImpl @Inject constructor(
         lng: Double,
         radiusInM: Double
     ): Flow<List<Pick>> {
-        val latestNearPick = mutableMapOf<String, Pick>()
+        val latestNearPick = mutableMapOf<String, Pick>() // String : Pick Id
 
         return firebaseRemoteDataSource.fetchPicksInArea(lat, lng, radiusInM)
-            .map { pickList ->
+            .map { pickWithTypeList ->
                 latestNearPickMutex.withLock {
-                    pickList.forEach { (type, pick) ->
-                        when (type) {
+                    pickWithTypeList.forEach { pickWithType ->
+                        val pick = pickWithType.pick
+                        when (pickWithType.type) {
                             PickType.UPDATED -> {
                                 latestNearPick[pick.id] = pick
                             }
