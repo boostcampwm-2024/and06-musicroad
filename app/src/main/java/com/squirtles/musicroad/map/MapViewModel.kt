@@ -159,18 +159,10 @@ class MapViewModel @Inject constructor(
 
                             // 업데이트된 리스트에 기존 픽이 없으면 삭제된 것이므로 _picks와 clusterer에서 삭제
                             // 이거 없으면 다른 기기에서 실제로 삭제는 되어 잇는데 지도에 그대로 남아잇음
-                            val deletedKeyList = _picks.keys
-                                .filter { pickId ->
-                                    pickId !in newKeyTagMap.values
-                                }
+                              val deletedKeyList = _picks.keys
+                                .filterNot { it in newKeyTagMap.values }
                                 .mapNotNull { pickId ->
-                                    _picks[pickId]
-                                }
-                                .onEach { pick ->
-                                    _picks.remove(pick.id)
-                                }
-                                .map { pick ->
-                                    MarkerKey(pick)
+                                    _picks.remove(pickId)?.let { MarkerKey(it) }
                                 }
 
                             clusterer?.addAll(newKeyTagMap)
