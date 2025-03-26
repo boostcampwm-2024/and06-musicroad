@@ -7,7 +7,6 @@ android {
 }
 
 dependencies {
-    implementation(projects.core.common)
     implementation(projects.domain.applemusic)
 
     implementation(libs.androidx.paging.compose)

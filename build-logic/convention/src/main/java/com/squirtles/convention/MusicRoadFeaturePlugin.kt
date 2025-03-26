@@ -19,9 +19,9 @@ class MusicRoadFeaturePlugin : Plugin<Project> {
             dependencies {
                 implementation(project(":core:model"))
                 implementation(project(":core:util"))
+                implementation(project(":core:common"))
                 implementation(project(":core:navigation"))
 
-//                implementation(libs.getBundle("compose"))
                 implementation(libs.getBundle("navigation"))
             }
         }

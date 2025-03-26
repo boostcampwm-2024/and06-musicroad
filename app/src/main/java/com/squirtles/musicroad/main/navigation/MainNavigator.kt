@@ -13,11 +13,11 @@ import com.squirtles.domain.model.Song
 import com.squirtles.musicroad.favorite.navigation.navigateFavorite
 import com.squirtles.musicroad.map.navigation.navigateMap
 import com.squirtles.musicroad.map.navigation.navigatePickDetail
+import com.squirtles.musicroad.mypick.navigation.navigateMyPicks
 import com.squirtles.musicroad.navigation.Route
 import com.squirtles.musicroad.search.navigation.navigateSearch
 import com.squirtles.musicroad.userinfo.navigation.navigateEditNotificationSetting
 import com.squirtles.musicroad.userinfo.navigation.navigateEditProfile
-import com.squirtles.musicroad.userinfo.navigation.navigateMyPicks
 import com.squirtles.musicroad.userinfo.navigation.navigateUserInfo
 
 internal class MainNavigator(

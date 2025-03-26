@@ -11,5 +11,5 @@ sealed interface MainRoute : Route {
     data class Favorite(val userId: String) : MainRoute
 
     @Serializable
-    data class Profile(val userId: String) : MainRoute
+    data class UserInfo(val uid: String) : MainRoute
 }

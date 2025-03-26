@@ -1,16 +1,15 @@
-package com.squirtles.musicroad.userinfo.navigation
+package com.squirtles.userinfo.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import com.squirtles.musicroad.mypick.MyPickScreen
-import com.squirtles.musicroad.navigation.MainRoute
-import com.squirtles.musicroad.navigation.UserInfoRoute
-import com.squirtles.musicroad.userinfo.screen.EditNotificationSettingScreen
-import com.squirtles.musicroad.userinfo.screen.EditProfileScreen
-import com.squirtles.musicroad.userinfo.screen.UserInfoScreen
+import com.squirtles.navigation.MainRoute
+import com.squirtles.navigation.UserInfoRoute
+import com.squirtles.userinfo.screen.EditNotificationSettingScreen
+import com.squirtles.userinfo.screen.EditProfileScreen
+import com.squirtles.userinfo.screen.UserInfoScreen
 
 fun NavController.navigateUserInfo(uid: String, navOptions: NavOptions? = null) {
     navigate(MainRoute.UserInfo(uid), navOptions)

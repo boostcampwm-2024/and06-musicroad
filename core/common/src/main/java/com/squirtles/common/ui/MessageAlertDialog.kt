@@ -31,9 +31,10 @@ import com.squirtles.common.ui.theme.White
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MessageAlertDialog(
-    onDismissRequest: () -> Unit,
     title: String,
     body: String,
+    onDismissRequest: () -> Unit,
+    showBody: Boolean = true,
     buttons: @Composable RowScope.() -> Unit,
 ) {
     BasicAlertDialog(
@@ -55,13 +56,15 @@ fun MessageAlertDialog(
                     style = MaterialTheme.typography.bodyLarge
                 )
 
-                VerticalSpacer(8)
+                if (showBody) {
+                    VerticalSpacer(8)
 
-                Text(
-                    text = body,
-                    color = Black,
-                    style = MaterialTheme.typography.bodyLarge
-                )
+                    Text(
+                        text = body,
+                        color = Black,
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                }
 
                 VerticalSpacer(24)
 
@@ -100,7 +103,7 @@ fun DialogTextButton(
 
 @Preview(showBackground = true)
 @Composable
-private fun DeletePickDialogPreview() {
+fun DeletePickDialogPreview() {
     MusicRoadTheme {
         MessageAlertDialog(
             onDismissRequest = {},
