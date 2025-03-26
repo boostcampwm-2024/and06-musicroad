@@ -12,6 +12,8 @@ dependencies {
     implementation(projects.domain.picklist)
     implementation(projects.domain.user)
 
+    implementation(libs.inject)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.bundles.test)
 

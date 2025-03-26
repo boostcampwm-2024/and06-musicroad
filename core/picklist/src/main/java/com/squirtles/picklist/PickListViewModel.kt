@@ -11,13 +11,14 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-abstract class PickListViewModel(
-    val fetchPickListUseCase: FetchPickListUseCaseInterface,
-    val getPickListOrderUseCase: GetPickListOrderUseCaseInterface,
-    val savePickListOrderUseCase: SavePickListOrderUseCaseInterface,
-    val removePickUseCase: RemovePickUseCaseInterface,
-    val getCurrentUidUseCase: GetCurrentUidUseCase
+open class PickListViewModel @Inject constructor(
+    private val fetchPickListUseCase: FetchPickListUseCaseInterface,
+    private val getPickListOrderUseCase: GetPickListOrderUseCaseInterface,
+    private val savePickListOrderUseCase: SavePickListOrderUseCaseInterface,
+    private val removePickUseCase: RemovePickUseCaseInterface,
+    private val getCurrentUidUseCase: GetCurrentUidUseCase
 ) : ViewModel() {
 
     private var pickList: List<Pick> = emptyList()

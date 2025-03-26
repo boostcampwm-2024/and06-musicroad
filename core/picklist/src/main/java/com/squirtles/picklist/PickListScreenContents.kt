@@ -50,12 +50,12 @@ import com.squirtles.picklist.components.PickItem
 
 @Composable
 fun PickListScreenContents(
-    userId: String,
+    uid: String,
     showOrderBottomSheet: Boolean,
     selectedPicksId: Set<String>,
     pickListType: PickListType,
     uiState: PickListUiState,
-    getUserId: () -> String,
+    getUid: () -> String,
     onBackClick: () -> Unit,
     onItemClick: (String) -> Unit,
     setListOrder: (Order) -> Unit,
@@ -93,7 +93,7 @@ fun PickListScreenContents(
                 ),
                 onBackClick = onBackClick,
                 actions = {
-                    if(getUserId() == userId){
+                    if(getUid() == uid){
                         EditModeAction(
                             isEditMode = isEditMode,
                             enabled = uiState is PickListUiState.Success,
@@ -187,7 +187,7 @@ fun PickListScreenContents(
             onDeletePickClick = {
                 isEditMode = false
                 isDeletePickDialogVisible = false
-                deleteSelectedPicks(userId)
+                deleteSelectedPicks(uid)
             },
         )
     }

@@ -6,7 +6,6 @@ import com.squirtles.user.LocalUserRepository
 import javax.inject.Inject
 
 class CreateGoogleIdUserUseCase @Inject constructor(
-    private val localUserRepository: LocalUserRepository,
     private val firebaseUserRepository: FirebaseUserRepository
 ) {
     suspend operator fun invoke(

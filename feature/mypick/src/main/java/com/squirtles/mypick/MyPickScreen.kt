@@ -1,4 +1,4 @@
-package com.squirtles.favorite
+package com.squirtles.mypick
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -12,36 +12,34 @@ import com.squirtles.picklist.PickListScreenContents
 import com.squirtles.picklist.PickListType
 
 @Composable
-fun FavoriteScreen(
+fun MyPickScreen(
     uid: String,
     onBackClick: () -> Unit,
     onItemClick: (String) -> Unit,
-    favoriteListViewModel: FavoriteListViewModel = hiltViewModel()
+    myPickListViewModel: MyPickListViewModel = hiltViewModel()
 ) {
-    val uiState by favoriteListViewModel.pickListUiState.collectAsStateWithLifecycle()
-    val selectedPicksId by favoriteListViewModel.selectedPicksId.collectAsStateWithLifecycle()
+    val uiState by myPickListViewModel.pickListUiState.collectAsStateWithLifecycle()
+    val selectedPicksId by myPickListViewModel.selectedPicksId.collectAsStateWithLifecycle()
     var showOrderBottomSheet by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        favoriteListViewModel.fetchPickList(uid)
+        myPickListViewModel.fetchPickList(uid)
     }
 
     PickListScreenContents(
         uid = uid,
         showOrderBottomSheet = showOrderBottomSheet,
         selectedPicksId = selectedPicksId,
-        pickListType = PickListType.FAVORITE,
+        pickListType = PickListType.CREATED,
         uiState = uiState,
         onBackClick = onBackClick,
         onItemClick = onItemClick,
-        setListOrder = favoriteListViewModel::setListOrder,
+        setListOrder = myPickListViewModel::setListOrder,
         setOrderBottomSheetVisibility = { showOrderBottomSheet = it },
-        selectAllPicks = favoriteListViewModel::selectAllPicks,
-        deselectAllPicks = favoriteListViewModel::deselectAllPicks,
-        toggleSelectedPick = favoriteListViewModel::toggleSelectedPick,
-        deleteSelectedPicks = favoriteListViewModel::deleteSelectedPicks,
-        getUid = {
-            favoriteListViewModel.getUid().toString()
-        }
+        selectAllPicks = myPickListViewModel::selectAllPicks,
+        deselectAllPicks = myPickListViewModel::deselectAllPicks,
+        toggleSelectedPick = myPickListViewModel::toggleSelectedPick,
+        deleteSelectedPicks = myPickListViewModel::deleteSelectedPicks,
+        getUid = { myPickListViewModel.getUid().toString() },
     )
 }
