@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
+import com.squirtles.create.navigation.createNavGraph
 import com.squirtles.musicroad.favorite.navigation.favoriteNavGraph
 import com.squirtles.musicroad.map.MapViewModel
 import com.squirtles.musicroad.map.navigation.mapNavGraph
@@ -36,6 +37,10 @@ internal fun MainNavHost(
         searchNavGraph(
             onBackClick = navigator::popBackStackIfNotMap,
             onItemClick = navigator::navigateCreate,
+        )
+
+        createNavGraph(
+            onBackClick = navigator::popBackStackIfNotMap,
             onCreateClick = { pickId ->
                 navigator.navigatePickDetail(pickId, true)
             },

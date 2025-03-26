@@ -157,7 +157,7 @@ dependencies {
 
     // Paging
     implementation(libs.androidx.paging.runtime)
-    implementation(libs.androidx.paging.compose.android)
+    implementation(libs.androidx.paging.compose)
 
     // Serialization
     implementation(libs.kotlinx.serialization.json)

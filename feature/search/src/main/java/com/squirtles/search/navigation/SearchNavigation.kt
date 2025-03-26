@@ -1,12 +1,12 @@
-package com.squirtles.musicroad.search.navigation
+package com.squirtles.search.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-import com.squirtles.domain.model.Song
-import com.squirtles.musicroad.navigation.MainRoute
-import com.squirtles.musicroad.search.SearchMusicScreen
+import com.squirtles.model.Song
+import com.squirtles.navigation.MainRoute
+import com.squirtles.search.SearchMusicScreen
 
 fun NavController.navigateSearch(navOptions: NavOptions? = null) {
     navigate(MainRoute.Search, navOptions)
