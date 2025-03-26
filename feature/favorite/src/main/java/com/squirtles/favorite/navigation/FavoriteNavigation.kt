@@ -17,10 +17,10 @@ fun NavGraphBuilder.favoriteNavGraph(
     onItemClick: (String) -> Unit,
 ) {
     composable<MainRoute.Favorite> { backStackEntry ->
-        val userId = backStackEntry.toRoute<MainRoute.Favorite>().userId
+        val uid = backStackEntry.toRoute<MainRoute.Favorite>().uid
 
         FavoriteScreen(
-            userId = userId,
+            uid = uid,
             onBackClick = onBackClick,
             onItemClick = onItemClick,
         )

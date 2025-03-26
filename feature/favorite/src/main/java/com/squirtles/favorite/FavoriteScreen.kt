@@ -13,7 +13,7 @@ import com.squirtles.picklist.PickListType
 
 @Composable
 fun FavoriteScreen(
-    userId: String,
+    uid: String,
     onBackClick: () -> Unit,
     onItemClick: (String) -> Unit,
     favoriteListViewModel: FavoriteListViewModel = hiltViewModel()
@@ -23,11 +23,11 @@ fun FavoriteScreen(
     var showOrderBottomSheet by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        favoriteListViewModel.fetchPickList(userId)
+        favoriteListViewModel.fetchPickList(uid)
     }
 
     PickListScreenContents(
-        userId = userId,
+        userId = uid,
         showOrderBottomSheet = showOrderBottomSheet,
         selectedPicksId = selectedPicksId,
         pickListType = PickListType.FAVORITE,
