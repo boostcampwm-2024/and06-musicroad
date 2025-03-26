@@ -1,7 +1,7 @@
 package com.squirtles.applemusic.di
 
-import com.squirtles.applemusic.AppleMusicDataSourceImpl
 import com.squirtles.applemusic.AppleMusicDataSource
+import com.squirtles.applemusic.AppleMusicDataSourceImpl
 import com.squirtles.applemusic.AppleMusicRepository
 import com.squirtles.applemusic.AppleMusicRepositoryImpl
 import com.squirtles.applemusic.api.AppleMusicApi

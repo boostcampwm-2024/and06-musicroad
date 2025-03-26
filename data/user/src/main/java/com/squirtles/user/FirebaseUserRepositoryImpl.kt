@@ -1,8 +1,9 @@
 package com.squirtles.user
 
 import com.google.firebase.auth.FirebaseAuth
+import com.squirtles.firebase.model.FirebaseUser
+import com.squirtles.firebase.model.toUser
 import com.squirtles.model.User
-import kotlinx.coroutines.tasks.await
 import javax.inject.Singleton
 
 @Singleton
@@ -20,11 +21,18 @@ class FirebaseUserRepositoryImpl(
         userName: String?,
         userProfileImage: String?
     ): Result<User> {
-        return userDataSource.createGoogleIdUser(uid, email, userName, userProfileImage)
+        return runCatching {
+            val newUser = FirebaseUser(email = email, name = userName, profileImage = userProfileImage)
+            val firebaseUser = userDataSource.createGoogleIdUser(uid, newUser).getOrThrow()
+            firebaseUser.toUser().copy(uid = uid)
+        }
     }
 
     override suspend fun fetchUser(userId: String): Result<User> {
-        return userDataSource.fetchUser(userId)
+        return runCatching{
+            val firebaseUser = userDataSource.fetchUser(userId).getOrThrow()
+            firebaseUser.toUser().copy(uid = userId)
+        }
     }
 
     override suspend fun updateUserName(userId: String, newUserName: String): Result<Boolean> {

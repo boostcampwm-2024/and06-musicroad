@@ -16,9 +16,6 @@ import com.squirtles.firebase.FirebaseDocumentFields
 import com.squirtles.firebase.model.FirebaseFavorite
 import com.squirtles.firebase.model.FirebasePick
 import com.squirtles.firebase.model.FirebaseUser
-import com.squirtles.firebase.model.toFirebasePick
-import com.squirtles.firebase.model.toPick
-import com.squirtles.model.Pick
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -32,11 +29,10 @@ class FirebasePickDataSourceImpl @Inject constructor(
 ) : BaseFirebaseDataSource(db), FirebasePickDataSource {
 
     /* Fetches a pick by ID from Firestore */
-    override suspend fun fetchPick(pickId: String): Result<Pick> {
+    override suspend fun fetchPick(pickId: String): Result<FirebasePick> {
         return runCatching {
             val pickSnap = fetchDocumentSnapshot(FirebaseCollections.Picks, pickId).getOrThrow()
-            val firestorePick = pickSnap.toObject<FirebasePick>()?.copy(id = pickId)
-            firestorePick?.toPick()!!
+            pickSnap.toObject<FirebasePick>()?.copy(id = pickId)!!
         }.onFailure { exception ->
             Log.e(TAG_LOG, "Failed to fetch a pick", exception)
         }
@@ -47,7 +43,7 @@ class FirebasePickDataSourceImpl @Inject constructor(
         lat: Double,
         lng: Double,
         radiusInM: Double
-    ): Result<List<Pick>> {
+    ): Result<List<FirebasePick>> {
         val center = GeoLocation(lat, lng)
         val bounds = GeoFireUtils.getGeoHashQueryBounds(center, radiusInM)
 
@@ -66,7 +62,7 @@ class FirebasePickDataSourceImpl @Inject constructor(
                     .filter { doc ->
                         isAccurate(doc, center, radiusInM)
                     }.mapNotNull { doc ->
-                        doc.toObject<FirebasePick>()?.toPick()?.copy(id = doc.id)
+                        doc.toObject<FirebasePick>()!!.copy(id = doc.id)
                     }
             }
         }.onFailure { e ->
@@ -75,11 +71,10 @@ class FirebasePickDataSourceImpl @Inject constructor(
     }
 
     /* Creates a new pick in Firestore */
-    override suspend fun createPick(pick: Pick): Result<String> {
-        val firebasePick = pick.toFirebasePick()
+    override suspend fun createPick(firebasePick: FirebasePick, userId: String): Result<String> {
         return runCatching {
             val pickRef = addDocument(FirebaseCollections.Picks, firebasePick).getOrThrow()
-            updateCurrentUserPick(pick.createdBy.uid, pickRef.id)
+            updateCurrentUserPick(userId, pickRef.id)
             pickRef.id
         }.onFailure {
             Log.e(TAG_LOG, "Failed to create a pick", it)
@@ -107,7 +102,7 @@ class FirebasePickDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun fetchMyPicks(userId: String): Result<List<Pick>> {
+    override suspend fun fetchMyPicks(userId: String): Result<List<FirebasePick>> {
         return runCatching {
             val userDocument = fetchDocumentSnapshot(FirebaseCollections.Users, userId).getOrThrow()
             userDocument.toObject<FirebaseUser>()?.myPicks!!.map {
@@ -116,7 +111,7 @@ class FirebasePickDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun fetchFavoritePicks(userId: String): Result<List<Pick>> {
+    override suspend fun fetchFavoritePicks(userId: String): Result<List<FirebasePick>> {
         return runCatching {
             val favoriteDocuments = fetchFavoritesByUserId(userId)
             favoriteDocuments.map { docSnap ->

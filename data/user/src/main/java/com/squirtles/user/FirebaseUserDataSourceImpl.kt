@@ -8,8 +8,6 @@ import com.squirtles.firebase.BaseFirebaseDataSource
 import com.squirtles.firebase.FirebaseCollections
 import com.squirtles.firebase.FirebaseDocumentFields
 import com.squirtles.firebase.model.FirebaseUser
-import com.squirtles.firebase.model.toUser
-import com.squirtles.model.User
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -19,25 +17,19 @@ class FirebaseUserDataSourceImpl @Inject constructor(
     private val db: FirebaseFirestore
 ) : BaseFirebaseDataSource(db), FirebaseUserDataSource {
 
-    override suspend fun createGoogleIdUser(
-        uid: String,
-        email: String,
-        userName: String?,
-        userProfileImage: String?
-    ): Result<User> {
+    override suspend fun createGoogleIdUser(uid: String, newUser: FirebaseUser): Result<FirebaseUser> {
         return runCatching {
-            val newUser = FirebaseUser(email = email, name = userName, profileImage = userProfileImage)
             setDocument(FirebaseCollections.Users, uid, newUser)
-            newUser.toUser().copy(uid = uid)
+            newUser
         }.onFailure { e ->
             Log.e(TAG_LOG, e.message.toString())
         }
     }
 
-    override suspend fun fetchUser(uid: String): Result<User> {
+    override suspend fun fetchUser(uid: String): Result<FirebaseUser> {
         return runCatching {
             val userDocSnap = fetchDocumentSnapshot(FirebaseCollections.Users, uid).getOrThrow()
-            userDocSnap.toObject<FirebaseUser>()?.toUser()?.copy(uid = uid)!!
+            userDocSnap.toObject<FirebaseUser>()!!
         }.onFailure { e ->
             Log.e(TAG_LOG, "Failed to fetch a user", e)
         }

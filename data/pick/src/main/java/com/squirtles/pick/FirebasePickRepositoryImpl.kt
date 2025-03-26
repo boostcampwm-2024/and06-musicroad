@@ -1,7 +1,10 @@
 package com.squirtles.pick
 
+import android.util.Log
 import com.squirtles.firebase.FirebaseException
 import com.squirtles.firebase.handleResult
+import com.squirtles.firebase.model.toFirebasePick
+import com.squirtles.firebase.model.toPick
 import com.squirtles.model.Pick
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -12,7 +15,8 @@ class FirebasePickRepositoryImpl @Inject constructor(
 ) : FirebasePickRepository {
 
     override suspend fun createPick(pick: Pick): Result<String> {
-        return pickDataSource.createPick(pick)
+        val firebasePick = pick.toFirebasePick()
+        return pickDataSource.createPick(firebasePick, pick.createdBy.uid)
     }
 
     override suspend fun deletePick(pickId: String, userId: String): Result<String> {
@@ -20,11 +24,17 @@ class FirebasePickRepositoryImpl @Inject constructor(
     }
 
     override suspend fun fetchPick(pickID: String): Result<Pick> {
-        return pickDataSource.fetchPick(pickID)
+        return runCatching {
+            val firebasePick = pickDataSource.fetchPick(pickID).getOrThrow()
+            firebasePick.toPick()
+        }
     }
 
     override suspend fun fetchMyPicks(userId: String): Result<List<Pick>> {
-        return pickDataSource.fetchMyPicks(userId)
+        return runCatching {
+            val firebasePicks = pickDataSource.fetchMyPicks(userId).getOrThrow()
+            firebasePicks.map { it.toPick() }
+        }
     }
 
     override suspend fun fetchPicksInArea(
@@ -32,13 +42,20 @@ class FirebasePickRepositoryImpl @Inject constructor(
         lng: Double,
         radiusInM: Double
     ): Result<List<Pick>> {
-        val pickList = pickDataSource.fetchPicksInArea(lat, lng, radiusInM)
-        return handleResult(FirebaseException.NoSuchPickInRadiusException()) {
-            pickList.getOrThrow().ifEmpty { null }
+        return runCatching {
+            val firebasePicks = pickDataSource.fetchPicksInArea(lat, lng, radiusInM).getOrThrow()
+            firebasePicks.map { it.toPick() }
         }
     }
 
     override suspend fun fetchFavoritePicks(userId: String): Result<List<Pick>> {
-        return pickDataSource.fetchFavoritePicks(userId)
+        return runCatching {
+            val firebasePicks = pickDataSource.fetchFavoritePicks(userId).getOrThrow()
+            firebasePicks.map { it.toPick() }
+        }
+    }
+
+    companion object {
+        const val TAG_LOG = "FirebasePickRepositoryImpl"
     }
 }
