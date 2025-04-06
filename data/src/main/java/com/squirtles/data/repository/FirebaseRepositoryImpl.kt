@@ -9,8 +9,6 @@ import com.squirtles.domain.firebase.FirebaseRepository
 import com.squirtles.domain.firebase.PickType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -18,8 +16,6 @@ import javax.inject.Singleton
 class FirebaseRepositoryImpl @Inject constructor(
     private val firebaseRemoteDataSource: FirebaseRemoteDataSource
 ) : FirebaseRepository {
-
-    private val latestNearPickMutex = Mutex()
 
     override suspend fun createGoogleIdUser(
         uid: String,
@@ -65,24 +61,21 @@ class FirebaseRepositoryImpl @Inject constructor(
 
         return firebaseRemoteDataSource.fetchPicksInArea(lat, lng, radiusInM)
             .map { pickWithTypeList ->
-                latestNearPickMutex.withLock {
-                    pickWithTypeList.forEach { pickWithType ->
-                        val pick = pickWithType.pick
-                        when (pickWithType.type) {
-                            PickType.UPDATED -> {
-                                latestNearPick[pick.id] = pick
-                            }
+                pickWithTypeList.forEach { pickWithType ->
+                    val pick = pickWithType.pick
+                    when (pickWithType.type) {
+                        PickType.UPDATED -> {
+                            latestNearPick[pick.id] = pick
+                        }
 
-                            PickType.REMOVED -> {
-                                latestNearPick[pick.id]?.let {
-                                    latestNearPick.remove(pick.id)
-                                }
+                        PickType.REMOVED -> {
+                            latestNearPick[pick.id]?.let {
+                                latestNearPick.remove(pick.id)
                             }
                         }
                     }
-                    Log.d("Repository", "Repository: ${latestNearPick.values}")
-                    latestNearPick.values.toList()
                 }
+                latestNearPick.values.toList()
             }
     }
 

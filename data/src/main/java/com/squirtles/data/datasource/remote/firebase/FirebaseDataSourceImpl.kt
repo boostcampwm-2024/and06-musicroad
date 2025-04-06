@@ -197,7 +197,7 @@ class FirebaseDataSourceImpl @Inject constructor(
                             }
                         }
                     }
-                    trySend(pickData).isSuccess
+                    trySend(pickData)
                     Log.d("DataSource", "pickData: $pickData")
                 }
                 listeners.add(listener)

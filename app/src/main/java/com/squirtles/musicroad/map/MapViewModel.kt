@@ -2,7 +2,6 @@ package com.squirtles.musicroad.map
 
 import android.content.Context
 import android.location.Location
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.naver.maps.geometry.LatLng
@@ -20,8 +19,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import javax.inject.Inject
 
 data class MarkerState(
@@ -37,8 +34,6 @@ class MapViewModel @Inject constructor(
     private val fetchPickUseCase: FetchPickUseCase,
     private val getCurrentUidUseCase: GetCurrentUidUseCase
 ) : ViewModel() {
-
-    private val mutex = Mutex()
 
     private val _centerLatLng: MutableStateFlow<LatLng?> = MutableStateFlow(null)
     val centerLatLng = _centerLatLng.asStateFlow()
@@ -150,24 +145,22 @@ class MapViewModel @Inject constructor(
                 val radiusInM = leftTop.distanceTo(this)
                 fetchPickUseCase(this.latitude, this.longitude, radiusInM)
                     .collect { pickList ->
-                        mutex.withLock {
-                            val newKeyTagMap: MutableMap<MarkerKey, String> = mutableMapOf()
-                            pickList.forEach { pick ->
-                                newKeyTagMap[MarkerKey(pick)] = pick.id
-                                _picks[pick.id] = pick
+                        val newKeyTagMap: MutableMap<MarkerKey, String> = mutableMapOf()
+                        pickList.forEach { pick ->
+                            newKeyTagMap[MarkerKey(pick)] = pick.id
+                            _picks[pick.id] = pick
+                        }
+
+                        // 업데이트된 리스트에 기존 픽이 없으면 삭제된 것이므로 _picks와 clusterer에서 삭제
+                        // 이거 없으면 다른 기기에서 실제로 삭제는 되어 잇는데 지도에 그대로 남아잇음
+                        val deletedKeyList = _picks.keys
+                            .filterNot { it in newKeyTagMap.values }
+                            .mapNotNull { pickId ->
+                                _picks.remove(pickId)?.let { MarkerKey(it) }
                             }
 
-                            // 업데이트된 리스트에 기존 픽이 없으면 삭제된 것이므로 _picks와 clusterer에서 삭제
-                            // 이거 없으면 다른 기기에서 실제로 삭제는 되어 잇는데 지도에 그대로 남아잇음
-                              val deletedKeyList = _picks.keys
-                                .filterNot { it in newKeyTagMap.values }
-                                .mapNotNull { pickId ->
-                                    _picks.remove(pickId)?.let { MarkerKey(it) }
-                                }
-
-                            clusterer?.addAll(newKeyTagMap)
-                            clusterer?.removeAll(deletedKeyList)
-                        }
+                        clusterer?.addAll(newKeyTagMap)
+                        clusterer?.removeAll(deletedKeyList)
                     }
             }
         }
