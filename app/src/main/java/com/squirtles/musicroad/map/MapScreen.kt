@@ -1,5 +1,6 @@
 package com.squirtles.musicroad.map
 
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -91,6 +92,14 @@ fun MapScreen(
                             onSignInSuccess(uid)
                         }
                     }
+                }
+        }
+
+        launch {
+            mapViewModel.fetchPicksErrorToast
+                .flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+                .collect {
+                    Toast.makeText(context, context.getString(R.string.error_message_fetch_picks_in_bounds), Toast.LENGTH_SHORT).show()
                 }
         }
     }

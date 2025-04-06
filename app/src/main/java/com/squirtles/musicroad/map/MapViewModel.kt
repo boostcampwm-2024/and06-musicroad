@@ -15,9 +15,12 @@ import com.squirtles.domain.usecase.pick.FetchPickUseCase
 import com.squirtles.domain.usecase.user.GetCurrentUidUseCase
 import com.squirtles.musicroad.map.marker.MarkerKey
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -49,6 +52,9 @@ class MapViewModel @Inject constructor(
 
     private val _clickedMarkerState = MutableStateFlow(MarkerState())
     val clickedMarkerState = _clickedMarkerState.asStateFlow()
+
+    private val _fetchPicksErrorToast = MutableSharedFlow<Unit>()
+    val fetchPicksErrorToast = _fetchPicksErrorToast.asSharedFlow()
 
     // FIXME : 네이버맵의 LocationChangeListener에서 실시간으로 변하는 위치 정보 -> 더 나은 방법이 있으면 고쳐주세요
     private var _currentLocation: Location? = null
@@ -144,6 +150,9 @@ class MapViewModel @Inject constructor(
             _centerLatLng.value?.run {
                 val radiusInM = leftTop.distanceTo(this)
                 fetchPickUseCase(this.latitude, this.longitude, radiusInM)
+                    .catch {
+                        _fetchPicksErrorToast.emit(Unit)
+                    }
                     .collect { pickList ->
                         val newKeyTagMap: MutableMap<MarkerKey, String> = mutableMapOf()
                         pickList.forEach { pick ->
@@ -169,6 +178,9 @@ class MapViewModel @Inject constructor(
     fun requestPickNotificationArea(location: Location, notiRadius: Double) {
         viewModelScope.launch {
             fetchPickUseCase(location.latitude, location.longitude, notiRadius)
+                .catch {
+                    _fetchPicksErrorToast.emit(Unit)
+                }
                 .collect { pickList ->
                     _nearPicks.emit(pickList)
                 }

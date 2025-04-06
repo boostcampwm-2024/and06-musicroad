@@ -166,7 +166,6 @@ class FirebaseDataSourceImpl @Inject constructor(
                 val listener = query.addSnapshotListener { snapshots, e ->
                     if (e != null) {
                         Log.w("SnapshotListener", "listen:error", e)
-                        close(e)
                         return@addSnapshotListener
                     }
 

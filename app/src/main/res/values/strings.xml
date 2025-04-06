@@ -24,6 +24,7 @@
     <string name="map_info_window_favorite_count_icon_description">픽을 담은 개수</string>
     <string name="pick_created_by_self_1">내가</string>
     <string name="pick_created_by_self_2">등록한 픽</string>
+    <string name="error_message_fetch_picks_in_bounds">데이터를 불러오는 데 일시적인 오류가 발생했습니다.</string>
 
     <!-- Pick -->
     <string name="pick_app_bar_title">픽 등록</string>
