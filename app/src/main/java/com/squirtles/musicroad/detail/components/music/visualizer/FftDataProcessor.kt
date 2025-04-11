@@ -6,14 +6,14 @@ import kotlin.math.pow
 import kotlin.math.sqrt
 
 class FftDataProcessor {
-
     /**
+     * this function must be used before applying other preprocessing functions
+     *
      * Calculate the FFT magnitude of the audio data.
      * @param bytes The audio data as a byte array.
      * @return A list of FFT magnitudes.
      *
      * the first byte is DC, and the last byte is Nyquist, so drop them
-     * this function must be used before applying other preprocessing functions
      */
     fun calculateFftMagnitude(bytes: ByteArray): List<Float> {
         val audioData = bytes.drop(2).map { it.toDouble() }
