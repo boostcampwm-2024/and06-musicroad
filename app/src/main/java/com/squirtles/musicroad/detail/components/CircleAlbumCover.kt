@@ -17,8 +17,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.squirtles.domain.model.Song
 import com.squirtles.musicroad.R
-import com.squirtles.musicroad.detail.components.music.visualizer.BaseVisualizer
-import com.squirtles.musicroad.detail.components.music.visualizer.CircleVisualizer
+import com.squirtles.musicroad.detail.components.music.visualizer.ui.CircleVisualizer
 
 @Composable
 internal fun CircleAlbumCover(
@@ -26,7 +25,6 @@ internal fun CircleAlbumCover(
     currentPosition: () -> Long,
     duration: () -> Long,
     audioEffectColor: Color,
-    baseVisualizer: () -> BaseVisualizer,
     audioSessionId: Int,
     onSeekChanged: (Long) -> Unit,
     modifier: Modifier = Modifier,
@@ -35,15 +33,14 @@ internal fun CircleAlbumCover(
         modifier = modifier
     ) {
         CircleVisualizer(
-            baseVisualizer = baseVisualizer,
             audioSessionId = audioSessionId,
             color = audioEffectColor,
-            sizeRatio = 0.5f,
-            modifier = Modifier.align(Alignment.Center)
+            radiusRatio = 0.5f,
+            modifier = modifier.align(Alignment.Center)
         )
 
         PlayCircularProgressIndicator(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxSize()
                 .padding(10.dp)
                 .align(Alignment.Center),

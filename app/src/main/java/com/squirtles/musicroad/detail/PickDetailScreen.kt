@@ -71,7 +71,6 @@ import com.squirtles.musicroad.detail.components.MusicVideoKnob
 import com.squirtles.musicroad.detail.components.PickInformation
 import com.squirtles.musicroad.detail.components.SongInfo
 import com.squirtles.musicroad.detail.components.music.MusicPlayer
-import com.squirtles.musicroad.detail.components.music.visualizer.BaseVisualizer
 import com.squirtles.musicroad.media.PlayerServiceViewModel
 import com.squirtles.musicroad.ui.theme.Black
 import com.squirtles.musicroad.ui.theme.Primary
@@ -389,8 +388,6 @@ private fun PickDetailContents(
     val onDynamicBackgroundColor = if (dynamicBackgroundColor.luminance() >= 0.5f) Black else White
     val view = LocalView.current
 
-    val baseVisualizer = remember { BaseVisualizer() }
-
     val audioEffectColor = dynamicBackgroundColor.copy(
         red = (dynamicBackgroundColor.red + 0.2f).coerceAtMost(1.0f),
         green = (dynamicBackgroundColor.green + 0.2f).coerceAtMost(1.0f),
@@ -474,7 +471,6 @@ private fun PickDetailContents(
                             currentPosition = { playerUiState.currentPosition },
                             duration = { playerUiState.duration },
                             audioEffectColor = audioEffectColor,
-                            baseVisualizer = { baseVisualizer },
                             audioSessionId = audioSessionId,
                             onSeekChanged = { timeMs ->
                                 playerServiceViewModel.onSeekingFinished(timeMs)

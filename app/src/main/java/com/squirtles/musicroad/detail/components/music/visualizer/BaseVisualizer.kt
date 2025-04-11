@@ -1,74 +1,90 @@
 package com.squirtles.musicroad.detail.components.music.visualizer
 
 import android.media.audiofx.Visualizer
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlin.math.sqrt
+import android.util.Log
 
 class BaseVisualizer {
     private var visualizer: Visualizer? = null
 
-    private val _fftFlow = MutableSharedFlow<List<Float>>(replay = 1)
-    val fftFlow: SharedFlow<List<Float>> = _fftFlow.asSharedFlow()
+    fun start(
+        audioSessionId: Int,
+        captureSize: Int,
+        captureRate: Int = Visualizer.getMaxCaptureRate(),
+        isWaveCapture: Boolean,
+        isFftCapture: Boolean,
+        visualizerCallbacks: VisualizerCallbacks,
+    ) {
+        stop()
+        setVisualizer(audioSessionId)
+        // 캡처 사이즈 유효성 검사
+        visualizer?.captureSize =
+            if (!isPowerOfTwo(captureSize) || !isValidCaptureSize(captureSize)) {
+                Visualizer.getCaptureSizeRange()[1].also {
+                    Log.w("BaseVisualizer", "Invalid capture size, fallback to max: $it")
+                }
+            } else {
+                captureSize
+            }
 
-    private val validRange = getSignificantFftIndexRange()
-
-    fun setVisualizer(audioSessionId: Int) {
-        val visualizer = Visualizer(audioSessionId)
-        this.visualizer = visualizer
+        setVisualizerListener(
+            isWaveCapture,
+            isFftCapture,
+            captureRate,
+            provideVisualizerCallbacks(visualizerCallbacks)
+        )
     }
 
-    fun setVisualizerListener() {
-        visualizer?.run {
-            enabled = false
-            captureSize = CAPTURE_SIZE
-            setDataCaptureListener(object : Visualizer.OnDataCaptureListener {
-                override fun onWaveFormDataCapture(visualizer: Visualizer, bytes: ByteArray, samplingRate: Int) {
-                    // NOT USED
-                }
+    fun isRunning(): Boolean = visualizer != null
 
-                override fun onFftDataCapture(visualizer: Visualizer, bytes: ByteArray, samplingRate: Int) {
-                    // bytes = [실수부,허수부,실수부,허수부 ....]
-                    val size = bytes.size / 4 // 각 복소수당 2바이트
-                    val magnitudes = FloatArray(size)
-
-                    for (i in 0 until size) {
-                        val real = bytes[2 * i].toInt()
-                        val imaginary = bytes[2 * i + 1].toInt()
-                        magnitudes[i] = sqrt((real * real + imaginary * imaginary).toDouble()).toFloat()
-                    }
-
-                    val filteredMagnitudes = magnitudes.copyOfRange(validRange.first, validRange.last + 1)
-                    _fftFlow.tryEmit(filteredMagnitudes.toList())
-                }
-            }, Visualizer.getMaxCaptureRate() / 2, false, true)
-            enabled = true
-        }
-    }
-
-    fun release() {
+    fun stop() {
         visualizer?.release()
         visualizer = null
     }
 
-    // 20 ~ 4000 Hz 사이만 필터링
-    private fun getSignificantFftIndexRange(
-        samplingRate: Int = SAMPLING_RATE,
-        captureSize: Int = CAPTURE_SIZE,
-        minFreq: Int = MIN_FREQ,
-        maxFreq: Int = MAX_FREQ
-    ): IntRange {
-        val resolution = samplingRate.toDouble() / captureSize
-        val startIndex = (minFreq / resolution).toInt()
-        val endIndex = (maxFreq / resolution).toInt()
-        return startIndex..endIndex
+    private fun setVisualizer(audioSessionId: Int) {
+        try {
+            visualizer = Visualizer(audioSessionId)
+        } catch (e: RuntimeException) {
+            Log.e("BaseVisualizer", "Failed to create Visualizer", e)
+        }
     }
 
-    companion object {
-        const val CAPTURE_SIZE = 512
-        const val SAMPLING_RATE = 22000
-        const val MIN_FREQ = 20
-        const val MAX_FREQ = 4500
+    private fun provideVisualizerCallbacks(
+        visualizerCallbacks: VisualizerCallbacks,
+    ) = object : Visualizer.OnDataCaptureListener {
+        override fun onWaveFormDataCapture(visualizer: Visualizer, bytes: ByteArray, samplingRate: Int) {
+            visualizerCallbacks.onWaveCaptured(bytes, samplingRate)
+        }
+
+        override fun onFftDataCapture(visualizer: Visualizer, bytes: ByteArray, samplingRate: Int) {
+            visualizerCallbacks.onFftCaptured(bytes, samplingRate)
+        }
+    }
+
+    private fun setVisualizerListener(
+        isWaveCapture: Boolean,
+        isFftCapture: Boolean,
+        captureRate: Int,
+        dataCaptureListener: Visualizer.OnDataCaptureListener,
+    ) {
+        visualizer?.run {
+            enabled = false
+            setDataCaptureListener(
+                dataCaptureListener,
+                captureRate,
+                isWaveCapture,
+                isFftCapture
+            )
+            enabled = true
+        }
+    }
+
+    private fun isPowerOfTwo(n: Int): Boolean {
+        return n > 0 && (n and (n - 1)) == 0
+    }
+
+    private fun isValidCaptureSize(captureSize: Int): Boolean {
+        val range = Visualizer.getCaptureSizeRange()
+        return captureSize in range[0]..range[1]
     }
 }
