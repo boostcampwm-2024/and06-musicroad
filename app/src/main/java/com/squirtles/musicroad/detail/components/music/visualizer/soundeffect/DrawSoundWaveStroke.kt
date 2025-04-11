@@ -61,7 +61,6 @@ internal fun DrawSoundWaveStroke(
         }
 
         path.catmullRomSpline(points)
-        path.close()
 
         drawPath(
             path = path,

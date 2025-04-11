@@ -14,7 +14,7 @@ import androidx.compose.ui.graphics.Color
 import com.squirtles.musicroad.detail.components.music.visualizer.BaseVisualizer
 import com.squirtles.musicroad.detail.components.music.visualizer.FftDataProcessor
 import com.squirtles.musicroad.detail.components.music.visualizer.VisualizerCallbacks
-import com.squirtles.musicroad.detail.components.music.visualizer.soundeffect.DrawSoundWaveFill
+import com.squirtles.musicroad.detail.components.music.visualizer.soundeffect.DrawSoundBar
 import com.squirtles.musicroad.detail.components.music.visualizer.ui.VisualizerConstants.CAPTURE_SIZE
 import com.squirtles.musicroad.detail.components.music.visualizer.ui.VisualizerConstants.MAX_FREQ
 import com.squirtles.musicroad.detail.components.music.visualizer.ui.VisualizerConstants.MIN_FREQ
@@ -74,11 +74,10 @@ fun CircleVisualizer(
         }
     }
 
-    DrawSoundWaveFill(
+    DrawSoundBar(
         audioData = animateMagnitudes.value.map { it.value },
         color = color,
         radiusRatio = radiusRatio,
-        useGradient = true,
         modifier = modifier
     )
 }

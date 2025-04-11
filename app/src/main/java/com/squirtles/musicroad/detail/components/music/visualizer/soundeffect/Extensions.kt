@@ -5,17 +5,19 @@ import androidx.compose.ui.graphics.Path
 import kotlin.math.cos
 import kotlin.math.sin
 
-internal fun Path.catmullRomSpline(points: List<Offset>, tension: Float = 0.5f) {
-    if (points.size < 4) return
+internal fun Path.catmullRomSpline(points: List<Offset>, steps: Int = 10) {
+    if (points.size < 2) return
 
-    for (i in 1 until points.size - 2) {
-        val p0 = points[i - 1]
-        val p1 = points[i]
-        val p2 = points[i + 1]
-        val p3 = points[i + 2]
+    val paddedPoints = listOf(points.last()) + points + listOf(points.first(), points[1])
 
-        for (t in 0..10) {
-            val s = t / 10f
+    for (i in 0 until paddedPoints.size - 3) {
+        val p0 = paddedPoints[i]
+        val p1 = paddedPoints[i + 1]
+        val p2 = paddedPoints[i + 2]
+        val p3 = paddedPoints[i + 3]
+
+        for (t in 0..steps) {
+            val s = t / steps.toFloat()
             val s2 = s * s
             val s3 = s2 * s
 
@@ -29,13 +31,15 @@ internal fun Path.catmullRomSpline(points: List<Offset>, tension: Float = 0.5f) 
                     (2 * p0.y - 5 * p1.y + 4 * p2.y - p3.y) * s2 +
                     (-p0.y + 3 * p1.y - 3 * p2.y + p3.y) * s3)
 
-            if (i == 1 && t == 0) {
+            if (i == 0 && t == 0) {
                 moveTo(x, y)
             } else {
                 lineTo(x, y)
             }
         }
     }
+
+    close()
 }
 
 internal fun getOffset(
