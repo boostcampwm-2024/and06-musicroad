@@ -21,11 +21,11 @@ import com.squirtles.musicroad.detail.components.music.visualizer.ui.CircleVisua
 
 @Composable
 internal fun CircleAlbumCover(
+    audioSessionId: Int,
     song: Song,
     currentPosition: () -> Long,
     duration: () -> Long,
     audioEffectColor: Color,
-    audioSessionId: Int,
     onSeekChanged: (Long) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -35,7 +35,6 @@ internal fun CircleAlbumCover(
         CircleVisualizer(
             audioSessionId = audioSessionId,
             color = audioEffectColor,
-            radiusRatio = 0.5f,
             modifier = modifier.align(Alignment.Center)
         )
 

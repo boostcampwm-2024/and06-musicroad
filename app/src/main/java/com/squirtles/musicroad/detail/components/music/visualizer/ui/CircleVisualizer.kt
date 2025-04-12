@@ -25,8 +25,8 @@ import kotlin.math.abs
 @Composable
 fun CircleVisualizer(
     audioSessionId: Int,
+    radiusRatio: Float = 1.0f,
     color: Color = White,
-    radiusRatio: Float,
     modifier: Modifier = Modifier
 ) {
     val fftMagnitudes = remember { mutableStateOf<List<Float>>(emptyList()) } // 상태로 리스트 관리

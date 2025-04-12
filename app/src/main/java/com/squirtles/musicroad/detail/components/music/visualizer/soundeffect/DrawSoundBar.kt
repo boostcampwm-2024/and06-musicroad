@@ -14,13 +14,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.dp
 import com.squirtles.musicroad.detail.components.music.visualizer.soundeffect.DrawSoundBarConstants.STROKE_WIDTH
 import com.squirtles.musicroad.detail.components.music.visualizer.soundeffect.DrawSoundEffectConstants.GRADIENT_RADIUS_RATIO
 import com.squirtles.musicroad.detail.components.music.visualizer.soundeffect.DrawSoundEffectConstants.OFFSET_ANGLE
 import com.squirtles.musicroad.detail.components.music.visualizer.soundeffect.DrawSoundEffectConstants.animatedGradientRadius
 import com.squirtles.musicroad.ui.theme.White
-import kotlin.math.max
+import kotlin.math.min
 
 /* Bar 형태 원형 시각화 */
 @Composable
@@ -28,11 +30,12 @@ internal fun DrawSoundBar(
     audioData: List<Float>,
     color: Color,
     useGradient: Boolean = true,
-    radiusRatio: Float = 0.5f,
+    radius: Dp = 0.dp,
+    radiusRatio: Float = 1.0f,
     modifier: Modifier = Modifier
 ) {
     var canvasSize by remember { mutableStateOf(IntSize.Zero) }
-    var radius by remember { mutableFloatStateOf(0f) }
+    var adjustedRadius by remember { mutableFloatStateOf(0f) }
     var maxBarHeight by remember { mutableFloatStateOf(0f) }
 
     val animatedGradientRadius = animatedGradientRadius(LinearEasing)
@@ -46,7 +49,9 @@ internal fun DrawSoundBar(
     val angleStep = 360f / audioData.size
 
     LaunchedEffect(canvasSize) {
-        radius = max(canvasSize.width, canvasSize.height) * radiusRatio
+        adjustedRadius =
+            if (radius.value == 0f) (min(canvasSize.width, canvasSize.height) / 2f) * radiusRatio
+            else radius.value
         maxBarHeight = (canvasSize.height / 4).toFloat()
     }
 
@@ -68,7 +73,7 @@ internal fun DrawSoundBar(
                 centerX = width / 2,
                 centerY = height / 2,
                 angle = angle,
-                radius = radius,
+                radius = adjustedRadius,
                 extraLength = 0f
             )
 
@@ -76,10 +81,10 @@ internal fun DrawSoundBar(
                 centerX = width / 2,
                 centerY = height / 2,
                 angle = angle,
-                radius = radius,
+                radius = adjustedRadius,
                 extraLength = barHeight
             )
-            
+
             // Bar별로 그라데이션 적용
 //            val barLength = endOffset.minus(startOffset).getDistance()
 //            val sharedRadius = (barLength * animatedGradientRadius).coerceAtLeast(0.1f)

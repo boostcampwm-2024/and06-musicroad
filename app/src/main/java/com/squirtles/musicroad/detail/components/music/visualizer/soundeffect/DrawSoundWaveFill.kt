@@ -19,11 +19,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.dp
 import com.squirtles.musicroad.detail.components.music.visualizer.soundeffect.DrawSoundEffectConstants.OFFSET_ANGLE
 import com.squirtles.musicroad.detail.components.music.visualizer.soundeffect.DrawSoundEffectConstants.animatedGradientRadius
 import com.squirtles.musicroad.ui.theme.White
-import kotlin.math.max
+import kotlin.math.min
 
 /* Wave 형태 원형 시각화 */
 @Composable
@@ -31,11 +33,12 @@ internal fun DrawSoundWaveFill(
     audioData: List<Float>,
     color: Color,
     useGradient: Boolean = true,
-    radiusRatio: Float = 0.0f,
+    radius: Dp = 0.dp,
+    radiusRatio: Float = 1.0f,
     modifier: Modifier = Modifier
 ) {
     var canvasSize by remember { mutableStateOf(IntSize.Zero) }
-    var radius by remember { mutableFloatStateOf(0f) }
+    var adjustedRadius by remember { mutableFloatStateOf(0f) }
     var maxBarHeight by remember { mutableFloatStateOf(0f) }
     var holePath by remember { mutableStateOf(Path()) }
     var center by remember { mutableStateOf(Offset(0f, 0f)) }
@@ -46,14 +49,16 @@ internal fun DrawSoundWaveFill(
     val animatedGradientRadius = animatedGradientRadius(FastOutSlowInEasing)
 
     LaunchedEffect(canvasSize) {
-        radius = max(canvasSize.width, canvasSize.height) * radiusRatio
+        adjustedRadius =
+            if (radius.value == 0f) (min(canvasSize.width, canvasSize.height) / 2f) * radiusRatio
+            else radius.value
         maxBarHeight = (canvasSize.height / 4).toFloat()
         center = Offset(x = canvasSize.width / 2f, y = canvasSize.height / 2f)
         holePath = holePath.apply {
             addOval(
                 Rect(
                     center = Offset(x = canvasSize.width / 2f, y = canvasSize.height / 2f),
-                    radius = radius + 1f
+                    radius = adjustedRadius + 1f
                 )
             )
         }
@@ -76,7 +81,7 @@ internal fun DrawSoundWaveFill(
                 centerX = width / 2,
                 centerY = height / 2,
                 angle = angle,
-                radius = radius,
+                radius = adjustedRadius,
                 extraLength = barHeight,
             )
         }
@@ -94,7 +99,7 @@ internal fun DrawSoundWaveFill(
                     brush = Brush.radialGradient(
                         colors = listOf(White, color),
                         center = Offset(width / 2, height / 2),
-                        radius = (radius + maxBarHeight).coerceAtLeast(0.01f)
+                        radius = (adjustedRadius + maxBarHeight).coerceAtLeast(0.01f)
                                 * animatedGradientRadius
                     )
                 )

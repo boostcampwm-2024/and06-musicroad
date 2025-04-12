@@ -14,27 +14,32 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.dp
 import com.squirtles.musicroad.detail.components.music.visualizer.soundeffect.DrawSoundEffectConstants.OFFSET_ANGLE
-import kotlin.math.max
+import kotlin.math.min
 
 /* Wave 형태 원형 시각화 */
 @Composable
 internal fun DrawSoundWaveStroke(
     audioData: List<Float>,
     color: Color,
-    radiusRatio: Float = 0.5f,
+    radius: Dp = 0.dp,
+    radiusRatio: Float = 1.0f,
     modifier: Modifier = Modifier
 ) {
     var canvasSize by remember { mutableStateOf(IntSize.Zero) }
-    var radius by remember { mutableFloatStateOf(0f) }
+    var adjustedRadius by remember { mutableFloatStateOf(0f) }
     var maxBarHeight by remember { mutableFloatStateOf(0f) }
 
     val angleStep = 360f / audioData.size
     val path = Path()
 
     LaunchedEffect(canvasSize) {
-        radius = max(canvasSize.width, canvasSize.height) * radiusRatio
+        adjustedRadius =
+            if (radius.value == 0f) (min(canvasSize.width, canvasSize.height) / 2f) * radiusRatio
+            else radius.value
         maxBarHeight = (canvasSize.height / 4).toFloat()
     }
 
@@ -55,7 +60,7 @@ internal fun DrawSoundWaveStroke(
                 centerX = width / 2,
                 centerY = height / 2,
                 angle = angle,
-                radius = radius,
+                radius = adjustedRadius,
                 extraLength = barHeight,
             )
         }
