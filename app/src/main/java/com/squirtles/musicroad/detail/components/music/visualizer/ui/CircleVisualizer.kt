@@ -11,21 +11,22 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import com.squirtles.musicroad.detail.components.music.visualizer.BaseVisualizer
 import com.squirtles.musicroad.detail.components.music.visualizer.FftDataProcessor
+import com.squirtles.musicroad.detail.components.music.visualizer.SoundEffects
 import com.squirtles.musicroad.detail.components.music.visualizer.VisualizerCallbacks
-import com.squirtles.musicroad.detail.components.music.visualizer.soundeffect.DrawSoundBar
 import com.squirtles.musicroad.detail.components.music.visualizer.ui.VisualizerConstants.CAPTURE_SIZE
 import com.squirtles.musicroad.detail.components.music.visualizer.ui.VisualizerConstants.MAX_FREQ
 import com.squirtles.musicroad.detail.components.music.visualizer.ui.VisualizerConstants.MIN_FREQ
-import com.squirtles.musicroad.ui.theme.White
 import kotlinx.coroutines.launch
 
 @Composable
 fun CircleVisualizer(
     audioSessionId: Int,
+    soundEffects: SoundEffects,
     radiusRatio: Float = 1.0f,
-    color: Color = White,
+    color: Color = Color.White,
     modifier: Modifier = Modifier
 ) {
     val fftMagnitudes = remember { mutableStateOf<List<Float>>(emptyList()) } // 상태로 리스트 관리
@@ -72,12 +73,21 @@ fun CircleVisualizer(
         }
     }
 
-    DrawSoundBar(
-        audioData = animateMagnitudes.value.map { it.value },
-        color = color,
-        radiusRatio = radiusRatio,
-        modifier = modifier
+    soundEffects.drawEffect.invoke(
+        animateMagnitudes.value.map { it.value },
+        color,
+        true,
+        0.dp,
+        radiusRatio,
+        modifier
     )
+
+//    DrawSoundBar(
+//        audioData = animateMagnitudes.value.map { it.value },
+//        color = color,
+//        radiusRatio = radiusRatio,
+//        modifier = modifier
+//    )
 }
 
 private fun preProcessFftData(
@@ -101,4 +111,3 @@ private fun preProcessFftData(
 
     return normalizedData
 }
-

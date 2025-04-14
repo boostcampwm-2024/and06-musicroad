@@ -25,6 +25,7 @@ import com.squirtles.musicroad.detail.components.music.visualizer.soundeffect.Dr
 internal fun DrawSoundWaveStroke(
     audioData: List<Float>,
     color: Color,
+    useGradient: Boolean = false,
     radius: Dp = 0.dp,
     radiusRatio: Float = 1.0f,
     modifier: Modifier = Modifier
