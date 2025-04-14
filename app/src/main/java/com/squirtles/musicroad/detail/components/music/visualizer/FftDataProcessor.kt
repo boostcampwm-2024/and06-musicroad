@@ -1,5 +1,6 @@
 package com.squirtles.musicroad.detail.components.music.visualizer
 
+import android.media.audiofx.Visualizer
 import kotlin.math.hypot
 import kotlin.math.log
 import kotlin.math.pow
@@ -7,13 +8,16 @@ import kotlin.math.sqrt
 
 class FftDataProcessor {
     /**
-     * this function must be used before applying other preprocessing functions
+     * **This function must be used before applying any other preprocessing functions.**
      *
-     * Calculate the FFT magnitude of the audio data.
-     * @param bytes The audio data as a byte array.
-     * @return A list of FFT magnitudes.
+     * Calculates the FFT (Fast Fourier Transform) magnitude spectrum from raw FFT byte data.
      *
-     * the first byte is DC, and the last byte is Nyquist, so drop them
+     * @param bytes The audio data as a byte array captured by [Visualizer.OnDataCaptureListener.onFftDataCapture].
+     *              The array alternates real and imaginary parts: [real0, imag0, real1, imag1, ...].
+     *
+     * @return A list of FFT magnitudes (in linear scale), excluding the first two values (DC and Nyquist).
+     *
+     * Note: The first two bytes represent the DC component and the Nyquist frequency and are excluded.
      */
     fun calculateFftMagnitude(bytes: ByteArray): List<Float> {
         val audioData = bytes.drop(2).map { it.toDouble() }
@@ -30,71 +34,117 @@ class FftDataProcessor {
         return magnitudes.toList()
     }
 
-    // 주파수 필터링
+    /**
+     * Filters the given frequency spectrum data to include only the components within a specified frequency range.
+     *
+     * @param audioData The FFT magnitude data as a list of Floats.
+     * @param samplingRate The sampling rate of the original audio signal (in Hz).
+     * @param captureSize The size of the FFT window used when capturing the audio data.
+     * @param minFreq The minimum frequency (in Hz) to include in the result.
+     * @param maxFreq The maximum frequency (in Hz) to include in the result.
+     *
+     * @return A list of magnitudes corresponding to the frequency components within [minFreq, maxFreq].
+     *
+     * The frequency resolution is calculated as `samplingRate / captureSize`, and the corresponding index
+     * range is computed to extract the subset of the frequency data.
+     */
     fun filterFrequency(
         audioData: List<Float>,
-        samplingRate: Int, // 48000
-        captureSize: Int, // 1024
-        minFreq: Int, // 40
-        maxFreq: Int // 4500
+        samplingRate: Int,
+        captureSize: Int,
+        minFreq: Int,
+        maxFreq: Int
     ): List<Float> {
-        val resolution = (samplingRate / captureSize).toDouble()
-        val startIndex = (minFreq / resolution).toInt()
-        val endIndex = (maxFreq / resolution).toInt()
+        val resolution = ((samplingRate / 2.0) / (captureSize / 2 - 1))
+        val startIndex = (minFreq / resolution).toInt().coerceIn(0, audioData.lastIndex)
+        val endIndex = (maxFreq / resolution).toInt().coerceIn(startIndex, audioData.lastIndex)
 
         return audioData.slice(startIndex..endIndex)
     }
 
-    /* 주파수 대역별 가중치  */
-    fun scaleFrequencies(audioData: List<Float>): List<Float> {
+    /**
+     * Applies scaling weights to audio frequency data based on predefined frequency range ratios.
+     *
+     * Each element in the audio data is scaled according to which ratio range it falls into,
+     * as defined by the provided list of [FrequencyScale]s.
+     *
+     * @param audioData A list of Float values representing the frequency domain data (e.g., FFT results).
+     * @param frequencyScales A list of [FrequencyScale] objects defining the ratio ranges and their associated weights.
+     *
+     * @return A new list of Float values with each element scaled according to its frequency range.
+     */
+    fun scaleFrequencies(
+        audioData: List<Float>,
+        frequencyScales: List<FrequencyScale>
+    ): List<Float> {
         val size = audioData.size
         return audioData.mapIndexed { index, value ->
-            val scaleFactor = when {
-                index < size / 8 -> 2.0f
-                index < size / 4 -> 1.0f // 저주파 대역
-                index < size / 2 -> 2.0f // 중간 대역
-                index < size / 1.33 -> 3.0f // 고주파 대역
-                else -> 4.0f // 고주파 대역
-            }
-            value * scaleFactor
+            val ratio = index.toFloat() / size
+            val scale = frequencyScales.find { ratio in it.rangeRatio }?.weight ?: 1.0f
+            value * scale
         }
     }
 
     /**
-     * Applies a logarithmic scale to the audio data.
-     * @param audioData The audio data as a list of floats.
-     * @return A list of logarithmically scaled audio data.
+     * Applies a logarithmic scale transformation to the given audio magnitude data.
+     * for compressing large dynamic ranges in audio signals,
+     *
+     * A small epsilon is added to avoid log(0), and an offset is used to ensure
+     * that all input values are positive before applying the logarithm.
+     *
+     * @param audioData The raw audio magnitude data (e.g., from FFT) as a list of floats.
+     * @param base The base of the logarithm to apply (must be > 0 and ≠ 1; default is 10).
+     * @param scaleFactor A multiplier applied after the logarithm for additional scaling (default is 1).
+     * @return A list of audio magnitudes scaled logarithmically.
      */
     fun applyLogScale(
         audioData: List<Float>,
         base: Float = 10f,
         scaleFactor: Float = 1f
     ): List<Float> {
+        require(base > 0f && base != 1f) { "Logarithm base must be greater than 0 and not equal to 1." }
+
         val epsilon = 1e-6f // to avoid log(0)
         val minValue = audioData.minOrNull() ?: 0f
         val offset = if (minValue < 1f) 1f - minValue else 0f // move the minimum value to 1
 
         return audioData.map { value ->
             val shifted = value + offset + epsilon
-            scaleFactor * (log(shifted, base))
+            val safeValue = if (shifted <= 0f || shifted.isNaN()) epsilon else shifted
+            scaleFactor * log(safeValue, base)
         }
     }
 
     /**
-     * Dynamic Range Compression
-     * @param audioData The audio data as a list of floats.
-     * @return A list of compressed audio data.
+     * Applies dynamic range compression using square root scaling.
+     *
+     * This method is useful for reducing the impact of high-magnitude peaks
+     * and enhancing lower-magnitude values, making the overall data more perceptually uniform.
+     *
+     * @param audioData The audio data as a list of floats (typically FFT magnitudes).
+     * @return A list of compressed audio data using sqrt scaling.
+     *
+     * Note: Negative input values are clamped to 0 to avoid sqrt domain errors.
      */
     fun compressDynamicRangeRoot(audioData: List<Float>): List<Float> {
-        return audioData.map { sqrt(it) }
+        return audioData.map { value ->
+            sqrt(value.coerceAtLeast(0f))
+        }
     }
 
     /**
-     *  Z-Score Normalization
-     *  @param audioData The audio data as a list of floats.
-     *  @return A list contains z-score normalized data with minus values
+     * Applies Z-Score normalization to the given audio data.
+     *
+     * This method standardizes the data to have zero mean and unit variance,
+     * making it easier to compare values across different datasets or features.
+     *
+     * @param audioData The audio data as a list of floats.
+     * @return A list of normalized values centered around 0 with unit variance.
+     *         If input is empty or standard deviation is zero, returns a list of zeros.
      */
     fun normalizeByZScore(audioData: List<Float>): List<Float> {
+        if (audioData.isEmpty()) return emptyList()
+
         val mean = audioData.average().toFloat()
         val stdDev = sqrt(audioData.map { (it - mean).pow(2) }.average()).toFloat()
 
@@ -107,9 +157,10 @@ class FftDataProcessor {
     }
 
     /**
-     * Normalize the audio data between 0 and 1.
+     * Applies Max-Min Normalization to the given audio data.
+     *
      * @param audioData The audio data as a list of floats.
-     * @return A list of normalized audio data.
+     * @return A list of normalized values between 0 and 1.
      */
     fun normalize(audioData: List<Float>): List<Float> {
         val max = audioData.maxOrNull() ?: 1f // 데이터 최대값

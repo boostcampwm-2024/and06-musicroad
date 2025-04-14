@@ -20,7 +20,6 @@ import com.squirtles.musicroad.detail.components.music.visualizer.ui.VisualizerC
 import com.squirtles.musicroad.detail.components.music.visualizer.ui.VisualizerConstants.MIN_FREQ
 import com.squirtles.musicroad.ui.theme.White
 import kotlinx.coroutines.launch
-import kotlin.math.abs
 
 @Composable
 fun CircleVisualizer(
@@ -97,11 +96,9 @@ private fun preProcessFftData(
         MAX_FREQ
     )
 
-    val logScaleData = processor.applyLogScale(filteredMagnitudes, base = 2f)
-
+    val logScaleData = processor.applyLogScale(filteredMagnitudes)
     val zScore = processor.normalizeByZScore(logScaleData)
-    val emphasizedPeaks = zScore.map { abs(it) }
-    val normalizedData = processor.normalize(emphasizedPeaks)
+    val normalizedData = processor.normalize(zScore)
 
     return normalizedData
 }
