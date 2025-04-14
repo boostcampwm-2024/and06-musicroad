@@ -81,13 +81,6 @@ fun CircleVisualizer(
         radiusRatio,
         modifier
     )
-
-//    DrawSoundBar(
-//        audioData = animateMagnitudes.value.map { it.value },
-//        color = color,
-//        radiusRatio = radiusRatio,
-//        modifier = modifier
-//    )
 }
 
 private fun preProcessFftData(

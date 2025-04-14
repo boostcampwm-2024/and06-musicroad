@@ -18,6 +18,8 @@ enum class SoundEffects(
         modifier: Modifier
     ) -> Unit
 ) {
+    NONE({ _, _, _, _, _, _ -> }),
+
     BAR({ audioData, color, useGradient, radius, radiusRatio, modifier ->
         DrawSoundBar(audioData, color, useGradient, radius, radiusRatio, modifier)
     }),
