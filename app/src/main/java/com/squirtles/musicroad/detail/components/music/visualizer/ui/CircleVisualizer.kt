@@ -34,7 +34,6 @@ fun CircleVisualizer(
     val processor = remember { FftDataProcessor() }
 
     LaunchedEffect(audioSessionId) {
-
         visualizer.start(
             audioSessionId = audioSessionId,
             captureSize = CAPTURE_SIZE,

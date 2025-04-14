@@ -17,8 +17,8 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import com.squirtles.musicroad.detail.components.music.visualizer.soundeffect.DrawSoundEffectConstants.OFFSET_ANGLE
-import kotlin.math.min
+import com.squirtles.musicroad.detail.components.music.visualizer.soundeffect.DrawSoundEffectConfigs.OFFSET_ANGLE
+import com.squirtles.musicroad.detail.components.music.visualizer.soundeffect.DrawSoundEffectConfigs.onCanvasSizeChanged
 
 /* Wave 형태 원형 시각화 */
 @Composable
@@ -37,10 +37,14 @@ internal fun DrawSoundWaveStroke(
     val path = Path()
 
     LaunchedEffect(canvasSize) {
-        adjustedRadius =
-            if (radius.value == 0f) (min(canvasSize.width, canvasSize.height) / 2f) * radiusRatio
-            else radius.value
-        maxBarHeight = (canvasSize.height / 4).toFloat()
+        onCanvasSizeChanged(
+            width = canvasSize.width,
+            height = canvasSize.height,
+            radius = radius.value,
+            radiusRatio = radiusRatio,
+            onRadiusCalculated = { adjustedRadius = it },
+            onMaxBarHeightCalculated = { maxBarHeight = it }
+        )
     }
 
     Canvas(
