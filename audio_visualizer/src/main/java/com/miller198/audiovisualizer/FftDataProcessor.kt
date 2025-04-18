@@ -1,4 +1,4 @@
-package com.miller198.audio_visualizer
+package com.miller198.audiovisualizer
 
 import android.media.audiofx.Visualizer
 import kotlin.math.hypot

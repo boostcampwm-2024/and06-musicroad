@@ -1,4 +1,4 @@
-package com.miller198.audio_visualizer.soundeffect
+package com.miller198.audiovisualizer.soundeffect
 
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.foundation.Canvas
@@ -12,10 +12,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
-import com.miller198.audio_visualizer.soundeffect.DrawSoundEffectConfigs.GRADIENT_RADIUS_RATIO
-import com.miller198.audio_visualizer.soundeffect.DrawSoundEffectConfigs.animatedGradientRadius
-import com.miller198.audio_visualizer.soundeffect.DrawSoundEffectConfigs.gradientConfig
-import com.miller198.audio_visualizer.soundeffect.DrawSoundEffectConfigs.onCanvasSizeChanged
+import com.miller198.audiovisualizer.soundeffect.DrawSoundEffectConfigs.GRADIENT_RADIUS_RATIO
+import com.miller198.audiovisualizer.soundeffect.DrawSoundEffectConfigs.animatedGradientRadius
+import com.miller198.audiovisualizer.soundeffect.DrawSoundEffectConfigs.gradientConfig
+import com.miller198.audiovisualizer.soundeffect.DrawSoundEffectConfigs.onCanvasSizeChanged
 
 /**
  * Composable function that draws a radial sound bar visualizer effect.

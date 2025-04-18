@@ -1,11 +1,11 @@
-package com.miller198.audio_visualizer.configs
+package com.miller198.audiovisualizer.configs
 
 import android.media.audiofx.Visualizer
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.miller198.audio_visualizer.defaultPreProcessFftData
+import com.miller198.audiovisualizer.defaultPreProcessFftData
 
 /**
  * Interface for configuring the audio visualizer.

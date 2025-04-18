@@ -1,4 +1,4 @@
-package com.miller198.audio_visualizer.soundeffect
+package com.miller198.audiovisualizer.soundeffect
 
 import androidx.compose.animation.core.Easing
 import androidx.compose.animation.core.RepeatMode
@@ -7,8 +7,8 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
-import com.miller198.audio_visualizer.configs.ClippingRadiusConfig
-import com.miller198.audio_visualizer.configs.GradientConfig
+import com.miller198.audiovisualizer.configs.ClippingRadiusConfig
+import com.miller198.audiovisualizer.configs.GradientConfig
 import kotlin.math.min
 
 /**

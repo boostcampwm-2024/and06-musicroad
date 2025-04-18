@@ -1,8 +1,8 @@
-package com.miller198.audio_visualizer
+package com.miller198.audiovisualizer
 
 import android.media.audiofx.Visualizer
 import android.util.Log
-import com.miller198.audio_visualizer.configs.VisualizerCallbacks
+import com.miller198.audiovisualizer.configs.VisualizerCallbacks
 
 /**
  * Core class for capturing audio data using Android's [Visualizer] API.

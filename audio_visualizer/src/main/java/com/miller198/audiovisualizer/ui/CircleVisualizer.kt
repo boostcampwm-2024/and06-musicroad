@@ -1,4 +1,4 @@
-package com.miller198.audio_visualizer.ui
+package com.miller198.audiovisualizer.ui
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
@@ -12,13 +12,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
-import com.miller198.audio_visualizer.BaseVisualizer
-import com.miller198.audio_visualizer.configs.ClippingRadiusConfig
-import com.miller198.audio_visualizer.configs.GradientConfig
-import com.miller198.audio_visualizer.configs.VisualizerCallbacks
-import com.miller198.audio_visualizer.configs.VisualizerConfig
-import com.miller198.audio_visualizer.soundeffect.DrawSoundEffectConfigs
-import com.miller198.audio_visualizer.soundeffect.SoundEffects
+import com.miller198.audiovisualizer.BaseVisualizer
+import com.miller198.audiovisualizer.configs.ClippingRadiusConfig
+import com.miller198.audiovisualizer.configs.GradientConfig
+import com.miller198.audiovisualizer.configs.VisualizerCallbacks
+import com.miller198.audiovisualizer.configs.VisualizerConfig
+import com.miller198.audiovisualizer.soundeffect.DrawSoundEffectConfigs
+import com.miller198.audiovisualizer.soundeffect.SoundEffects
 import kotlinx.coroutines.launch
 
 /**

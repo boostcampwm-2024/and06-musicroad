@@ -1,4 +1,4 @@
-package com.miller198.audio_visualizer
+package com.miller198.audiovisualizer
 
 /**
  * Represents a frequency range (as a ratio of the full signal) and its corresponding scaling weight.

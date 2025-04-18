@@ -1,4 +1,4 @@
-package com.miller198.audio_visualizer.soundeffect
+package com.miller198.audiovisualizer.soundeffect
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Path

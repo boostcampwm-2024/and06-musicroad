@@ -1,4 +1,4 @@
-package com.miller198.audio_visualizer.configs
+package com.miller198.audiovisualizer.configs
 
 import android.media.audiofx.Visualizer
 

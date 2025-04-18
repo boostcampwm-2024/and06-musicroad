@@ -15,10 +15,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.miller198.audio_visualizer.configs.GradientConfig
-import com.miller198.audio_visualizer.configs.VisualizerConfig
-import com.miller198.audio_visualizer.soundeffect.SoundEffects
-import com.miller198.audio_visualizer.ui.CircleVisualizer
+import com.miller198.audiovisualizer.configs.GradientConfig
+import com.miller198.audiovisualizer.configs.VisualizerConfig
+import com.miller198.audiovisualizer.soundeffect.SoundEffects
+import com.miller198.audiovisualizer.ui.CircleVisualizer
 import com.squirtles.domain.model.Song
 import com.squirtles.musicroad.R
 
