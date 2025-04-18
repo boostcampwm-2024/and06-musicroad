@@ -2,6 +2,7 @@
 activityCompose = "1.9.3"
 agp = "8.5.1"
 animation = "1.7.5"
+animationCoreAndroid = "1.7.8"
 appcompat = "1.7.0"
 coil = "3.0.0"
 composeBom = "2024.10.01"
@@ -44,6 +45,7 @@ uiViewbinding = "1.7.5"
 pagingComposeAndroid = "3.3.4"
 kotlinxImmutable = "0.3.7"
 firebaseAuthKtx = "22.3.1"
+foundationAndroid = "1.7.8"
 
 [libraries]
 # AndroidX
@@ -80,6 +82,10 @@ googleid = { module = "com.google.android.libraries.identity.googleid:googleid",
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
 kotlinx-coroutines-guava = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-guava", version.ref = "kotlinxCoroutinesGuava" }
 kotlinx-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinxImmutable" }
+androidx-foundation-layout-android = { group = "androidx.compose.foundation", name = "foundation-layout-android", version.ref = "foundationAndroid" }
+androidx-foundation-android = { group = "androidx.compose.foundation", name = "foundation-android", version.ref = "foundationAndroid" }
+androidx-animation-core-android = { group = "androidx.compose.animation", name = "animation-core-android", version.ref = "animationCoreAndroid" }
+
 
 # Firebase
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }

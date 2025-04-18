@@ -101,6 +101,7 @@ dependencies {
     implementation(projects.domain)
     implementation(projects.data)
     implementation(projects.mediaservice)
+    implementation(projects.audioVisualizer)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
