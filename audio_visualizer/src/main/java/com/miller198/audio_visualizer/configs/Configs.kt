@@ -13,24 +13,22 @@ import com.miller198.audio_visualizer.defaultPreProcessFftData
  */
 sealed interface VisualizerConfig {
 
-    // Whether to use waveform (time domain) capture
+    /** Whether to use waveform (time domain) capture */
     val useWaveCapture: Boolean
 
-    // Whether to use FFT (frequency domain) capture
+    /** Whether to use FFT (frequency domain) capture */
     val useFftCapture: Boolean
 
-    // Buffer size for audio capture (e.g., 512, 1024)
+    /** Buffer size for audio capture (e.g., 512, 1024) */
     val captureSize: Int
 
-    // Optional FFT data processing function
+    /** Optional FFT data processing function */
     val processFftData: ((Visualizer, ByteArray, Int) -> List<Float>)?
 
-    // Optional waveform data processing function
+    /** Optional waveform data processing function */
     val processWaveData: ((Visualizer, ByteArray, Int) -> List<Float>)?
 
-    /**
-     * Fully custom configuration defined by the user.
-     */
+    /** Fully custom configuration defined by the user. */
     data class Custom(
         override val useWaveCapture: Boolean,
         override val useFftCapture: Boolean,
@@ -39,9 +37,7 @@ sealed interface VisualizerConfig {
         override val processWaveData: ((Visualizer, ByteArray, Int) -> List<Float>)?
     ) : VisualizerConfig
 
-    /**
-     * FFT-based visualizer configuration.
-     */
+    /** FFT-based visualizer configuration. */
     data class FftCaptureConfig(
         val minFrequency: Int, // Minimum frequency to analyze (Hz)
         val maxFrequency: Int, // Maximum frequency to analyze (Hz)
@@ -61,14 +57,12 @@ sealed interface VisualizerConfig {
             }
         }
 
-        /**
-         * Default FFT configuration.
-         */
+        /** Default FFT configuration. */
         companion object {
             const val DEFAULT_MIN_FREQ = 40
             const val DEFAULT_MAX_FREQ = 4000
             const val DEFAULT_CAPTURE_SIZE = 1024
-            
+
             val Default = FftCaptureConfig(
                 minFrequency = DEFAULT_MIN_FREQ,
                 maxFrequency = DEFAULT_MAX_FREQ,
@@ -92,9 +86,7 @@ sealed interface VisualizerConfig {
         override val useFftCapture: Boolean = false
         override val processFftData: ((Visualizer, ByteArray, Int) -> List<Float>)? = null
 
-        /**
-         * Default waveform configuration.
-         */
+        /** Default waveform configuration. */
         data object Default : WaveCaptureConfig(
             captureSize = 1024,
             processWaveData = { _, byteArray, _ ->
@@ -113,18 +105,14 @@ sealed interface GradientConfig {
     val duration: Int             // Animation duration in milliseconds
     val color: Color              // Base color of the gradient
 
-    /**
-     * Default gradient config (enabled).
-     */
+    /** Default gradient config (enabled). */
     data object Default : GradientConfig {
         override val useGradient: Boolean = true
         override val duration: Int = 2500
         override val color: Color = White
     }
 
-    /**
-     * Enabled gradient config with custom options.
-     */
+    /** Enabled gradient config with custom options. */
     data class Enabled(
         override val duration: Int,
         override val color: Color,
@@ -132,9 +120,7 @@ sealed interface GradientConfig {
         override val useGradient: Boolean = true
     }
 
-    /**
-     * Disabled gradient config (no animation, transparent color).
-     */
+    /** Disabled gradient config (no animation, transparent color) */
     data object Disabled : GradientConfig {
         override val useGradient: Boolean = false
         override val duration: Int = 0

@@ -37,25 +37,25 @@ internal fun DrawSoundWaveFill(
     color: Color,
     modifier: Modifier = Modifier,
 ) {
-    // The radius from the center to the start of the bars
+    /** The radius from the center to the start of the bars */
     var adjustedRadius by remember { mutableFloatStateOf(0f) }
 
-    // The maximum possible bar height based on canvas size
+    /**  The maximum possible bar height based on canvas size */
     var maxEffectHeight by remember { mutableFloatStateOf(0f) }
 
-    // Path used to define the circular center hole (to clip out)
+    /** Path used to define the circular center hole (to clip out) */
     var holePath by remember { mutableStateOf(Path()) }
 
-    // Angle between each bar in the 360° circle
+    /** Angle between each bar in the 360° circle */
     val angleStep = 360f / audioData.size
 
-    // The path that represents the full waveform
+    /** The path that represents the full waveform */
     val path = Path()
 
-    // Animated gradient radius for visual effect
+    /** Animated gradient radius for visual effect */
     val animatedGradientRadius = animatedGradientRadius(LinearOutSlowInEasing)
 
-    // Main canvas for drawing the sound wave
+    /** Main canvas for drawing the sound wave */
     Canvas(
         modifier = modifier
             .fillMaxSize()

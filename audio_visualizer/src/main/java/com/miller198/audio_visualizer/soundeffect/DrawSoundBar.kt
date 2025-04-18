@@ -33,19 +33,19 @@ internal fun DrawSoundBar(
     color: Color,
     modifier: Modifier = Modifier,
 ) {
-    // The radius from the center to the start of the bars
+    /** The radius from the center to the start of the bars */
     var adjustedRadius by remember { mutableFloatStateOf(0f) }
 
-    // The maximum possible bar height based on canvas size
+    /** The maximum possible bar height based on canvas size */
     var maxEffectHeight by remember { mutableFloatStateOf(0f) }
 
-    // Animated gradient radius for dynamic glow effects
+    /** Animated gradient radius for dynamic glow effects */
     val animatedGradientRadius = animatedGradientRadius(LinearEasing)
 
-    // Angle between each bar in the 360° circle
+    /** Angle between each bar in the 360° circle */
     val angleStep = 360f / audioData.size
 
-    // Main canvas for drawing the sound bars
+    /** Main canvas for drawing the sound bars */
     Canvas(
         modifier = modifier
             .fillMaxSize()
