@@ -15,10 +15,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.miller198.audio_visualizer.configs.GradientConfig
+import com.miller198.audio_visualizer.configs.VisualizerConfig
+import com.miller198.audio_visualizer.soundeffect.SoundEffects
+import com.miller198.audio_visualizer.ui.CircleVisualizer
 import com.squirtles.domain.model.Song
 import com.squirtles.musicroad.R
-import com.squirtles.musicroad.detail.components.music.visualizer.SoundEffects
-import com.squirtles.musicroad.detail.components.music.visualizer.ui.CircleVisualizer
 
 @Composable
 internal fun CircleAlbumCover(
@@ -36,6 +38,11 @@ internal fun CircleAlbumCover(
         CircleVisualizer(
             audioSessionId = audioSessionId,
             soundEffects = SoundEffects.BAR,
+            visualizerConfig = VisualizerConfig.FftCaptureConfig.Default,
+            gradientConfig = GradientConfig.Enabled(
+                color = audioEffectColor.mixedWhite(),
+                duration = 2500
+            ),
             color = audioEffectColor,
             modifier = modifier.align(Alignment.Center)
         )
@@ -66,3 +73,10 @@ internal fun CircleAlbumCover(
         )
     }
 }
+
+private fun Color.mixedWhite(): Color = Color(
+    red = (Color.White.red + this.red) / 2,
+    green = (Color.White.green + this.green) / 2,
+    blue = (Color.White.blue + this.blue) / 2,
+    alpha = 0.9f
+)

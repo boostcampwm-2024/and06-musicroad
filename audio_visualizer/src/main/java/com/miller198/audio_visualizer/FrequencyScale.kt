@@ -1,4 +1,4 @@
-package com.squirtles.musicroad.detail.components.music.visualizer
+package com.miller198.audio_visualizer
 
 /**
  * Represents a frequency range (as a ratio of the full signal) and its corresponding scaling weight.
