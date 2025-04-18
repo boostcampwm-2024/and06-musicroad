@@ -29,7 +29,7 @@ object DrawSoundEffectConfigs {
      * Current clipping radius configuration. Controls the inner radius of the sound wave.
      * Default is [ClippingRadiusConfig.FullClip]
      */
-    internal var innerRadiusConfig: ClippingRadiusConfig = ClippingRadiusConfig.FullClip
+    internal var clippingRadiusConfig: ClippingRadiusConfig = ClippingRadiusConfig.FullClip
 
     /**
      * Animated radius value for a radial gradient brush.
@@ -69,11 +69,11 @@ object DrawSoundEffectConfigs {
         onRadiusCalculated: (Float) -> Unit,
         onMaxEffectHeightCalculated: (Float) -> Unit
     ) {
-        val innerRadius = innerRadiusConfig.dp.value
-        val innerRadiusRatio = innerRadiusConfig.ratio
+        val clippingRadius = clippingRadiusConfig.dp.value
+        val clippingRadiusRatio = clippingRadiusConfig.ratio
 
         onRadiusCalculated(
-            if (innerRadius > 0f) innerRadius else (min(width, height) / 2) * innerRadiusRatio
+            if (clippingRadius > 0f) clippingRadius else (min(width, height) / 2) * clippingRadiusRatio
         )
 
         onMaxEffectHeightCalculated(

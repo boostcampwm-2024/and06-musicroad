@@ -53,7 +53,7 @@ fun CircleVisualizer(
 
     // Set global visual configuration (used in other rendering composable functions)
     DrawSoundEffectConfigs.gradientConfig = gradientConfig
-    DrawSoundEffectConfigs.innerRadiusConfig = clippingRadiusConfig
+    DrawSoundEffectConfigs.clippingRadiusConfig = clippingRadiusConfig
 
     // Start the visualizer when the composable is composed with the given audio session ID
     LaunchedEffect(audioSessionId) {
