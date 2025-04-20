@@ -5,7 +5,7 @@ import androidx.compose.ui.graphics.Path
 import kotlin.math.cos
 import kotlin.math.sin
 
-private val DEFAULT_OFFSET_ANGLE = Math.toRadians(-90.0)
+private val DEFAULT_START_ANGLE = Math.toRadians(-90.0)
 
 /**
  * Converts an audio data index to an angle (in radians) for circular visualizations.
@@ -18,7 +18,7 @@ private val DEFAULT_OFFSET_ANGLE = Math.toRadians(-90.0)
 internal fun getAudioDataAngle(
     index: Int,
     angleStep: Float,
-    offset: Double = DEFAULT_OFFSET_ANGLE
+    offset: Double = DEFAULT_START_ANGLE
 ): Float = (offset + Math.toRadians((index * angleStep).toDouble())).toFloat()
 
 /**
