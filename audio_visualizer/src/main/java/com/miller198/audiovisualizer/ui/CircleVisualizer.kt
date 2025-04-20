@@ -2,7 +2,7 @@ package com.miller198.audiovisualizer.ui
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
-import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -88,7 +88,7 @@ fun CircleVisualizer(
                         targetValue = magnitude,
                         animationSpec = tween(
                             durationMillis = 120,
-                            easing = FastOutSlowInEasing
+                            easing = LinearEasing
                         )
                     )
                 }
