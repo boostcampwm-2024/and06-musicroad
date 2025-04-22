@@ -98,10 +98,6 @@ android {
 }
 
 dependencies {
-//    implementation(projects.domain)
-//    implementation(projects.data)
-//    implementation(projects.mediaservice)
-    implementation(projects.audioVisualizer)
     implementation(projects.core.account)
     implementation(projects.core.musicplayer)
     implementation(projects.core.model)
@@ -129,6 +125,7 @@ dependencies {
     implementation(projects.feature.create)
     implementation(projects.feature.favorite)
     implementation(projects.feature.mypick)
+    implementation(projects.feature.detail)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

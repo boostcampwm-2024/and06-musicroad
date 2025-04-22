@@ -63,7 +63,7 @@ fun ClusterBottomSheet(
                     .fillMaxWidth()
                     .padding(start = DEFAULT_PADDING)
             )
-            
+
             VerticalSpacer(height = 8)
 
             LazyColumn {

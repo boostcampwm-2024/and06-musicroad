@@ -26,9 +26,9 @@ import androidx.compose.ui.unit.dp
 import com.squirtles.common.ui.theme.Black
 import com.squirtles.common.ui.theme.MusicRoadTheme
 import com.squirtles.common.ui.theme.White
+import com.squirtles.detail.DetailViewModel.Companion.DEFAULT_PICK
 import com.squirtles.model.Pick
 import com.squirtles.musicroad.R
-import com.squirtles.musicroad.detail.DetailViewModel.Companion.DEFAULT_PICK
 
 @Composable
 fun PickNotificationBanner(

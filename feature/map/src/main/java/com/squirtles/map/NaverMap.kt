@@ -185,7 +185,6 @@ private fun NaverMap.initLocationOverlay(
     }
 }
 
-@SuppressLint("MissingPermission")
 private fun NaverMap.initDeviceLocation(
     context: Context,
     circleOverlay: CircleOverlay,

@@ -15,6 +15,7 @@ import com.naver.maps.map.overlay.Align
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.Overlay
 import com.naver.maps.map.overlay.OverlayImage
+import com.squirtles.common.ui.Constants.REQUEST_IMAGE_SIZE_DEFAULT
 import com.squirtles.common.ui.theme.Black
 import com.squirtles.common.ui.theme.Blue
 import com.squirtles.common.ui.theme.Primary
@@ -22,7 +23,6 @@ import com.squirtles.common.ui.theme.White
 import com.squirtles.map.DEFAULT_MARKER_Z_INDEX
 import com.squirtles.map.MapViewModel
 import com.squirtles.map.setCameraToMarker
-
 
 internal fun <T : ClusteringKey> buildClusterer(
     context: Context,
@@ -116,7 +116,12 @@ internal fun <T : ClusteringKey> buildClusterer(
                     val color = if (pick.createdBy.uid == mapViewModel.getUid()) Blue else Primary
                     setPaintColor(color.toArgb())
                 }
-                leafMarkerIconView.setLeafMarkerIcon(pick) {
+                leafMarkerIconView.setLeafMarkerIcon(
+                    pick.song.getImageUrlWithSize(
+                        REQUEST_IMAGE_SIZE_DEFAULT.width,
+                        REQUEST_IMAGE_SIZE_DEFAULT.height
+                    )
+                ) {
                     marker.icon = OverlayImage.fromView(leafMarkerIconView)
                     marker.setOnClickListener {
                         marker.map?.let { map ->
