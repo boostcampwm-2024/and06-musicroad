@@ -12,7 +12,7 @@ import com.squirtles.musicroad.map.MapViewModel
 import com.squirtles.musicroad.map.navigation.mapNavGraph
 import com.squirtles.musicroad.mypick.navigation.myPickNavGraph
 import com.squirtles.musicroad.search.navigation.searchNavGraph
-import com.squirtles.musicroad.userinfo.navigation.userInfoNavGraph
+import com.squirtles.userinfo.navigation.userInfoNavGraph
 
 @Composable
 internal fun MainNavHost(
