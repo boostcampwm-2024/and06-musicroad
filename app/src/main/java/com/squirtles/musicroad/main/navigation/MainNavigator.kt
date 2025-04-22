@@ -11,8 +11,8 @@ import androidx.navigation.navOptions
 import com.squirtles.create.navigation.navigateCreate
 import com.squirtles.detail.navigation.navigatePickDetail
 import com.squirtles.favorite.navigation.navigateFavorite
+import com.squirtles.map.navigation.navigateMap
 import com.squirtles.model.Song
-import com.squirtles.musicroad.map.navigation.navigateMap
 import com.squirtles.mypick.navigation.navigateMyPicks
 import com.squirtles.navigation.Route
 import com.squirtles.search.navigation.navigateSearch

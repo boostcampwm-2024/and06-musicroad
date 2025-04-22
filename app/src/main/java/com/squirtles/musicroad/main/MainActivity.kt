@@ -145,6 +145,7 @@ class MainActivity : AppCompatActivity() {
 
                 MainNavHost(
                     navigator = navigator,
+                    finishActivity = { this.finish() },
                 )
             }
         }

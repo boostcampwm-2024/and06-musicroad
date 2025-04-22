@@ -126,6 +126,7 @@ dependencies {
     implementation(projects.feature.favorite)
     implementation(projects.feature.mypick)
     implementation(projects.feature.detail)
+    implementation(projects.feature.map)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

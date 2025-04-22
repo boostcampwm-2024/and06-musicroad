@@ -7,9 +7,9 @@ import androidx.navigation.compose.NavHost
 import com.squirtles.create.navigation.createNavGraph
 import com.squirtles.detail.navigation.detailNavGraph
 import com.squirtles.favorite.navigation.favoriteNavGraph
+import com.squirtles.map.MapViewModel
+import com.squirtles.map.navigation.mapNavGraph
 import com.squirtles.musicplayer.PlayerServiceViewModel
-import com.squirtles.musicroad.map.MapViewModel
-import com.squirtles.musicroad.map.navigation.mapNavGraph
 import com.squirtles.mypick.navigation.myPickNavGraph
 import com.squirtles.search.navigation.searchNavGraph
 import com.squirtles.userinfo.navigation.userInfoNavGraph
@@ -18,6 +18,7 @@ import com.squirtles.userinfo.navigation.userInfoNavGraph
 internal fun MainNavHost(
     modifier: Modifier = Modifier,
     navigator: MainNavigator,
+    finishActivity: () -> Unit,
     mapViewModel: MapViewModel = hiltViewModel(),
     playerServiceViewModel: PlayerServiceViewModel = hiltViewModel(),
 ) {
@@ -32,6 +33,7 @@ internal fun MainNavHost(
             onCenterClick = navigator::navigateSearch,
             onUserInfoClick = navigator::navigateUserInfo,
             onPickSummaryClick = navigator::navigatePickDetail,
+            onLoadingDialogCloseClick = finishActivity
         )
 
         searchNavGraph(
