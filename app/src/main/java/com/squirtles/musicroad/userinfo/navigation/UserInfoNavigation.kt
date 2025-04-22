@@ -5,7 +5,6 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import com.squirtles.musicroad.mypick.MyPickScreen
 import com.squirtles.musicroad.navigation.MainRoute
 import com.squirtles.musicroad.navigation.UserInfoRoute
 import com.squirtles.musicroad.userinfo.screen.EditNotificationSettingScreen

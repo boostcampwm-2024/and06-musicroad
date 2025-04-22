@@ -1,6 +1,6 @@
 package com.squirtles.musicroad.detail
 
-import com.squirtles.domain.model.Pick
+import com.squirtles.model.Pick
 
 sealed class PickDetailUiState {
     data object Loading : PickDetailUiState()

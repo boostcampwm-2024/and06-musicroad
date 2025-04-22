@@ -29,7 +29,7 @@ android {
         versionCode = 10100
         versionName = "1.1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+//        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -98,9 +98,31 @@ android {
 }
 
 dependencies {
-    implementation(projects.domain)
-    implementation(projects.data)
-    implementation(projects.mediaservice)
+//    implementation(projects.domain)
+//    implementation(projects.data)
+//    implementation(projects.mediaservice)
+    implementation(projects.audioVisualizer)
+    implementation(projects.core.musicplayer)
+    implementation(projects.core.model)
+    implementation(projects.core.common)
+    implementation(projects.core.picklist)
+    implementation(projects.core.navigation)
+    implementation(projects.core.util)
+    implementation(projects.domain.applemusic)
+    implementation(projects.domain.firebase)
+    implementation(projects.domain.user)
+    implementation(projects.domain.pick)
+    implementation(projects.domain.picklist)
+    implementation(projects.domain.favorite)
+    implementation(projects.domain.order)
+    implementation(projects.domain.location)
+    implementation(projects.data.applemusic)
+    implementation(projects.data.firebase)
+    implementation(projects.data.user)
+    implementation(projects.data.pick)
+    implementation(projects.data.favorite)
+    implementation(projects.data.location)
+    implementation(projects.data.order)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -150,10 +172,7 @@ dependencies {
     implementation(libs.coil.network.okhttp)
 
     // ExoPlayer
-    implementation(libs.androidx.media3.exoplayer)
-    implementation(libs.androidx.media3.exoplayer.dash)
-    implementation(libs.androidx.media3.ui)
-    implementation(libs.androidx.media3.session)
+    implementation(libs.bundles.exoplayer)
 
     // Paging
     implementation(libs.androidx.paging.runtime)

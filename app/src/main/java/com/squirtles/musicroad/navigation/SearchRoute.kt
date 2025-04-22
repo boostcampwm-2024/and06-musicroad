@@ -2,8 +2,8 @@ package com.squirtles.musicroad.navigation
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.toRoute
-import com.squirtles.domain.model.Song
-import com.squirtles.musicroad.utils.serializableType
+import com.squirtles.model.Song
+import com.squirtles.util.serializableType
 import kotlinx.serialization.Serializable
 import kotlin.reflect.typeOf
 

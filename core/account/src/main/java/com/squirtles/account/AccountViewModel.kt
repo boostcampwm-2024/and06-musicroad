@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
-import com.squirtles.domain.user.usecase.SignOutUseCase
+import com.squirtles.user.usecase.SignOutUseCase
 import com.squirtles.user.usecase.CreateGoogleIdUserUseCase
 import com.squirtles.user.usecase.DeleteAccountUseCase
 import com.squirtles.user.usecase.FetchUserByIdUseCase

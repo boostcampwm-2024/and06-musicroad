@@ -8,4 +8,7 @@ android {
 
 dependencies {
     implementation(libs.inject)
+
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.bundles.test)
 }

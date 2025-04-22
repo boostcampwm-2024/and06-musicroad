@@ -8,8 +8,8 @@ import androidx.navigation.toRoute
 import com.squirtles.favorite.FavoriteScreen
 import com.squirtles.navigation.MainRoute
 
-fun NavController.navigateFavorite(userId: String, navOptions: NavOptions? = null) {
-    navigate(MainRoute.Favorite(userId), navOptions)
+fun NavController.navigateFavorite(uid: String, navOptions: NavOptions? = null) {
+    navigate(MainRoute.Favorite(uid), navOptions)
 }
 
 fun NavGraphBuilder.favoriteNavGraph(

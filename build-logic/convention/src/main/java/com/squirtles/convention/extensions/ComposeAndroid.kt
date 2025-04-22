@@ -17,9 +17,11 @@ internal fun Project.configureComposeAndroid(commonExtension: CommonExtension<*,
 		dependencies {
 			val composeBom = libs.getLibrary("compose.bom")
 			implementation(platform(composeBom))
+			androidTestImplementation(platform(composeBom))
 			implementation(libs.getBundle("compose"))
 			implementation(libs.getBundle("material"))
 			debugImplementation(libs.getBundle("compose-debug"))
+			androidTestImplementation(libs.getBundle("compose-debug"))
 		}
 	}
 }

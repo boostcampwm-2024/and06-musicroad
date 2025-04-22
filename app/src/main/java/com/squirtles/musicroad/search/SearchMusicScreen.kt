@@ -55,7 +55,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.squirtles.domain.model.Song
+import com.squirtles.model.Song
 import com.squirtles.musicroad.R
 import com.squirtles.musicroad.common.AlbumImage
 import com.squirtles.musicroad.common.Constants.COLOR_STOPS

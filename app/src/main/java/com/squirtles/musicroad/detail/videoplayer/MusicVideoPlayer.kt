@@ -21,13 +21,12 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.media3.common.util.UnstableApi
-import com.squirtles.domain.model.Pick
 import kotlinx.coroutines.launch
 
 @OptIn(UnstableApi::class)
 @Composable
 fun MusicVideoPlayer(
-    pick: Pick,
+    musicVideoUrl: String,
     videoPlayerViewModel: VideoPlayerViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -56,7 +55,7 @@ fun MusicVideoPlayer(
 
     AndroidView(
         factory = {
-            videoPlayerViewModel.initializePlayer(context, pick.musicVideoUrl)
+            videoPlayerViewModel.initializePlayer(context, musicVideoUrl)
             textureView.apply {
                 surfaceTextureListener = object : TextureView.SurfaceTextureListener {
                     override fun onSurfaceTextureAvailable(surfaceTexture: SurfaceTexture, width: Int, height: Int) {

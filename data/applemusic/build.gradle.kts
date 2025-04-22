@@ -10,6 +10,9 @@ android {
 dependencies {
     implementation(projects.domain.applemusic)
 
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.bundles.test)
+
     implementation(libs.androidx.paging.runtime)
 
     // Kotlinx Serialization

@@ -5,10 +5,11 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import com.squirtles.create.navigation.createNavGraph
+import com.squirtles.detail.navigation.detailNavGraph
+import com.squirtles.musicplayer.PlayerServiceViewModel
 import com.squirtles.musicroad.favorite.navigation.favoriteNavGraph
 import com.squirtles.musicroad.map.MapViewModel
 import com.squirtles.musicroad.map.navigation.mapNavGraph
-import com.squirtles.musicroad.media.PlayerServiceViewModel
 import com.squirtles.musicroad.mypick.navigation.myPickNavGraph
 import com.squirtles.musicroad.search.navigation.searchNavGraph
 import com.squirtles.musicroad.userinfo.navigation.userInfoNavGraph
@@ -31,13 +32,18 @@ internal fun MainNavHost(
             onCenterClick = navigator::navigateSearch,
             onUserInfoClick = navigator::navigateUserInfo,
             onPickSummaryClick = navigator::navigatePickDetail,
-            onBackClick = navigator::popBackStackIfNotMap,
-            onDeleted = mapViewModel::resetClickedMarkerState
         )
 
         searchNavGraph(
             onBackClick = navigator::popBackStackIfNotMap,
             onItemClick = navigator::navigateCreate,
+        )
+
+        detailNavGraph(
+            playerServiceViewModel = playerServiceViewModel,
+            onUserInfoClick = navigator::navigateUserInfo,
+            onBackClick = navigator::popBackStackIfNotMap,
+            onDeleted = mapViewModel::resetClickedMarkerState
         )
 
         createNavGraph(

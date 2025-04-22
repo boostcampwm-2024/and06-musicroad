@@ -7,6 +7,11 @@ android {
 }
 
 dependencies {
+    implementation(projects.domain.firebase)
+
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.bundles.test)
+
     // Firebase
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.geofire.android.common)

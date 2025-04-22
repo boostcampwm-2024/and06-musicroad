@@ -47,10 +47,10 @@ import androidx.compose.ui.unit.sp
 import androidx.core.graphics.toColorInt
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.squirtles.domain.model.Creator
-import com.squirtles.domain.model.LocationPoint
-import com.squirtles.domain.model.Pick
-import com.squirtles.domain.model.Song
+import com.squirtles.model.Creator
+import com.squirtles.model.LocationPoint
+import com.squirtles.model.Pick
+import com.squirtles.model.Song
 import com.squirtles.musicroad.R
 import com.squirtles.musicroad.common.VerticalSpacer
 import com.squirtles.musicroad.ui.theme.Black

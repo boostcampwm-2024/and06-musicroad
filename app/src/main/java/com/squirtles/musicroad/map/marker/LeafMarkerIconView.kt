@@ -14,8 +14,6 @@ import coil3.request.allowHardware
 import coil3.request.transformations
 import coil3.toBitmap
 import coil3.transform.CircleCropTransformation
-import com.squirtles.domain.model.Pick
-import com.squirtles.musicroad.common.Constants.REQUEST_IMAGE_SIZE_DEFAULT
 
 class LeafMarkerIconView(
     context: Context,
@@ -70,9 +68,8 @@ class LeafMarkerIconView(
         strokePaint.color = color
     }
 
-    fun setLeafMarkerIcon(pick: Pick, onImageLoaded: () -> Unit) {
-        val song = pick.song
-        loadImage(song.getImageUrlWithSize(REQUEST_IMAGE_SIZE_DEFAULT.width, REQUEST_IMAGE_SIZE_DEFAULT.height)) {
+    fun setLeafMarkerIcon(imgUrl: String?, onImageLoaded: () -> Unit) {
+        loadImage(imgUrl) {
             onImageLoaded()
         }
     }

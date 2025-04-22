@@ -56,7 +56,7 @@ import androidx.core.graphics.toColorInt
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.squirtles.domain.model.Song
+import com.squirtles.model.Song
 import com.squirtles.musicroad.R
 import com.squirtles.musicroad.common.AlbumImage
 import com.squirtles.musicroad.common.VerticalSpacer

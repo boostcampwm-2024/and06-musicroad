@@ -10,6 +10,9 @@ dependencies {
     implementation(projects.domain.user)
     implementation(projects.data.firebase)
 
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.bundles.test)
+
     // Datastore
     implementation(libs.androidx.datastore.preferences)
 

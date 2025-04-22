@@ -8,15 +8,15 @@ class FirebaseFavoriteRepositoryImpl @Inject constructor(
     private val favoriteDataSource: FirebaseFavoriteDataSource
 ) : FirebaseFavoriteRepository {
 
-    override suspend fun fetchIsFavorite(pickId: String, userId: String): Result<Boolean> {
-        return favoriteDataSource.fetchIsFavorite(pickId, userId)
+    override suspend fun fetchIsFavorite(pickId: String, uid: String): Result<Boolean> {
+        return favoriteDataSource.fetchIsFavorite(pickId, uid)
     }
 
-    override suspend fun createFavorite(pickId: String, userId: String): Result<String> {
-        return favoriteDataSource.createFavorite(pickId, userId)
+    override suspend fun createFavorite(pickId: String, uid: String): Result<String> {
+        return favoriteDataSource.createFavorite(pickId, uid)
     }
 
-    override suspend fun deleteFavorite(pickId: String, userId: String): Result<String> {
-        return favoriteDataSource.deleteFavorite(pickId, userId)
+    override suspend fun deleteFavorite(pickId: String, uid: String): Result<String> {
+        return favoriteDataSource.deleteFavorite(pickId, uid)
     }
 }

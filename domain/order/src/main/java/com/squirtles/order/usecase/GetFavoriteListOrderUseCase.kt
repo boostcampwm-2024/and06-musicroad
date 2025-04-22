@@ -1,7 +1,7 @@
 package com.squirtles.order.usecase
 
 import com.squirtles.order.LocalPickListOrderRepository
-import com.squirtles.picklist.GetPickListOrderUseCaseInterface
+import com.squirtles.domain.picklist.GetPickListOrderUseCaseInterface
 import javax.inject.Inject
 
 class GetFavoriteListOrderUseCase @Inject constructor(

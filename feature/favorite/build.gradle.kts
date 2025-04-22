@@ -7,7 +7,6 @@ android {
 }
 
 dependencies {
-    implementation(projects.core.common)
     implementation(projects.core.picklist)
     implementation(projects.domain.picklist)
     implementation(projects.domain.favorite)

@@ -4,10 +4,11 @@ import com.google.firebase.auth.FirebaseAuth
 import com.squirtles.firebase.model.FirebaseUser
 import com.squirtles.firebase.model.toUser
 import com.squirtles.model.User
+import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class FirebaseUserRepositoryImpl(
+class FirebaseUserRepositoryImpl @Inject constructor(
     private val userDataSource: FirebaseUserDataSource
 ) : FirebaseUserRepository {
 

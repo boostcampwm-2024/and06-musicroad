@@ -6,26 +6,24 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.squirtles.domain.applemusic.usecase.FetchMusicVideoUseCase
-import com.squirtles.domain.location.usecase.GetLastLocationUseCase
-import com.squirtles.domain.model.Creator
-import com.squirtles.domain.model.LocationPoint
-import com.squirtles.domain.model.Pick
-import com.squirtles.domain.model.Song
+import com.squirtles.applemusic.usecase.FetchMusicVideoUseCase
 import com.squirtles.domain.pick.usecase.CreatePickUseCase
-import com.squirtles.domain.user.usecase.FetchUserByIdUseCase
-import com.squirtles.domain.user.usecase.GetCurrentUidUseCase
+import com.squirtles.location.usecase.GetLastLocationUseCase
+import com.squirtles.model.Creator
+import com.squirtles.model.LocationPoint
+import com.squirtles.model.Pick
+import com.squirtles.model.Song
 import com.squirtles.musicroad.navigation.SearchRoute
-import com.squirtles.musicroad.utils.throttleFirst
+import com.squirtles.user.usecase.FetchUserByIdUseCase
+import com.squirtles.user.usecase.GetCurrentUidUseCase
+import com.squirtles.util.throttleFirst
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@OptIn(FlowPreview::class)
 @HiltViewModel
 class CreatePickViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,

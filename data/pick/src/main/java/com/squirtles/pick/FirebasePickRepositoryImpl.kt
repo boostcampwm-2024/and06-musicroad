@@ -1,8 +1,6 @@
 package com.squirtles.pick
 
-import android.util.Log
-import com.squirtles.firebase.FirebaseException
-import com.squirtles.firebase.handleResult
+import com.squirtles.domain.pick.FirebasePickRepository
 import com.squirtles.firebase.model.toFirebasePick
 import com.squirtles.firebase.model.toPick
 import com.squirtles.model.Pick
@@ -23,9 +21,9 @@ class FirebasePickRepositoryImpl @Inject constructor(
         return pickDataSource.deletePick(pickId, userId)
     }
 
-    override suspend fun fetchPick(pickID: String): Result<Pick> {
+    override suspend fun fetchPick(pickId: String): Result<Pick> {
         return runCatching {
-            val firebasePick = pickDataSource.fetchPick(pickID).getOrThrow()
+            val firebasePick = pickDataSource.fetchPick(pickId).getOrThrow()
             firebasePick.toPick()
         }
     }

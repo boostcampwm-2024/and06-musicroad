@@ -13,7 +13,7 @@ import com.squirtles.model.LocationPoint
 import com.squirtles.model.Pick
 import com.squirtles.model.Song
 import com.squirtles.navigation.SearchRoute
-import com.squirtles.pick.usecase.CreatePickUseCase
+import com.squirtles.domain.pick.usecase.CreatePickUseCase
 import com.squirtles.user.usecase.FetchUserByIdUseCase
 import com.squirtles.user.usecase.GetCurrentUidUseCase
 import com.squirtles.util.serializableType

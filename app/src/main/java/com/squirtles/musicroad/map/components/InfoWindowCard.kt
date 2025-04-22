@@ -24,10 +24,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toColorInt
-import com.squirtles.domain.model.Creator
-import com.squirtles.domain.model.LocationPoint
-import com.squirtles.domain.model.Pick
-import com.squirtles.domain.model.Song
+import com.squirtles.model.Creator
+import com.squirtles.model.LocationPoint
+import com.squirtles.model.Pick
+import com.squirtles.model.Song
 import com.squirtles.musicroad.common.AlbumImage
 import com.squirtles.musicroad.common.CreatedByOtherUserText
 import com.squirtles.musicroad.common.CreatedBySelfText

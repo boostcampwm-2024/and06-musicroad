@@ -19,3 +19,7 @@ val Gray = Color(0xFFAAAAAA)
 val White = Color(0xFFFFFFFF)
 
 val PlayerBackground = Color(0xFF353535)
+
+val SignInButtonDarkBackground = Color(0xFF131314)
+val SignInButtonLightStroke = Color(0xFF747775)
+val SignInButtonDarkStroke = Color(0xFF8E918F)

@@ -21,9 +21,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import com.squirtles.domain.model.LocationPoint
-import com.squirtles.domain.model.Pick
-import com.squirtles.domain.model.Song
+import com.squirtles.model.LocationPoint
+import com.squirtles.model.Pick
+import com.squirtles.model.Song
 import com.squirtles.musicroad.common.AlbumImage
 import com.squirtles.musicroad.common.CommentText
 import com.squirtles.musicroad.common.Constants.DEFAULT_PADDING

@@ -4,7 +4,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-import com.squirtles.domain.model.Song
+import com.squirtles.model.Song
 import com.squirtles.musicroad.navigation.MainRoute
 import com.squirtles.musicroad.search.SearchMusicScreen
 

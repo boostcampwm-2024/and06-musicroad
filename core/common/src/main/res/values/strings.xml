@@ -12,4 +12,19 @@
 
     <string name="map_info_window_favorite_count_icon_description">픽을 담은 개수</string>
     <string name="total_count_text">전체</string>
+
+    <!-- Account -->
+    <string name="profile_sign_in_title">로그인</string>
+    <string name="profile_sign_in_google">Sign in with Google</string>
+    <string name="profile_google_icon">Google Logo</string>
+
+    <!--SignIn -->
+    <string name="sign_in_dialog_title_default">더 많은 기능을 이용하기 위해\n로그인이 필요합니다</string>
+    <string name="sign_in_dialog_title_favorite_picks">담은 픽을 확인하기 위해\n로그인이 필요합니다</string>
+    <string name="sign_in_dialog_title_add_pick">픽을 등록하기 위해\n로그인이 필요합니다</string>
+    <string name="sign_in_dialog_title_favorite">픽을 담기 위해\n로그인이 필요합니다</string>
+    <string name="sign_in_dialog_title_user_info">픽을 담기 위해\n로그인이 필요합니다</string>
+    <string name="sign_in_dialog">로그인이 필요합니다</string>
+    <string name="sign_in_dialog_dismiss">취소</string>
+    <string name="google_id_no_credential_exception_message">기기에 로그인된 구글 계정이 없습니다</string>
 </resources>

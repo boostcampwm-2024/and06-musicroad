@@ -1,5 +1,7 @@
 package com.squirtles.firebase
 
+import com.squirtles.domain.firebase.FirebaseException
+
 suspend fun <T> handleResult(
     firebaseRepositoryException: FirebaseException,
     call: suspend () -> T?

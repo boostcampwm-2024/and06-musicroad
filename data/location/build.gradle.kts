@@ -9,4 +9,7 @@ android {
 
 dependencies {
     implementation(projects.domain.location)
+
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.bundles.test)
 }

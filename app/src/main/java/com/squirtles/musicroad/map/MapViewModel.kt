@@ -9,12 +9,12 @@ import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraPosition
 import com.naver.maps.map.clustering.Clusterer
 import com.naver.maps.map.overlay.Marker
-import com.squirtles.domain.location.usecase.GetLastLocationUseCase
-import com.squirtles.domain.location.usecase.SaveLastLocationUseCase
-import com.squirtles.domain.model.Pick
 import com.squirtles.domain.pick.usecase.FetchPickUseCase
-import com.squirtles.domain.user.usecase.GetCurrentUidUseCase
+import com.squirtles.location.usecase.GetLastLocationUseCase
+import com.squirtles.location.usecase.SaveLastLocationUseCase
+import com.squirtles.model.Pick
 import com.squirtles.musicroad.map.marker.MarkerKey
+import com.squirtles.user.usecase.GetCurrentUidUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

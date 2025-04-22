@@ -5,10 +5,10 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import com.squirtles.domain.model.Song
+import com.squirtles.model.Song
 import com.squirtles.musicroad.create.CreatePickScreen
 import com.squirtles.musicroad.navigation.SearchRoute
-import com.squirtles.musicroad.utils.serializableType
+import com.squirtles.util.serializableType
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 import kotlin.reflect.typeOf

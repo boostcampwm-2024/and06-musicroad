@@ -1,9 +1,9 @@
 package com.squirtles.user.usecase
 
 import com.squirtles.favorite.usecase.DeleteFavoriteUseCase
-import com.squirtles.pick.usecase.DeletePickUseCase
-import com.squirtles.pick.usecase.FetchFavoritePicksUseCase
-import com.squirtles.pick.usecase.FetchMyPicksUseCase
+import com.squirtles.domain.pick.usecase.DeletePickUseCase
+import com.squirtles.domain.pick.usecase.FetchFavoritePicksUseCase
+import com.squirtles.domain.pick.usecase.FetchMyPicksUseCase
 import com.squirtles.user.FirebaseUserRepository
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll

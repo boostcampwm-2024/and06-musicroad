@@ -9,8 +9,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.squirtles.domain.model.PlayerState
-import com.squirtles.domain.model.Song
+import com.squirtles.model.PlayerState
+import com.squirtles.model.Song
 import com.squirtles.musicroad.common.Constants.DEFAULT_PADDING
 import com.squirtles.musicroad.ui.theme.PlayerBackground
 

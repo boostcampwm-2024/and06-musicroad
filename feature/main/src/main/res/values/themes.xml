@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.MusicRoad" parent="Theme.MaterialComponents.Light.NoActionBar" />
+
+    <style name="Theme.MusicRoad.Splash" parent="Theme.SplashScreen.IconBackground">
+        <item name="windowSplashScreenBackground">@color/primary</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_musicroad_foreground</item>
+        <item name="postSplashScreenTheme">@style/Theme.MusicRoad</item>
+    </style>
+</resources>

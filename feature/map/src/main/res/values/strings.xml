@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="loading_current_location_dialog_text">현재 위치 로딩 중...</string>
+    <string name="close_loading_current_location_dialog">종료</string>
+
+    <!-- Map -->
+    <string name="map_navigation_favorite_icon_description">픽 보관함 이동 버튼 아이콘</string>
+    <string name="map_navigation_setting_icon_description">설정 이동 버튼 아이콘</string>
+    <string name="map_navigation_center_icon_description">내비게이션 중앙 버튼 아이콘</string>
+    <string name="map_pick_notification_play">🎧 주변에 %d개의 픽이 있습니다!</string>
+    <string name="map_pick_notification_stop">🔇 주변에 %d개의 픽이 있습니다!</string>
+    <string name="map_album_image_description">앨범 이미지</string>
+    <string name="map_info_window_pick_user">님의 픽</string>
+    <string name="map_info_window_favorite_count_icon_description">픽을 담은 개수</string>
+    <string name="pick_created_by_self_1">내가</string>
+    <string name="pick_created_by_self_2">등록한 픽</string>
+
+    <!--SignIn -->
+    <string name="sign_in_dialog_title_favorite_picks">담은 픽을 확인하기 위해\n로그인이 필요합니다</string>
+    <string name="sign_in_dialog_title_add_pick">픽을 등록하기 위해\n로그인이 필요합니다</string>
+    <string name="sign_in_dialog">로그인이 필요합니다</string>
+</resources>

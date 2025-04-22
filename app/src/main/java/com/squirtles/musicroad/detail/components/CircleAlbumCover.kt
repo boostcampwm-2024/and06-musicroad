@@ -15,19 +15,20 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.squirtles.domain.model.Song
+import com.miller198.audiovisualizer.configs.GradientConfig
+import com.miller198.audiovisualizer.configs.VisualizerConfig
+import com.miller198.audiovisualizer.soundeffect.SoundEffects
+import com.miller198.audiovisualizer.ui.CircleVisualizer
+import com.squirtles.model.Song
 import com.squirtles.musicroad.R
-import com.squirtles.musicroad.detail.components.music.visualizer.BaseVisualizer
-import com.squirtles.musicroad.detail.components.music.visualizer.CircleVisualizer
 
 @Composable
 internal fun CircleAlbumCover(
+    audioSessionId: Int,
     song: Song,
     currentPosition: () -> Long,
     duration: () -> Long,
     audioEffectColor: Color,
-    baseVisualizer: () -> BaseVisualizer,
-    audioSessionId: Int,
     onSeekChanged: (Long) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -35,15 +36,19 @@ internal fun CircleAlbumCover(
         modifier = modifier
     ) {
         CircleVisualizer(
-            baseVisualizer = baseVisualizer,
             audioSessionId = audioSessionId,
+            soundEffects = SoundEffects.BAR,
+            visualizerConfig = VisualizerConfig.FftCaptureConfig.Default,
+            gradientConfig = GradientConfig.Enabled(
+                color = audioEffectColor.mixedWhite(),
+                duration = 2500
+            ),
             color = audioEffectColor,
-            sizeRatio = 0.5f,
-            modifier = Modifier.align(Alignment.Center)
+            modifier = modifier.align(Alignment.Center)
         )
 
         PlayCircularProgressIndicator(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxSize()
                 .padding(10.dp)
                 .align(Alignment.Center),
@@ -68,3 +73,10 @@ internal fun CircleAlbumCover(
         )
     }
 }
+
+private fun Color.mixedWhite(): Color = Color(
+    red = (Color.White.red + this.red) / 2,
+    green = (Color.White.green + this.green) / 2,
+    blue = (Color.White.blue + this.blue) / 2,
+    alpha = 0.9f
+)

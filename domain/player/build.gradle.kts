@@ -10,6 +10,9 @@ dependencies {
     implementation(projects.core.model)
     implementation(projects.core.mediaservice)
 
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.bundles.test)
+
     implementation(libs.inject)
     implementation(libs.bundles.media3)
 }

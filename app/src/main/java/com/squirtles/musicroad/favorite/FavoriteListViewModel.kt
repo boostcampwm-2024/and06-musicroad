@@ -1,11 +1,11 @@
 package com.squirtles.musicroad.favorite
 
-import com.squirtles.domain.favorite.usecase.DeleteFavoriteUseCase
-import com.squirtles.domain.order.usecase.GetFavoriteListOrderUseCase
-import com.squirtles.domain.order.usecase.SaveFavoriteListOrderUseCase
 import com.squirtles.domain.pick.usecase.FetchFavoritePicksUseCase
-import com.squirtles.domain.user.usecase.GetCurrentUidUseCase
-import com.squirtles.musicroad.common.picklist.PickListViewModel
+import com.squirtles.favorite.usecase.DeleteFavoriteUseCase
+import com.squirtles.order.usecase.GetFavoriteListOrderUseCase
+import com.squirtles.order.usecase.SaveFavoriteListOrderUseCase
+import com.squirtles.picklist.PickListViewModel
+import com.squirtles.user.usecase.GetCurrentUidUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

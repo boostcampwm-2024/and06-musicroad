@@ -2,13 +2,14 @@ package com.squirtles.musicroad.userinfo
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.squirtles.domain.model.User
-import com.squirtles.domain.user.usecase.FetchUserByIdUseCase
-import com.squirtles.domain.user.usecase.GetCurrentUidUseCase
-import com.squirtles.domain.user.usecase.UpdateUserNameUseCase
+import com.squirtles.model.User
+import com.squirtles.user.usecase.FetchUserByIdUseCase
+import com.squirtles.user.usecase.GetCurrentUidUseCase
+import com.squirtles.user.usecase.UpdateUserNameUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -18,7 +19,7 @@ import javax.inject.Inject
 class UserInfoViewModel @Inject constructor(
     private val getCurrentUidUseCase: GetCurrentUidUseCase,
     private val fetchUserByIdUseCase: FetchUserByIdUseCase,
-    private val updateUserNameUseCase: UpdateUserNameUseCase
+    private val updateUserNameUseCase: UpdateUserNameUseCase,
 ) : ViewModel() {
 
     private val _profileUser = MutableStateFlow(DEFAULT_USER)

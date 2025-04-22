@@ -9,10 +9,10 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.squirtles.create.navigation.navigateCreate
-import com.squirtles.domain.model.Song
+import com.squirtles.detail.navigation.navigatePickDetail
+import com.squirtles.model.Song
 import com.squirtles.musicroad.favorite.navigation.navigateFavorite
 import com.squirtles.musicroad.map.navigation.navigateMap
-import com.squirtles.musicroad.map.navigation.navigatePickDetail
 import com.squirtles.musicroad.mypick.navigation.navigateMyPicks
 import com.squirtles.musicroad.navigation.Route
 import com.squirtles.musicroad.search.navigation.navigateSearch

@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.util.UnstableApi
-import com.squirtles.domain.model.Pick
+import com.squirtles.model.Pick
 
 @OptIn(UnstableApi::class)
 @Composable
@@ -27,7 +27,7 @@ fun MusicVideoScreen(
     BackHandler { onBackClick() }
 
     Box(modifier = modifier.fillMaxSize()) {
-        MusicVideoPlayer(pick)
+        MusicVideoPlayer(pick.musicVideoUrl)
         VideoPlayerOverlay(pick, onBackClick)
 
         if (isLoading) {
