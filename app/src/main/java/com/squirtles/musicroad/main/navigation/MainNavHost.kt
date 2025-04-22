@@ -6,8 +6,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import com.squirtles.create.navigation.createNavGraph
 import com.squirtles.detail.navigation.detailNavGraph
+import com.squirtles.favorite.navigation.favoriteNavGraph
 import com.squirtles.musicplayer.PlayerServiceViewModel
-import com.squirtles.musicroad.favorite.navigation.favoriteNavGraph
 import com.squirtles.musicroad.map.MapViewModel
 import com.squirtles.musicroad.map.navigation.mapNavGraph
 import com.squirtles.musicroad.mypick.navigation.myPickNavGraph

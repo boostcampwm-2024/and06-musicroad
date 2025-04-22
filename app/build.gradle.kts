@@ -126,6 +126,8 @@ dependencies {
     implementation(projects.data.order)
     implementation(projects.feature.userinfo)
     implementation(projects.feature.search)
+    implementation(projects.feature.create)
+    implementation(projects.feature.favorite)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

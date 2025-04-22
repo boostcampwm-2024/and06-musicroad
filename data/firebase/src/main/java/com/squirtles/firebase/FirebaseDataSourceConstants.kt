@@ -9,7 +9,7 @@ sealed class FirebaseCollections(val name: String) {
 sealed class FirebaseDocumentFields(val name: String) {
     data object AddedAt: FirebaseDocumentFields("addedAt")
     data object PickId: FirebaseDocumentFields("pickId")
-    data object UserId: FirebaseDocumentFields("userId")
+    data object Uid: FirebaseDocumentFields("uid")
     data object MyPicks: FirebaseDocumentFields("myPicks")
     data object Name: FirebaseDocumentFields("name")
     data object Location: FirebaseDocumentFields("location")

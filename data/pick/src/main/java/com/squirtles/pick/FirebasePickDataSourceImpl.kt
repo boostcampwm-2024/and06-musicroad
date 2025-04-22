@@ -159,7 +159,7 @@ class FirebasePickDataSourceImpl @Inject constructor(
     private suspend fun fetchFavoritesByUserId(userId: String): List<DocumentSnapshot> {
         return queryDocumentsEquals(
             collection = FirebaseCollections.Favorites,
-            fields = listOf(FirebaseDocumentFields.UserId),
+            fields = listOf(FirebaseDocumentFields.Uid),
             values = listOf(userId)
         ).getOrThrow().documents
     }

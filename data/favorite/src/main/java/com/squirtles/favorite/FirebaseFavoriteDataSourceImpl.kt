@@ -56,7 +56,7 @@ class FirebaseFavoriteDataSourceImpl @Inject constructor(
     private suspend fun queryFavoriteByPickIdAndUserId(pickId: String, userId: String): Result<QuerySnapshot> =
         queryDocumentsEquals(
             collection = FirebaseCollections.Favorites,
-            fields = listOf(FirebaseDocumentFields.PickId, FirebaseDocumentFields.UserId),
+            fields = listOf(FirebaseDocumentFields.PickId, FirebaseDocumentFields.Uid),
             values = listOf(pickId, userId)
         )
 
