@@ -128,6 +128,7 @@ dependencies {
     implementation(projects.feature.search)
     implementation(projects.feature.create)
     implementation(projects.feature.favorite)
+    implementation(projects.feature.mypick)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

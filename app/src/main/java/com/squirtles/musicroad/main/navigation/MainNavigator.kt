@@ -13,7 +13,7 @@ import com.squirtles.detail.navigation.navigatePickDetail
 import com.squirtles.favorite.navigation.navigateFavorite
 import com.squirtles.model.Song
 import com.squirtles.musicroad.map.navigation.navigateMap
-import com.squirtles.musicroad.mypick.navigation.navigateMyPicks
+import com.squirtles.mypick.navigation.navigateMyPicks
 import com.squirtles.navigation.Route
 import com.squirtles.search.navigation.navigateSearch
 import com.squirtles.userinfo.navigation.navigateEditNotificationSetting
