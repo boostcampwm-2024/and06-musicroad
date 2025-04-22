@@ -7,7 +7,7 @@ import androidx.navigation.compose.composable
 import com.squirtles.musicplayer.PlayerServiceViewModel
 import com.squirtles.musicroad.map.MapScreen
 import com.squirtles.musicroad.map.MapViewModel
-import com.squirtles.musicroad.navigation.Route
+import com.squirtles.navigation.Route
 
 fun NavController.navigateMap(navOptions: NavOptions? = null) {
     navigate(Route.Map, navOptions)

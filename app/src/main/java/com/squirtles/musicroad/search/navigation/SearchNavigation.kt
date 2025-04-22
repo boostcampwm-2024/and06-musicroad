@@ -5,8 +5,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.squirtles.model.Song
-import com.squirtles.musicroad.navigation.MainRoute
 import com.squirtles.musicroad.search.SearchMusicScreen
+import com.squirtles.navigation.MainRoute
 
 fun NavController.navigateSearch(navOptions: NavOptions? = null) {
     navigate(MainRoute.Search, navOptions)

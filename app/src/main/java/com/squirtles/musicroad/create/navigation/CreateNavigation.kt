@@ -7,7 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.squirtles.model.Song
 import com.squirtles.musicroad.create.CreatePickScreen
-import com.squirtles.musicroad.navigation.SearchRoute
+import com.squirtles.navigation.SearchRoute
 import com.squirtles.util.serializableType
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets

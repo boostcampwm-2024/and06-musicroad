@@ -6,7 +6,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.squirtles.musicroad.mypick.MyPickScreen
-import com.squirtles.musicroad.navigation.UserInfoRoute
+import com.squirtles.navigation.UserInfoRoute
 
 fun NavController.navigateMyPicks(uid: String, navOptions: NavOptions) {
     navigate(UserInfoRoute.MyPicks(uid), navOptions)

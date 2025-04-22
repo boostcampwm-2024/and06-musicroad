@@ -13,9 +13,10 @@ import com.squirtles.model.Creator
 import com.squirtles.model.LocationPoint
 import com.squirtles.model.Pick
 import com.squirtles.model.Song
-import com.squirtles.musicroad.navigation.SearchRoute
+import com.squirtles.navigation.SearchRoute
 import com.squirtles.user.usecase.FetchUserByIdUseCase
 import com.squirtles.user.usecase.GetCurrentUidUseCase
+import com.squirtles.util.serializableType
 import com.squirtles.util.throttleFirst
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -23,6 +24,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.reflect.typeOf
 
 @HiltViewModel
 class CreatePickViewModel @Inject constructor(
@@ -33,8 +35,8 @@ class CreatePickViewModel @Inject constructor(
     private val getCurrentUidUseCase: GetCurrentUidUseCase,
     private val fetchUserByIdUseCase: FetchUserByIdUseCase
 ) : ViewModel() {
-
-    private val song = savedStateHandle.toRoute<SearchRoute.Create>(SearchRoute.Create.typeMap).song
+    private val songTypeMap = mapOf(typeOf<Song>() to serializableType<Song>())
+    private val song = savedStateHandle.toRoute<SearchRoute.Create>(songTypeMap).song
 
     private val _createPickUiState = MutableStateFlow<CreateUiState<String>>(CreateUiState.Default)
     val createPickUiState = _createPickUiState.asStateFlow()

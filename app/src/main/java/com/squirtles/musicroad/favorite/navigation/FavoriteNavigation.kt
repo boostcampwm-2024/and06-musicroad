@@ -6,7 +6,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.squirtles.musicroad.favorite.FavoriteScreen
-import com.squirtles.musicroad.navigation.MainRoute
+import com.squirtles.navigation.MainRoute
 
 fun NavController.navigateFavorite(uid: String, navOptions: NavOptions? = null) {
     navigate(MainRoute.Favorite(uid), navOptions)

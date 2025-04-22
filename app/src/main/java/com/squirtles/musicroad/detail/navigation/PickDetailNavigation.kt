@@ -8,7 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.squirtles.musicplayer.PlayerServiceViewModel
 import com.squirtles.musicroad.detail.PickDetailScreen
-import com.squirtles.musicroad.navigation.MapRoute
+import com.squirtles.navigation.MapRoute
 
 fun NavController.navigatePickDetail(pickId: String, navOptions: NavOptions? = null) {
     navigate(MapRoute.PickDetail(pickId), navOptions)
