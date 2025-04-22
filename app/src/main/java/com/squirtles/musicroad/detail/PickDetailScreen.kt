@@ -69,7 +69,7 @@ import com.squirtles.musicroad.account.AccountViewModel
 import com.squirtles.musicroad.account.GoogleId
 import com.squirtles.musicroad.detail.DetailViewModel.Companion.DEFAULT_PICK
 import com.squirtles.musicroad.detail.components.CircleAlbumCover
-import com.squirtles.musicroad.detail.components.PickDatailCommentText
+import com.squirtles.musicroad.detail.components.PickDetailCommentText
 import com.squirtles.musicroad.detail.components.DetailPickTopAppBar
 import com.squirtles.musicroad.detail.components.MusicVideoKnob
 import com.squirtles.musicroad.detail.components.PickInformation
@@ -488,7 +488,7 @@ private fun PickDetailContents(
                     favoriteCount = favoriteCount
                 )
 
-                PickDatailCommentText(comment = pick.comment)
+                PickDetailCommentText(comment = pick.comment)
 
                 VerticalSpacer(height = 8)
             }

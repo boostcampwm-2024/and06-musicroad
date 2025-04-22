@@ -22,7 +22,7 @@ import com.squirtles.common.ui.theme.White
 import com.squirtles.musicroad.R
 
 @Composable
-internal fun PickDatailCommentText(
+internal fun PickDetailCommentText(
     comment: String,
     modifier: Modifier = Modifier
 ) {
@@ -44,11 +44,11 @@ internal fun PickDatailCommentText(
 @Composable
 private fun CommentTextPreview() {
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        PickDatailCommentText(comment = "")
+        PickDetailCommentText(comment = "")
 
-        PickDatailCommentText(comment = "노래가 좋아서 추천합니다.")
+        PickDetailCommentText(comment = "노래가 좋아서 추천합니다.")
 
-        PickDatailCommentText(
+        PickDetailCommentText(
             comment = "노래가 너무너무너무너무너무너무너무너무너무너무너무너무너무너무너무너무너무너무너무너무너무너무너무너무너무너무" +
                     "너무너무너무너무너무너무너무너무너무너무너무너무너무너무너무너무너무너무너무너무너무너무 좋아요"
         )
