@@ -41,11 +41,11 @@ import com.naver.maps.map.overlay.CircleOverlay
 import com.naver.maps.map.overlay.LocationOverlay
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.util.FusedLocationSource
+import com.squirtles.common.ui.theme.Primary
+import com.squirtles.common.ui.theme.Purple15
 import com.squirtles.musicroad.R
 import com.squirtles.musicroad.map.marker.MarkerKey
 import com.squirtles.musicroad.map.marker.buildClusterer
-import com.squirtles.musicroad.ui.theme.Primary
-import com.squirtles.musicroad.ui.theme.Purple15
 import kotlinx.coroutines.launch
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine

@@ -2,7 +2,7 @@ package com.squirtles.musicroad.userinfo.components
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.squirtles.musicroad.ui.theme.White
+import com.squirtles.common.ui.theme.White
 
 data class MenuItem(
     val imageVector: ImageVector,

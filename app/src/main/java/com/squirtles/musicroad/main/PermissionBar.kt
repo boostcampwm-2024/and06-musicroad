@@ -21,8 +21,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.squirtles.common.ui.Constants.DEFAULT_PADDING
 import com.squirtles.musicroad.R
-import com.squirtles.musicroad.common.Constants.DEFAULT_PADDING
 
 @Composable
 fun PermissionBar(

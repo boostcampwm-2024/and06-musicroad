@@ -10,8 +10,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.squirtles.common.ui.theme.White
 import com.squirtles.musicroad.R
-import com.squirtles.musicroad.ui.theme.White
 
 @Composable
 internal fun SwipeUpIcon(

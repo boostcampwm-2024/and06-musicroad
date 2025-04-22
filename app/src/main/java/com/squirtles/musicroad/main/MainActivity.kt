@@ -24,11 +24,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.auth.FirebaseAuth
+import com.squirtles.common.ui.theme.MusicRoadTheme
 import com.squirtles.musicroad.R
 import com.squirtles.musicroad.main.navigation.MainNavHost
 import com.squirtles.musicroad.main.navigation.MainNavigator
 import com.squirtles.musicroad.main.navigation.rememberMainNavigator
-import com.squirtles.musicroad.ui.theme.MusicRoadTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch

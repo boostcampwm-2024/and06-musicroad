@@ -21,20 +21,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import com.squirtles.common.ui.AlbumImage
+import com.squirtles.common.ui.CommentText
+import com.squirtles.common.ui.Constants.DEFAULT_PADDING
+import com.squirtles.common.ui.Constants.REQUEST_IMAGE_SIZE_DEFAULT
+import com.squirtles.common.ui.CountText
+import com.squirtles.common.ui.CreatedByOtherUserText
+import com.squirtles.common.ui.CreatedBySelfText
+import com.squirtles.common.ui.FavoriteCountText
+import com.squirtles.common.ui.HorizontalSpacer
+import com.squirtles.common.ui.SongInfoText
+import com.squirtles.common.ui.VerticalSpacer
 import com.squirtles.model.LocationPoint
 import com.squirtles.model.Pick
 import com.squirtles.model.Song
-import com.squirtles.musicroad.common.AlbumImage
-import com.squirtles.musicroad.common.CommentText
-import com.squirtles.musicroad.common.Constants.DEFAULT_PADDING
-import com.squirtles.musicroad.common.Constants.REQUEST_IMAGE_SIZE_DEFAULT
-import com.squirtles.musicroad.common.CountText
-import com.squirtles.musicroad.common.CreatedByOtherUserText
-import com.squirtles.musicroad.common.CreatedBySelfText
-import com.squirtles.musicroad.common.FavoriteCountText
-import com.squirtles.musicroad.common.HorizontalSpacer
-import com.squirtles.musicroad.common.SongInfoText
-import com.squirtles.musicroad.common.VerticalSpacer
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)

@@ -15,14 +15,14 @@ import com.naver.maps.map.overlay.Align
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.Overlay
 import com.naver.maps.map.overlay.OverlayImage
-import com.squirtles.musicroad.common.Constants.REQUEST_IMAGE_SIZE_DEFAULT
+import com.squirtles.common.ui.Constants.REQUEST_IMAGE_SIZE_DEFAULT
+import com.squirtles.common.ui.theme.Black
+import com.squirtles.common.ui.theme.Blue
+import com.squirtles.common.ui.theme.Primary
+import com.squirtles.common.ui.theme.White
 import com.squirtles.musicroad.map.DEFAULT_MARKER_Z_INDEX
 import com.squirtles.musicroad.map.MapViewModel
 import com.squirtles.musicroad.map.setCameraToMarker
-import com.squirtles.musicroad.ui.theme.Black
-import com.squirtles.musicroad.ui.theme.Blue
-import com.squirtles.musicroad.ui.theme.Primary
-import com.squirtles.musicroad.ui.theme.White
 
 internal fun <T : ClusteringKey> buildClusterer(
     context: Context,

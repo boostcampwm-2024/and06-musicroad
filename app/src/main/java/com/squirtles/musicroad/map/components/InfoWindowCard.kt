@@ -24,18 +24,18 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toColorInt
+import com.squirtles.common.ui.AlbumImage
+import com.squirtles.common.ui.CreatedByOtherUserText
+import com.squirtles.common.ui.CreatedBySelfText
+import com.squirtles.common.ui.FavoriteCountText
+import com.squirtles.common.ui.HorizontalSpacer
+import com.squirtles.common.ui.SongInfoText
+import com.squirtles.common.ui.theme.Gray
+import com.squirtles.common.ui.theme.MusicRoadTheme
 import com.squirtles.model.Creator
 import com.squirtles.model.LocationPoint
 import com.squirtles.model.Pick
 import com.squirtles.model.Song
-import com.squirtles.musicroad.common.AlbumImage
-import com.squirtles.musicroad.common.CreatedByOtherUserText
-import com.squirtles.musicroad.common.CreatedBySelfText
-import com.squirtles.musicroad.common.FavoriteCountText
-import com.squirtles.musicroad.common.HorizontalSpacer
-import com.squirtles.musicroad.common.SongInfoText
-import com.squirtles.musicroad.ui.theme.Gray
-import com.squirtles.musicroad.ui.theme.MusicRoadTheme
 
 @Composable
 fun InfoWindow(

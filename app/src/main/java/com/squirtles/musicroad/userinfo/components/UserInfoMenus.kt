@@ -24,11 +24,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.squirtles.common.ui.Constants.DEFAULT_PADDING
+import com.squirtles.common.ui.VerticalSpacer
+import com.squirtles.common.ui.theme.Gray
+import com.squirtles.common.ui.theme.White
 import com.squirtles.musicroad.R
-import com.squirtles.musicroad.common.Constants.DEFAULT_PADDING
-import com.squirtles.musicroad.common.VerticalSpacer
-import com.squirtles.musicroad.ui.theme.Gray
-import com.squirtles.musicroad.ui.theme.White
 
 @Composable
 internal fun UserInfoMenus(

@@ -19,9 +19,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import com.squirtles.common.ui.CreatedByOtherUserText
+import com.squirtles.common.ui.CreatedBySelfText
 import com.squirtles.musicroad.R
-import com.squirtles.musicroad.common.CreatedByOtherUserText
-import com.squirtles.musicroad.common.CreatedBySelfText
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

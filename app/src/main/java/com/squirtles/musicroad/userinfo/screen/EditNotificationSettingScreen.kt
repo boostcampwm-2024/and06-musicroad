@@ -12,11 +12,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.stringResource
 import androidx.wear.compose.material.Text
+import com.squirtles.common.ui.Constants.COLOR_STOPS
+import com.squirtles.common.ui.Constants.DEFAULT_PADDING
+import com.squirtles.common.ui.DefaultTopAppBar
+import com.squirtles.common.ui.theme.White
 import com.squirtles.musicroad.R
-import com.squirtles.musicroad.common.Constants.COLOR_STOPS
-import com.squirtles.musicroad.common.Constants.DEFAULT_PADDING
-import com.squirtles.musicroad.common.DefaultTopAppBar
-import com.squirtles.musicroad.ui.theme.White
 
 @Composable
 internal fun EditNotificationSettingScreen(

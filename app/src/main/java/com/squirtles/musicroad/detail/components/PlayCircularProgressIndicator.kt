@@ -12,7 +12,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.squirtles.musicroad.ui.theme.White
+import com.squirtles.common.ui.theme.White
 import kotlin.math.atan2
 import kotlin.math.hypot
 

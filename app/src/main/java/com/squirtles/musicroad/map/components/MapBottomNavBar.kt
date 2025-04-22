@@ -23,12 +23,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.squirtles.common.ui.theme.MusicRoadTheme
+import com.squirtles.common.ui.theme.Primary
 import com.squirtles.musicroad.R
 import com.squirtles.musicroad.map.BottomNavigationIconSize
 import com.squirtles.musicroad.map.BottomNavigationSize
 import com.squirtles.musicroad.map.navigation.NavTab
-import com.squirtles.musicroad.ui.theme.MusicRoadTheme
-import com.squirtles.musicroad.ui.theme.Primary
 
 @Composable
 internal fun MapBottomNavBar(

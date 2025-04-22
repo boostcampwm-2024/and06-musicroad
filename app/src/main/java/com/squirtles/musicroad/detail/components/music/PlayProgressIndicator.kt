@@ -10,8 +10,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
-import com.squirtles.musicroad.ui.theme.DarkGray
-import com.squirtles.musicroad.ui.theme.White
+import com.squirtles.common.ui.theme.DarkGray
+import com.squirtles.common.ui.theme.White
 
 @Composable
 internal fun PlayProgressIndicator(

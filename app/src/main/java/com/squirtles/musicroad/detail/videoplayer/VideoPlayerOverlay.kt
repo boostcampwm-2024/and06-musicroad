@@ -47,15 +47,15 @@ import androidx.compose.ui.unit.sp
 import androidx.core.graphics.toColorInt
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.squirtles.common.ui.VerticalSpacer
+import com.squirtles.common.ui.theme.Black
+import com.squirtles.common.ui.theme.Gray
+import com.squirtles.common.ui.theme.White
 import com.squirtles.model.Creator
 import com.squirtles.model.LocationPoint
 import com.squirtles.model.Pick
 import com.squirtles.model.Song
 import com.squirtles.musicroad.R
-import com.squirtles.musicroad.common.VerticalSpacer
-import com.squirtles.musicroad.ui.theme.Black
-import com.squirtles.musicroad.ui.theme.Gray
-import com.squirtles.musicroad.ui.theme.White
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

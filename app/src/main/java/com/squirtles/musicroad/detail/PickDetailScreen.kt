@@ -54,28 +54,28 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
+import com.squirtles.common.ui.DialogTextButton
+import com.squirtles.common.ui.HorizontalSpacer
+import com.squirtles.common.ui.MessageAlertDialog
+import com.squirtles.common.ui.SignInAlertDialog
+import com.squirtles.common.ui.VerticalSpacer
+import com.squirtles.common.ui.theme.Black
+import com.squirtles.common.ui.theme.Primary
+import com.squirtles.common.ui.theme.White
 import com.squirtles.model.Pick
 import com.squirtles.musicplayer.PlayerServiceViewModel
 import com.squirtles.musicroad.R
 import com.squirtles.musicroad.account.AccountViewModel
 import com.squirtles.musicroad.account.GoogleId
-import com.squirtles.musicroad.common.DialogTextButton
-import com.squirtles.musicroad.common.HorizontalSpacer
-import com.squirtles.musicroad.common.MessageAlertDialog
-import com.squirtles.musicroad.common.SignInAlertDialog
-import com.squirtles.musicroad.common.VerticalSpacer
 import com.squirtles.musicroad.detail.DetailViewModel.Companion.DEFAULT_PICK
 import com.squirtles.musicroad.detail.components.CircleAlbumCover
-import com.squirtles.musicroad.detail.components.CommentText
+import com.squirtles.musicroad.detail.components.PickDatailCommentText
 import com.squirtles.musicroad.detail.components.DetailPickTopAppBar
 import com.squirtles.musicroad.detail.components.MusicVideoKnob
 import com.squirtles.musicroad.detail.components.PickInformation
 import com.squirtles.musicroad.detail.components.SongInfo
 import com.squirtles.musicroad.detail.components.music.MusicPlayer
 import com.squirtles.musicroad.detail.videoplayer.MusicVideoScreen
-import com.squirtles.musicroad.ui.theme.Black
-import com.squirtles.musicroad.ui.theme.Primary
-import com.squirtles.musicroad.ui.theme.White
 import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 
@@ -488,7 +488,7 @@ private fun PickDetailContents(
                     favoriteCount = favoriteCount
                 )
 
-                CommentText(comment = pick.comment)
+                PickDatailCommentText(comment = pick.comment)
 
                 VerticalSpacer(height = 8)
             }

@@ -55,16 +55,16 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.squirtles.common.ui.AlbumImage
+import com.squirtles.common.ui.Constants.COLOR_STOPS
+import com.squirtles.common.ui.Constants.REQUEST_IMAGE_SIZE_DEFAULT
+import com.squirtles.common.ui.HorizontalSpacer
+import com.squirtles.common.ui.VerticalSpacer
+import com.squirtles.common.ui.theme.Gray
+import com.squirtles.common.ui.theme.White
 import com.squirtles.model.Song
 import com.squirtles.musicroad.R
-import com.squirtles.musicroad.common.AlbumImage
-import com.squirtles.musicroad.common.Constants.COLOR_STOPS
-import com.squirtles.musicroad.common.Constants.REQUEST_IMAGE_SIZE_DEFAULT
-import com.squirtles.musicroad.common.HorizontalSpacer
-import com.squirtles.musicroad.common.VerticalSpacer
 import com.squirtles.musicroad.create.SearchUiState
-import com.squirtles.musicroad.ui.theme.Gray
-import com.squirtles.musicroad.ui.theme.White
 
 @Composable
 fun SearchMusicScreen(
