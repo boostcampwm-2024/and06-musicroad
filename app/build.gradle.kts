@@ -125,6 +125,7 @@ dependencies {
     implementation(projects.data.location)
     implementation(projects.data.order)
     implementation(projects.feature.userinfo)
+    implementation(projects.feature.search)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -175,10 +176,6 @@ dependencies {
 
     // ExoPlayer
     implementation(libs.bundles.exoplayer)
-
-    // Paging
-    implementation(libs.androidx.paging.runtime)
-    implementation(libs.androidx.paging.compose)
 
     // Serialization
     implementation(libs.kotlinx.serialization.json)

@@ -11,7 +11,7 @@ import com.squirtles.musicroad.favorite.navigation.favoriteNavGraph
 import com.squirtles.musicroad.map.MapViewModel
 import com.squirtles.musicroad.map.navigation.mapNavGraph
 import com.squirtles.musicroad.mypick.navigation.myPickNavGraph
-import com.squirtles.musicroad.search.navigation.searchNavGraph
+import com.squirtles.search.navigation.searchNavGraph
 import com.squirtles.userinfo.navigation.userInfoNavGraph
 
 @Composable
