@@ -133,7 +133,6 @@ fun PickDetailScreen(
         }
 
         is PickDetailUiState.Success -> {
-            val lifecycleOwner = LocalLifecycleOwner.current
             val pick = (uiState as PickDetailUiState.Success).pick
             val isFavorite = (uiState as PickDetailUiState.Success).isFavorite
             val isNonMember = detailViewModel.getUid() == null

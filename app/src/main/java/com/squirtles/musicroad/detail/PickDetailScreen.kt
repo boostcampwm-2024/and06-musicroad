@@ -54,6 +54,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
+import com.squirtles.account.AccountViewModel
+import com.squirtles.account.GoogleId
 import com.squirtles.common.ui.DialogTextButton
 import com.squirtles.common.ui.HorizontalSpacer
 import com.squirtles.common.ui.MessageAlertDialog
@@ -65,8 +67,6 @@ import com.squirtles.common.ui.theme.White
 import com.squirtles.model.Pick
 import com.squirtles.musicplayer.PlayerServiceViewModel
 import com.squirtles.musicroad.R
-import com.squirtles.musicroad.account.AccountViewModel
-import com.squirtles.musicroad.account.GoogleId
 import com.squirtles.musicroad.detail.DetailViewModel.Companion.DEFAULT_PICK
 import com.squirtles.musicroad.detail.components.CircleAlbumCover
 import com.squirtles.musicroad.detail.components.PickDetailCommentText

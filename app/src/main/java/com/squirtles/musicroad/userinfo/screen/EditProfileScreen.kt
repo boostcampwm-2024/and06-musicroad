@@ -51,6 +51,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.flowWithLifecycle
+import com.squirtles.account.AccountViewModel
+import com.squirtles.account.GoogleId
 import com.squirtles.common.ui.Constants.COLOR_STOPS
 import com.squirtles.common.ui.DialogTextButton
 import com.squirtles.common.ui.HorizontalSpacer
@@ -62,8 +64,6 @@ import com.squirtles.common.ui.theme.MusicRoadTheme
 import com.squirtles.common.ui.theme.Primary
 import com.squirtles.common.ui.theme.White
 import com.squirtles.musicroad.R
-import com.squirtles.musicroad.account.AccountViewModel
-import com.squirtles.musicroad.account.GoogleId
 import com.squirtles.musicroad.userinfo.UserInfoViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

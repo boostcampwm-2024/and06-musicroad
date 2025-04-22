@@ -102,6 +102,7 @@ dependencies {
 //    implementation(projects.data)
 //    implementation(projects.mediaservice)
     implementation(projects.audioVisualizer)
+    implementation(projects.core.account)
     implementation(projects.core.musicplayer)
     implementation(projects.core.model)
     implementation(projects.core.common)

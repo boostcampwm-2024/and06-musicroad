@@ -51,6 +51,8 @@ import androidx.lifecycle.flowWithLifecycle
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import com.squirtles.account.AccountViewModel
+import com.squirtles.account.GoogleId
 import com.squirtles.common.ui.Constants.COLOR_STOPS
 import com.squirtles.common.ui.DefaultTopAppBar
 import com.squirtles.common.ui.DialogTextButton
@@ -61,8 +63,6 @@ import com.squirtles.common.ui.theme.Black
 import com.squirtles.common.ui.theme.Primary
 import com.squirtles.common.ui.theme.White
 import com.squirtles.musicroad.R
-import com.squirtles.musicroad.account.AccountViewModel
-import com.squirtles.musicroad.account.GoogleId
 import com.squirtles.musicroad.userinfo.UserInfoViewModel
 import com.squirtles.musicroad.userinfo.components.MenuItem
 import com.squirtles.musicroad.userinfo.components.UserInfoMenus
