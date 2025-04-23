@@ -249,6 +249,9 @@ fun MapScreen(
                 GoogleId(context).signIn(
                     onSuccess = { uid, credential ->
                         accountViewModel.signIn(uid, credential)
+                    },
+                    onFailure = {
+                        showLoadingIndicator = false
                     }
                 )
             },

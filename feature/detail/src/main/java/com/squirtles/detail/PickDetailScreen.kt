@@ -355,6 +355,9 @@ fun PickDetailScreen(
                 GoogleId(context).signIn(
                     onSuccess = { uid, credential ->
                         accountViewModel.signIn(uid, credential)
+                    },
+                    onFailure = {
+                        showProcessIndicator = false
                     }
                 )
             },
