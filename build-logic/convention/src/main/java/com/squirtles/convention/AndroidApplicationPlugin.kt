@@ -18,9 +18,13 @@ class AndroidApplicationPlugin: Plugin<Project> {
 
             extensions.configure<ApplicationExtension> {
                 defaultConfig {
+                    applicationId = "com.squirtles.musicroad"
+
                     targetSdk = libs.findVersion("targetSdk").get().toString().toInt()
                     versionCode = libs.findVersion("versionCode").get().toString().toInt()
                     versionName = libs.findVersion("versionName").get().toString()
+
+                    testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
                 }
 
                 configureKotlinAndroid(this)
