@@ -36,7 +36,7 @@ import com.squirtles.core.common.ui.theme.Gray
 import com.squirtles.core.common.ui.theme.Primary
 import com.squirtles.core.common.ui.theme.White
 import com.squirtles.core.model.Song
-import com.squirtles.picklist.R
+import com.squirtles.core.picklist.R
 
 @Composable
 internal fun PickItem(

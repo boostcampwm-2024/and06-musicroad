@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "com.squirtles.search"
+    namespace = "com.squirtles.feature.search"
 }
 
 dependencies {

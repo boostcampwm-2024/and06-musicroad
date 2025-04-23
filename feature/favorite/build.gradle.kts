@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "com.squirtles.favorite"
+    namespace = "com.squirtles.feature.favorite"
 }
 
 dependencies {

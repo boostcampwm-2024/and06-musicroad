@@ -62,7 +62,7 @@ import com.squirtles.core.common.ui.VerticalSpacer
 import com.squirtles.core.common.ui.theme.Black
 import com.squirtles.core.common.ui.theme.Primary
 import com.squirtles.core.common.ui.theme.White
-import com.squirtles.userinfo.R
+import com.squirtles.feature.userinfo.R
 import com.squirtles.feature.userinfo.UserInfoViewModel
 import com.squirtles.feature.userinfo.components.MenuItem
 import com.squirtles.feature.userinfo.components.UserInfoMenus

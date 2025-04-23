@@ -12,7 +12,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
-import com.squirtles.common.R
+import com.squirtles.core.common.R
 
 @Composable
 fun CreatedBySelfText(

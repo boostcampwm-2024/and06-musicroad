@@ -63,7 +63,7 @@ import com.squirtles.core.common.ui.theme.Gray
 import com.squirtles.core.common.ui.theme.MusicRoadTheme
 import com.squirtles.core.common.ui.theme.Primary
 import com.squirtles.core.common.ui.theme.White
-import com.squirtles.userinfo.R
+import com.squirtles.feature.userinfo.R
 import com.squirtles.feature.userinfo.UserInfoConstants.USERNAME_PATTERN
 import com.squirtles.feature.userinfo.UserInfoViewModel
 import kotlinx.coroutines.delay

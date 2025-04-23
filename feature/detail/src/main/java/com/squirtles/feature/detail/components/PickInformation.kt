@@ -14,7 +14,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.squirtles.core.common.ui.theme.Gray
-import com.squirtles.detail.R
+import com.squirtles.feature.detail.R
 
 @Composable
 internal fun PickInformation(formattedDate: String, favoriteCount: Int) {

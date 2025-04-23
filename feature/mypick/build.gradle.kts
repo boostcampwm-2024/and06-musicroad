@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "com.squirtles.mypick"
+    namespace = "com.squirtles.feature.mypick"
 }
 
 dependencies {

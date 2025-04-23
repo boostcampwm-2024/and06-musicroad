@@ -30,7 +30,7 @@ import com.squirtles.core.common.ui.theme.Dark
 import com.squirtles.core.common.ui.theme.Primary
 import com.squirtles.core.common.ui.theme.White
 import com.squirtles.core.model.Order
-import com.squirtles.picklist.R
+import com.squirtles.core.picklist.R
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)

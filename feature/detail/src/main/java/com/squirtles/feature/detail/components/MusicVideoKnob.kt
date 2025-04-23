@@ -28,7 +28,7 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.squirtles.core.common.ui.theme.White
 import com.squirtles.core.common.ui.toImageUrlWithSize
-import com.squirtles.detail.R
+import com.squirtles.feature.detail.R
 
 @Composable
 internal fun MusicVideoKnob(

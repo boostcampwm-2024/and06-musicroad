@@ -10,7 +10,7 @@ plugins {
 }
 
 android {
-    namespace = "com.squirtles.localproperties"
+    namespace = "com.squirtles.core.buildconfig"
 
     buildFeatures {
         buildConfig = true

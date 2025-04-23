@@ -67,7 +67,6 @@ import com.squirtles.feature.search.SearchUiConstants.DefaultPadding
 import com.squirtles.feature.search.SearchUiConstants.ImageSize
 import com.squirtles.feature.search.SearchUiConstants.ItemSpacing
 import com.squirtles.feature.search.SearchUiConstants.SearchBarHeight
-import com.squirtles.search.R
 
 @Composable
 fun SearchMusicScreen(

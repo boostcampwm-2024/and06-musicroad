@@ -45,7 +45,6 @@ import com.squirtles.core.common.ui.theme.Primary
 import com.squirtles.core.common.ui.theme.Purple15
 import com.squirtles.feature.map.marker.MarkerKey
 import com.squirtles.feature.map.marker.buildClusterer
-import com.squirtles.map.R
 import kotlinx.coroutines.launch
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine

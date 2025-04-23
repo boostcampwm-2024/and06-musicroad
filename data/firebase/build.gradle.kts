@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "com.squirtles.firebase"
+    namespace = "com.squirtles.data.firebase"
 }
 
 dependencies {

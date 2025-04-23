@@ -18,7 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.squirtles.core.common.ui.theme.MusicRoadTheme
 import com.squirtles.core.common.ui.theme.White
-import com.squirtles.detail.R
+import com.squirtles.feature.detail.R
 
 @Composable
 internal fun PlayerControls(

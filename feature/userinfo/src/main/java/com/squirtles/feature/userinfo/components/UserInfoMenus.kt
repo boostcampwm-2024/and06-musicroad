@@ -28,7 +28,7 @@ import com.squirtles.core.common.ui.Constants.DEFAULT_PADDING
 import com.squirtles.core.common.ui.VerticalSpacer
 import com.squirtles.core.common.ui.theme.Gray
 import com.squirtles.core.common.ui.theme.White
-import com.squirtles.userinfo.R
+import com.squirtles.feature.userinfo.R
 import com.squirtles.feature.userinfo.UserInfoConstants.MENU_PADDING_HORIZONTAL
 import com.squirtles.feature.userinfo.UserInfoConstants.MENU_PADDING_VERTICAL
 

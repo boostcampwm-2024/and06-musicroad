@@ -16,7 +16,7 @@ import com.squirtles.core.common.ui.Constants.COLOR_STOPS
 import com.squirtles.core.common.ui.Constants.DEFAULT_PADDING
 import com.squirtles.core.common.ui.DefaultTopAppBar
 import com.squirtles.core.common.ui.theme.White
-import com.squirtles.userinfo.R
+import com.squirtles.feature.userinfo.R
 
 @Composable
 internal fun EditNotificationSettingScreen(

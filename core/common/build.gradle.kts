@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "com.squirtles.common"
+    namespace = "com.squirtles.core.common"
 }
 
 dependencies {

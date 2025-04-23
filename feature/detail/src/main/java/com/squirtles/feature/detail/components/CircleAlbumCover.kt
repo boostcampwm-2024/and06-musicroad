@@ -19,8 +19,8 @@ import com.miller198.audiovisualizer.configs.GradientConfig
 import com.miller198.audiovisualizer.configs.VisualizerConfig
 import com.miller198.audiovisualizer.soundeffect.SoundEffects
 import com.miller198.audiovisualizer.ui.CircleVisualizer
-import com.squirtles.detail.R
 import com.squirtles.core.model.Song
+import com.squirtles.feature.detail.R
 
 @Composable
 internal fun CircleAlbumCover(

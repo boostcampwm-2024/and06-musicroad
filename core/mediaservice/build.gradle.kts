@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.squirtles.mediaservice"
+    namespace = "com.squirtles.core.mediaservice"
 }
 
 dependencies {

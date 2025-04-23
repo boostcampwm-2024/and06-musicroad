@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.squirtles.musicplayer"
+    namespace = "com.squirtles.core.musicplayer"
 }
 
 dependencies {

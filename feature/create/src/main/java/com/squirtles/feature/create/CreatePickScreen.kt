@@ -63,7 +63,6 @@ import com.squirtles.core.common.ui.theme.Dark
 import com.squirtles.core.common.ui.theme.Gray
 import com.squirtles.core.common.ui.theme.White
 import com.squirtles.core.model.Song
-import com.squirtles.create.R
 
 @Composable
 fun CreatePickScreen(

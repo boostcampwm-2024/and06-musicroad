@@ -26,7 +26,7 @@ import com.squirtles.core.common.ui.theme.DarkGray
 import com.squirtles.core.common.ui.theme.MusicRoadTheme
 import com.squirtles.core.common.ui.theme.Primary
 import com.squirtles.core.common.ui.theme.White
-import com.squirtles.map.R
+import com.squirtles.feature.map.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.squirtles.core.common.ui.theme.Gray
 import com.squirtles.core.common.ui.theme.White
-import com.squirtles.picklist.R
+import com.squirtles.core.picklist.R
 
 
 @Composable

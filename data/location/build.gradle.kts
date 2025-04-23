@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.squirtles.location"
+    namespace = "com.squirtles.data.location"
 }
 
 dependencies {

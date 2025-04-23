@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.squirtles.main"
+    namespace = "com.squirtles.feature.main"
 }
 
 dependencies {

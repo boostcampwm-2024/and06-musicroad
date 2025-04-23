@@ -1,7 +1,5 @@
 package com.squirtles.core.buildconfig
 
-import com.squirtles.localproperties.BuildConfig
-
 object LocalPropertyProvider {
     val googleClientId: String
         get() = BuildConfig.GOOGLE_CLIENT_ID

@@ -16,7 +16,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaNotification
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaStyleNotificationHelper
-import com.squirtles.mediaservice.R
+import com.squirtles.core.mediaservice.R
 import javax.inject.Inject
 
 interface MediaNotificationProvider {

@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.squirtles.favorite"
+    namespace = "com.squirtles.data.favorite"
 }
 
 dependencies {

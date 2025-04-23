@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "com.squirtles.picklist"
+    namespace = "com.squirtles.core.picklist"
 }
 
 dependencies {

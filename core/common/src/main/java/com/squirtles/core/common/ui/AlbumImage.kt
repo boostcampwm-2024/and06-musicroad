@@ -10,7 +10,7 @@ import androidx.compose.ui.res.stringResource
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
-import com.squirtles.common.R
+import com.squirtles.core.common.R
 import com.squirtles.core.common.ui.theme.Gray
 
 @Composable

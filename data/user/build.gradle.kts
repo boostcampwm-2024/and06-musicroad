@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "com.squirtles.user"
+    namespace = "com.squirtles.data.user"
 }
 
 dependencies {

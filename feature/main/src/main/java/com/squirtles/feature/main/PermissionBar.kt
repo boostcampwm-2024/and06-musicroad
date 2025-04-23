@@ -22,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.squirtles.core.common.ui.Constants.DEFAULT_PADDING
-import com.squirtles.main.R
 
 @Composable
 fun PermissionBar(

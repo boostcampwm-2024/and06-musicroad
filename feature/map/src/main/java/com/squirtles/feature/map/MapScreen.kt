@@ -38,13 +38,12 @@ import com.squirtles.core.account.GoogleId
 import com.squirtles.core.common.ui.SignInAlertDialog
 import com.squirtles.core.common.ui.VerticalSpacer
 import com.squirtles.core.common.ui.theme.Black
+import com.squirtles.core.musicplayer.PlayerServiceViewModel
 import com.squirtles.feature.map.components.ClusterBottomSheet
 import com.squirtles.feature.map.components.InfoWindow
 import com.squirtles.feature.map.components.LoadingDialog
 import com.squirtles.feature.map.components.MapBottomNavBar
 import com.squirtles.feature.map.components.PickNotificationBanner
-import com.squirtles.core.musicplayer.PlayerServiceViewModel
-import com.squirtles.map.R
 import kotlinx.coroutines.launch
 
 @Composable

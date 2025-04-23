@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "com.squirtles.map"
+    namespace = "com.squirtles.feature.map"
 }
 
 dependencies {

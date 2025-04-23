@@ -24,7 +24,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.firebase.auth.FirebaseAuth
 import com.squirtles.core.common.ui.theme.MusicRoadTheme
-import com.squirtles.main.R
 import com.squirtles.feature.main.navigation.MainNavHost
 import com.squirtles.feature.main.navigation.MainNavigator
 import com.squirtles.feature.main.navigation.rememberMainNavigator

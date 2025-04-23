@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.squirtles.applemusic"
+    namespace = "com.squirtles.data.applemusic"
 }
 
 dependencies {

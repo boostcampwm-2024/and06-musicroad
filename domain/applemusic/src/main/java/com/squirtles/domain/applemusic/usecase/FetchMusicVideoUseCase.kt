@@ -5,7 +5,6 @@ import com.squirtles.core.model.MusicVideo
 import com.squirtles.core.model.Song
 import javax.inject.Inject
 
-
 class FetchMusicVideoUseCase @Inject constructor(
     private val appleMusicRepository: AppleMusicRepository
 ) {

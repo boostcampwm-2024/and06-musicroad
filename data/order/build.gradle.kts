@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "com.squirtles.order"
+    namespace = "com.squirtles.data.order"
 }
 
 dependencies {

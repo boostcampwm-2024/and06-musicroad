@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.squirtles.core.common.ui.theme.Dark
 import com.squirtles.core.common.ui.theme.Gray
 import com.squirtles.core.common.ui.theme.White
-import com.squirtles.detail.R
+import com.squirtles.feature.detail.R
 
 @Composable
 internal fun PickCommentText(

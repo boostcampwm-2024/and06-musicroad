@@ -75,7 +75,6 @@ import com.squirtles.feature.detail.components.music.MusicPlayer
 import com.squirtles.feature.detail.videoplayer.MusicVideoScreen
 import com.squirtles.core.model.Pick
 import com.squirtles.core.musicplayer.PlayerServiceViewModel
-import com.squirtles.detail.R
 import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 

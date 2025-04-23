@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "com.squirtles.player"
+    namespace = "com.squirtles.domain.player"
 }
 
 dependencies {

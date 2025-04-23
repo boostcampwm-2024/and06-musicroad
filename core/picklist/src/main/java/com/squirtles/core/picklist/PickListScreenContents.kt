@@ -42,7 +42,6 @@ import com.squirtles.core.common.ui.theme.Primary
 import com.squirtles.core.common.ui.theme.White
 import com.squirtles.core.model.Order
 import com.squirtles.core.model.Pick
-import com.squirtles.picklist.R
 import com.squirtles.core.picklist.components.DeleteSelectedPickDialog
 import com.squirtles.core.picklist.components.EditModeAction
 import com.squirtles.core.picklist.components.EditModeBottomButton

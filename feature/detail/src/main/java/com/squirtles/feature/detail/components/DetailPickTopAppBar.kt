@@ -21,7 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.squirtles.core.common.ui.CreatedByOtherUserText
 import com.squirtles.core.common.ui.CreatedBySelfText
-import com.squirtles.detail.R
+import com.squirtles.feature.detail.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

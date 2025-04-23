@@ -6,8 +6,8 @@ import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.MusicNote
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.squirtles.map.R
 import com.squirtles.feature.map.BottomNavigationIconSize
+import com.squirtles.feature.map.R
 
 internal enum class NavTab(
     @StringRes val contentDescription: Int,

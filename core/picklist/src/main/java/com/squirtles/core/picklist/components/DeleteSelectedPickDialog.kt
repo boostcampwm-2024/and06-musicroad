@@ -8,7 +8,7 @@ import com.squirtles.core.common.ui.HorizontalSpacer
 import com.squirtles.core.common.ui.MessageAlertDialog
 import com.squirtles.core.common.ui.theme.Primary
 import com.squirtles.core.picklist.PickListType
-import com.squirtles.picklist.R
+import com.squirtles.core.picklist.R
 
 @Composable
 internal fun DeleteSelectedPickDialog(

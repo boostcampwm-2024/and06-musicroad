@@ -27,11 +27,11 @@ import androidx.core.graphics.toColorInt
 import com.squirtles.core.common.ui.theme.Black
 import com.squirtles.core.common.ui.theme.MusicRoadTheme
 import com.squirtles.core.common.ui.theme.White
-import com.squirtles.map.R
 import com.squirtles.core.model.Creator
 import com.squirtles.core.model.LocationPoint
 import com.squirtles.core.model.Pick
 import com.squirtles.core.model.Song
+import com.squirtles.feature.map.R
 
 @Composable
 fun PickNotificationBanner(

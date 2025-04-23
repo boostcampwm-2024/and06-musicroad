@@ -51,11 +51,11 @@ import com.squirtles.core.common.ui.VerticalSpacer
 import com.squirtles.core.common.ui.theme.Black
 import com.squirtles.core.common.ui.theme.Gray
 import com.squirtles.core.common.ui.theme.White
-import com.squirtles.detail.R
 import com.squirtles.core.model.Creator
 import com.squirtles.core.model.LocationPoint
 import com.squirtles.core.model.Pick
 import com.squirtles.core.model.Song
+import com.squirtles.feature.detail.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
