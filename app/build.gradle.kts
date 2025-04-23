@@ -92,8 +92,8 @@ dependencies {
 
     // Hilt
     implementation(libs.hilt.android)
-    ksp(libs.hilt.android.compiler)
     androidTestImplementation(libs.hilt.android.testing)
+    ksp(libs.hilt.android.compiler)
     kspAndroidTest(libs.hilt.android.compiler)
 
     // Firebase
