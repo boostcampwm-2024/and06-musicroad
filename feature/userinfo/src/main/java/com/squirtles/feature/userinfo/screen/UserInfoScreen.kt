@@ -42,6 +42,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -62,6 +63,7 @@ import com.squirtles.core.common.ui.VerticalSpacer
 import com.squirtles.core.common.ui.theme.Black
 import com.squirtles.core.common.ui.theme.Primary
 import com.squirtles.core.common.ui.theme.White
+import com.squirtles.core.model.User
 import com.squirtles.feature.userinfo.R
 import com.squirtles.feature.userinfo.UserInfoViewModel
 import com.squirtles.feature.userinfo.components.MenuItem
@@ -82,7 +84,6 @@ fun UserInfoScreen(
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
-    val scrollState = rememberScrollState()
     val user by userInfoViewModel.profileUser.collectAsStateWithLifecycle()
 
     var showLogOutDialog by remember { mutableStateOf(false) }
@@ -111,6 +112,45 @@ fun UserInfoScreen(
                 }
         }
     }
+
+    UserInfoScreenContent(
+        user = user,
+        isOwner = uid == userInfoViewModel.currentUid,
+        showLogOutDialog = showLogOutDialog,
+        showLoadingIndicator = showLoadingIndicator,
+        onBackClick = onBackClick,
+        onBackToMapClick = onBackToMapClick,
+        onFavoritePicksClick = { onFavoritePicksClick(user.uid) },
+        onMyPicksClick = { onMyPicksClick(user.uid) },
+        onEditProfileClick = { onEditProfileClick(user.userName) },
+        onEditNotificationClick = onEditNotificationClick,
+        onLogOutMenuClick = { showLogOutDialog = true },
+        onDismissLogOutDialog = { showLogOutDialog = false },
+        onConfirmLogOutDialog = {
+            showLogOutDialog = false
+            showLoadingIndicator = true
+            onSignOutClick()
+        }
+    )
+}
+
+@Composable
+fun UserInfoScreenContent(
+    user: User,
+    isOwner: Boolean,
+    showLogOutDialog: Boolean,
+    showLoadingIndicator: Boolean,
+    onBackClick: () -> Unit,
+    onBackToMapClick: () -> Unit,
+    onFavoritePicksClick: () -> Unit,
+    onMyPicksClick: () -> Unit,
+    onEditProfileClick: () -> Unit,
+    onEditNotificationClick: () -> Unit,
+    onLogOutMenuClick: () -> Unit,
+    onDismissLogOutDialog: () -> Unit,
+    onConfirmLogOutDialog: () -> Unit,
+) {
+    val scrollState = rememberScrollState()
 
     Scaffold(
         topBar = {
@@ -158,18 +198,18 @@ fun UserInfoScreen(
                             imageVector = Icons.Outlined.Archive,
                             contentDescription = stringResource(R.string.user_info_favorite_menu_icon_description),
                             menuTitle = stringResource(R.string.user_info_favorite_menu_title),
-                            onMenuClick = { onFavoritePicksClick(uid) }
+                            onMenuClick = onFavoritePicksClick
                         ),
                         MenuItem(
                             imageVector = Icons.Default.MusicNote,
                             contentDescription = stringResource(R.string.user_info_created_by_self_menu_icon_description),
                             menuTitle = stringResource(R.string.user_info_created_by_self_menu_title),
-                            onMenuClick = { onMyPicksClick(uid) }
+                            onMenuClick = onMyPicksClick
                         )
                     )
                 )
 
-                if (uid == userInfoViewModel.currentUid) {
+                if (isOwner) {
                     UserInfoMenus(
                         title = stringResource(R.string.user_info_setting_category_title),
                         menus = listOf(
@@ -177,7 +217,7 @@ fun UserInfoScreen(
                                 imageVector = Icons.Outlined.SwitchAccount,
                                 contentDescription = stringResource(R.string.user_info_setting_profile_menu_icon_description),
                                 menuTitle = stringResource(R.string.user_info_setting_profile_menu_title),
-                                onMenuClick = { onEditProfileClick(user.userName) }
+                                onMenuClick = onEditProfileClick
                             ),
                             MenuItem(
                                 imageVector = Icons.Outlined.Notifications,
@@ -189,7 +229,7 @@ fun UserInfoScreen(
                                 imageVector = Icons.AutoMirrored.Outlined.Logout,
                                 contentDescription = stringResource(R.string.user_info_setting_sign_out_menu_icon_description),
                                 menuTitle = stringResource(R.string.user_info_setting_sign_out_menu_title),
-                                onMenuClick = { showLogOutDialog = true }
+                                onMenuClick = onLogOutMenuClick
                             )
                         )
                     )
@@ -212,9 +252,7 @@ fun UserInfoScreen(
                     contentDescription = stringResource(R.string.user_info_icon_map_description),
                     tint = White
                 )
-
                 HorizontalSpacer(8)
-
                 Text(
                     text = stringResource(R.string.user_info_back_to_map_button_text),
                     color = White,
@@ -224,28 +262,20 @@ fun UserInfoScreen(
 
             if (showLogOutDialog) {
                 MessageAlertDialog(
-                    onDismissRequest = {
-                        showLogOutDialog = false
-                    },
+                    onDismissRequest = onDismissLogOutDialog,
                     title = stringResource(R.string.sign_out_dialog_title),
                     body = "",
                     showBody = false
                 ) {
                     DialogTextButton(
-                        onClick = {
-                            showLogOutDialog = false
-                        },
+                        onClick = onDismissLogOutDialog,
                         text = stringResource(R.string.sign_out_dialog_dismiss)
                     )
 
                     HorizontalSpacer(8)
 
                     DialogTextButton(
-                        onClick = {
-                            showLogOutDialog = false
-                            showLoadingIndicator = true
-                            onSignOutClick()
-                        },
+                        onClick = onConfirmLogOutDialog,
                         text = stringResource(R.string.sign_out_dialog_confirm),
                         textColor = Primary,
                         fontWeight = FontWeight.Bold
@@ -270,4 +300,32 @@ fun UserInfoScreen(
             }
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun UserInfoScreenPreview() {
+    val dummyUser = User(
+        userName = "홍길동",
+        userProfileImage = null,
+        uid = "fqfqwegag",
+        email = "email@email.com",
+        myPicks = emptyList(),
+    )
+
+    UserInfoScreenContent(
+        user = dummyUser,
+        isOwner = true,
+        showLogOutDialog = false,
+        showLoadingIndicator = false,
+        onBackClick = {},
+        onBackToMapClick = {},
+        onFavoritePicksClick = {},
+        onMyPicksClick = {},
+        onEditProfileClick = {},
+        onEditNotificationClick = {},
+        onLogOutMenuClick = {},
+        onDismissLogOutDialog = {},
+        onConfirmLogOutDialog = {}
+    )
 }
