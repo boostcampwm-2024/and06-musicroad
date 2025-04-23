@@ -87,7 +87,7 @@ class PlayerServiceViewModel @Inject constructor(
         }
     }
 
-    fun togglePlayPause(song: Song) {
+    fun togglePlayPause() {
         if (playerState.value.isPlaying) {
             onPause()
         } else {

@@ -7,6 +7,6 @@ import javax.inject.Inject
 class DeletePickUseCase @Inject constructor(
     private val pickRepository: FirebasePickRepository
 ) : RemovePickUseCaseInterface {
-    override suspend operator fun invoke(pickId: String, userId: String): Result<String> =
-        pickRepository.deletePick(pickId, userId)
+    override suspend operator fun invoke(pickId: String, uid: String): Result<String> =
+        pickRepository.deletePick(pickId, uid)
 }

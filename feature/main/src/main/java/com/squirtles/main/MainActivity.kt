@@ -140,8 +140,6 @@ class MainActivity : AppCompatActivity() {
             val navigator: MainNavigator = rememberMainNavigator()
 
             MusicRoadTheme {
-                val navController = rememberNavController()
-
                 MainNavHost(
                     navigator = navigator,
                     finishActivity = { this.finish() },

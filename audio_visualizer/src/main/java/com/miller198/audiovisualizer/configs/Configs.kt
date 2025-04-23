@@ -89,7 +89,7 @@ sealed interface VisualizerConfig {
         /** Default waveform configuration. */
         data object Default : WaveCaptureConfig(
             captureSize = 1024,
-            processWaveData = { _, byteArray, _ ->
+            processWaveData = { _, _, _ ->
                 // TODO: Implement default waveform preprocessing logic
                 emptyList()
             }

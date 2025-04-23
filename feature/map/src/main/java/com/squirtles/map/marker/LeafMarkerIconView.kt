@@ -86,7 +86,7 @@ class LeafMarkerIconView(
                     bitmap = result.image.toBitmap()
                     onImageLoaded()
                 },
-                onError = { _, error ->
+                onError = { _, _ ->
                     onImageLoaded()
                 }
             )

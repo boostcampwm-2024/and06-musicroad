@@ -508,8 +508,8 @@ private fun PickDetailContents(
                             playerServiceViewModel.onRewindBy()
                         }
                     },
-                    onPauseToggle = { song ->
-                        playerServiceViewModel.togglePlayPause(song)
+                    onPauseToggle = { _ ->
+                        playerServiceViewModel.togglePlayPause()
                     },
                 )
             }
