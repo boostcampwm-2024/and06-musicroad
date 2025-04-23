@@ -1,6 +1,6 @@
 package com.squirtles.domain.pick
 
-import com.squirtles.model.Pick
+import com.squirtles.core.model.Pick
 
 interface FirebasePickRepository {
     suspend fun createPick(pick: Pick): Result<String>

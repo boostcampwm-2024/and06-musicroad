@@ -10,7 +10,7 @@
 
     <application>
         <activity
-            android:name=".MainActivity"
+            android:name="com.squirtles.feature.main.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.MusicRoad.Splash">
             <intent-filter>

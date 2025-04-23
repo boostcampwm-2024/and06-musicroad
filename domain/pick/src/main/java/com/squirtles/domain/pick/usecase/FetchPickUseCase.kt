@@ -1,6 +1,6 @@
 package com.squirtles.domain.pick.usecase
 
-import com.squirtles.model.Pick
+import com.squirtles.core.model.Pick
 import com.squirtles.domain.pick.FirebasePickRepository
 import javax.inject.Inject
 
