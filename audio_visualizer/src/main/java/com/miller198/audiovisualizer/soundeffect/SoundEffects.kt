@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.Color
  * @property drawEffect A Composable lambda that renders the corresponding sound effect.
  */
 enum class SoundEffects(
+    val title: String,
     val drawEffect: @Composable (
         audioData: List<Float>,
         color: Color,
@@ -18,20 +19,37 @@ enum class SoundEffects(
     ) -> Unit
 ) {
     /** No effect. This does not render any audio visualization. */
-    NONE({ _, _, _ -> }),
+    NONE(
+        title = "None",
+        drawEffect = { _, _, _ -> }
+    ),
 
     /** A vertical bar graph representation of the audio data. */
-    BAR({ audioData, color, modifier ->
-        DrawSoundBar(audioData, color, modifier)
-    }),
+    BAR(
+        title = "bar",
+        drawEffect = { audioData, color, modifier ->
+            DrawSoundBar(audioData, color, modifier)
+        }
+    ),
 
     /** A waveform rendered using stroke (outline only). */
-    WAVE_STROKE({ audioData, color, modifier ->
-        DrawSoundWaveStroke(audioData, color, modifier)
-    }),
+    WAVE_STROKE(
+        title = "stroke",
+        drawEffect = { audioData, color, modifier ->
+            DrawSoundWaveStroke(audioData, color, modifier)
+        }
+    ),
 
     /** A waveform rendered as a filled shape. */
-    WAVE_FILL({ audioData, color, modifier ->
-        DrawSoundWaveFill(audioData, color, modifier)
-    })
+    WAVE_FILL(
+        title = "fill",
+        drawEffect = { audioData, color, modifier ->
+            DrawSoundWaveFill(audioData, color, modifier)
+        }
+    );
+
+    companion object {
+        fun getEffectNames() = entries.map { it.title }
+        fun getEffectByTitle(title: String) = entries.find { it.title == title }
+    }
 }

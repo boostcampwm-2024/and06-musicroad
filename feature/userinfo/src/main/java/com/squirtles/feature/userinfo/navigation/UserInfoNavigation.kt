@@ -8,6 +8,7 @@ import androidx.navigation.toRoute
 import com.squirtles.core.navigation.MainRoute
 import com.squirtles.core.navigation.UserInfoRoute
 import com.squirtles.feature.userinfo.screen.EditNotificationSettingScreen
+import com.squirtles.feature.userinfo.screen.EditPlayerScreen
 import com.squirtles.feature.userinfo.screen.EditProfileScreen
 import com.squirtles.feature.userinfo.screen.UserInfoScreen
 
@@ -23,6 +24,10 @@ fun NavController.navigateEditNotificationSetting(navOptions: NavOptions? = null
     navigate(UserInfoRoute.EditNotification, navOptions)
 }
 
+fun NavController.navigateToEditPlayer(navOptions: NavOptions? = null) {
+    navigate(UserInfoRoute.EditPlayer, navOptions)
+}
+
 fun NavGraphBuilder.userInfoNavGraph(
     onBackClick: () -> Unit,
     onBackToMapClick: () -> Unit,
@@ -30,7 +35,8 @@ fun NavGraphBuilder.userInfoNavGraph(
     onMyPicksClick: (String) -> Unit,
     onEditProfileClick: (String) -> Unit,
     onEditNotificationClick: () -> Unit,
-) {
+    onEditPlayerClick : () -> Unit,
+    ) {
     composable<MainRoute.UserInfo> { backStackEntry ->
         val uid = backStackEntry.toRoute<MainRoute.UserInfo>().uid
 
@@ -42,6 +48,7 @@ fun NavGraphBuilder.userInfoNavGraph(
             onMyPicksClick = onMyPicksClick,
             onEditProfileClick = onEditProfileClick,
             onEditNotificationClick = onEditNotificationClick,
+            onEditPlayerClick = onEditPlayerClick,
         )
     }
 
@@ -58,5 +65,9 @@ fun NavGraphBuilder.userInfoNavGraph(
         EditNotificationSettingScreen(
             onBackClick = onBackClick
         )
+    }
+
+    composable<UserInfoRoute.EditPlayer> {
+        EditPlayerScreen(onBackClick = onBackClick)
     }
 }

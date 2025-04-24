@@ -12,5 +12,8 @@ sealed interface UserInfoRoute : Route {
 
     @Serializable
     data object EditNotification : UserInfoRoute
+
+    @Serializable
+    data object EditPlayer : UserInfoRoute
 }
 

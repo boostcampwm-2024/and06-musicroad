@@ -9,6 +9,7 @@ android {
 dependencies {
     implementation(projects.core.account)
     implementation(projects.domain.user)
+    implementation(projects.audioVisualizer)
 
     implementation(libs.coil)
     implementation(libs.coil.compose)

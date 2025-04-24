@@ -16,9 +16,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Logout
 import androidx.compose.material.icons.filled.MusicNote
+import androidx.compose.material.icons.outlined.AllOut
 import androidx.compose.material.icons.outlined.Archive
 import androidx.compose.material.icons.outlined.Map
 import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material.icons.outlined.SmartDisplay
 import androidx.compose.material.icons.outlined.SwitchAccount
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -79,6 +81,7 @@ fun UserInfoScreen(
     onMyPicksClick: (String) -> Unit,
     onEditProfileClick: (String) -> Unit,
     onEditNotificationClick: () -> Unit,
+    onEditPlayerClick: () -> Unit,
     userInfoViewModel: UserInfoViewModel = hiltViewModel(),
     accountViewModel: AccountViewModel = hiltViewModel()
 ) {
@@ -124,6 +127,7 @@ fun UserInfoScreen(
         onMyPicksClick = { onMyPicksClick(user.uid) },
         onEditProfileClick = { onEditProfileClick(user.userName) },
         onEditNotificationClick = onEditNotificationClick,
+        onEditPlayerClick = onEditPlayerClick,
         onLogOutMenuClick = { showLogOutDialog = true },
         onDismissLogOutDialog = { showLogOutDialog = false },
         onConfirmLogOutDialog = {
@@ -146,6 +150,7 @@ fun UserInfoScreenContent(
     onMyPicksClick: () -> Unit,
     onEditProfileClick: () -> Unit,
     onEditNotificationClick: () -> Unit,
+    onEditPlayerClick: () -> Unit,
     onLogOutMenuClick: () -> Unit,
     onDismissLogOutDialog: () -> Unit,
     onConfirmLogOutDialog: () -> Unit,
@@ -224,6 +229,12 @@ fun UserInfoScreenContent(
                                 contentDescription = stringResource(R.string.user_info_setting_notification_menu_icon_description),
                                 menuTitle = stringResource(R.string.user_info_setting_notification_menu_title),
                                 onMenuClick = onEditNotificationClick
+                            ),
+                            MenuItem(
+                                imageVector = Icons.Outlined.SmartDisplay,
+                                contentDescription = stringResource(R.string.user_info_setting_sound_effect_menu_icon_description),
+                                menuTitle = stringResource(R.string.user_info_setting_sound_effect_menu_title),
+                                onMenuClick = onEditPlayerClick
                             ),
                             MenuItem(
                                 imageVector = Icons.AutoMirrored.Outlined.Logout,
@@ -324,6 +335,7 @@ fun UserInfoScreenPreview() {
         onMyPicksClick = {},
         onEditProfileClick = {},
         onEditNotificationClick = {},
+        onEditPlayerClick = {},
         onLogOutMenuClick = {},
         onDismissLogOutDialog = {},
         onConfirmLogOutDialog = {}
