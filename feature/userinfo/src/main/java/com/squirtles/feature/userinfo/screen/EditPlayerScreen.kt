@@ -16,6 +16,7 @@ import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -27,24 +28,36 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.squirtles.core.common.ui.Constants.COLOR_STOPS
 import com.squirtles.core.common.ui.DefaultTopAppBar
 import com.squirtles.core.common.ui.theme.Primary
 import com.squirtles.core.common.ui.theme.White
+import com.squirtles.core.preference.PreferenceViewModel
+import com.squirtles.domain.preference.PlayerPreference
 import com.squirtles.feature.userinfo.R
 
 @Composable
 fun EditPlayerScreen(
     modifier: Modifier = Modifier,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    preferenceViewModel: PreferenceViewModel = hiltViewModel()
 ) {
-    val effectStringList = listOf(
-        stringResource(R.string.sound_effect_none),
-        stringResource(R.string.sound_effect_bar),
-        stringResource(R.string.sound_effect_wave_stroke),
-        stringResource(R.string.sound_effect_wave_fill)
+    val currentEffect = preferenceViewModel.playerPreference.collectAsStateWithLifecycle(PlayerPreference.BAR)
+
+    val effectNameMap = mapOf(
+        PlayerPreference.NONE to stringResource(R.string.sound_effect_none),
+        PlayerPreference.BAR to stringResource(R.string.sound_effect_bar),
+        PlayerPreference.STROKE to stringResource(R.string.sound_effect_wave_stroke),
+        PlayerPreference.FILL to stringResource(R.string.sound_effect_wave_fill)
     )
-    val (selectedOption, onOptionSelected) = remember { mutableStateOf(effectStringList[1]) }
+
+    val (selectedOption, onOptionSelected) = remember { mutableStateOf(currentEffect.value) }
+
+    LaunchedEffect(selectedOption) {
+        preferenceViewModel.savePlayerPreference(selectedOption)
+    }
 
     Scaffold(
         topBar = {
@@ -73,19 +86,21 @@ fun EditPlayerScreen(
                 ) {
                     SoundEffectItem(
                         imageRes = R.drawable.soundeffectnone,
-                        effectName = effectStringList[0],
-                        selectedOption = selectedOption,
-                        onClick = { onOptionSelected(effectStringList[0]) },
+                        effectName = effectNameMap[PlayerPreference.NONE].toString(),
+                        effect = PlayerPreference.NONE,
+                        selectedOption = currentEffect.value,
+                        onClick = { onOptionSelected(PlayerPreference.NONE) },
                         modifier = Modifier
                             .weight(1f)
-                            .align(Alignment.CenterVertically)
+                            .align(Alignment.CenterVertically),
                     )
 
                     SoundEffectItem(
                         imageRes = R.drawable.soundeffectbar,
-                        effectName = effectStringList[1],
+                        effectName = effectNameMap[PlayerPreference.BAR].toString(),
+                        effect = PlayerPreference.BAR,
                         selectedOption = selectedOption,
-                        onClick = { onOptionSelected(effectStringList[1]) },
+                        onClick = { onOptionSelected(PlayerPreference.BAR) },
                         modifier = Modifier
                             .weight(1f)
                             .align(Alignment.CenterVertically)
@@ -100,9 +115,10 @@ fun EditPlayerScreen(
                 ) {
                     SoundEffectItem(
                         imageRes = R.drawable.soundeffectstroke,
-                        effectName = effectStringList[2],
+                        effectName = effectNameMap[PlayerPreference.STROKE].toString(),
+                        effect = PlayerPreference.STROKE,
                         selectedOption = selectedOption,
-                        onClick = { onOptionSelected(effectStringList[2]) },
+                        onClick = { onOptionSelected(PlayerPreference.STROKE) },
                         modifier = Modifier
                             .weight(1f)
                             .align(Alignment.CenterVertically),
@@ -111,9 +127,10 @@ fun EditPlayerScreen(
 
                     SoundEffectItem(
                         imageRes = R.drawable.soundeffectfill,
-                        effectName = effectStringList[3],
+                        effectName = effectNameMap[PlayerPreference.FILL].toString(),
+                        effect = PlayerPreference.FILL,
                         selectedOption = selectedOption,
-                        onClick = { onOptionSelected(effectStringList[3]) },
+                        onClick = { onOptionSelected(PlayerPreference.FILL) },
                         modifier = Modifier
                             .weight(1f)
                             .align(Alignment.CenterVertically),
@@ -128,8 +145,9 @@ fun EditPlayerScreen(
 @Composable
 fun SoundEffectItem(
     @DrawableRes imageRes: Int,
+    effect: PlayerPreference,
     effectName: String,
-    selectedOption: String,
+    selectedOption: PlayerPreference,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     imagePadding: Dp = 0.dp
@@ -147,6 +165,7 @@ fun SoundEffectItem(
         )
         SelectEffectButton(
             text = effectName,
+            effect = effect,
             selectedOption = selectedOption,
             onClick = onClick,
             modifier = Modifier.align(Alignment.CenterHorizontally)
@@ -157,21 +176,22 @@ fun SoundEffectItem(
 @Composable
 fun SelectEffectButton(
     text: String,
-    selectedOption: String,
+    effect: PlayerPreference,
+    selectedOption: PlayerPreference,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
         modifier
             .selectable(
-                selected = (text == selectedOption),
+                selected = (effect == selectedOption),
                 onClick = onClick,
                 role = Role.RadioButton
             ),
         verticalAlignment = Alignment.CenterVertically
     ) {
         RadioButton(
-            selected = (text == selectedOption),
+            selected = (effect == selectedOption),
             onClick = null,
             colors = RadioButtonDefaults.colors(
                 selectedColor = Primary
