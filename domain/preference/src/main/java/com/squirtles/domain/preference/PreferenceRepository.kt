@@ -4,5 +4,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface PreferenceRepository {
     suspend fun savePlayerPreference(preference: PlayerPreference): Result<Boolean>
-    fun readPlayerPreference(): Flow<PlayerPreference>
+    fun loadPlayerPreference(): Flow<PlayerPreference>
 }

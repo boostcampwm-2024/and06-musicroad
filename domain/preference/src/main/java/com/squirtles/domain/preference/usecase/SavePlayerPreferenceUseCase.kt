@@ -7,5 +7,5 @@ import javax.inject.Inject
 class SavePlayerPreferenceUseCase @Inject constructor(
     private val preferenceRepository: PreferenceRepository
 ) {
-    suspend fun invoke(preference: PlayerPreference) = preferenceRepository.savePlayerPreference(preference)
+    suspend operator fun invoke(preference: PlayerPreference) = preferenceRepository.savePlayerPreference(preference)
 }

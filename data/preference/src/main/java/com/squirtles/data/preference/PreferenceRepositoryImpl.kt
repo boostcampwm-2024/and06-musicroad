@@ -7,7 +7,6 @@ import com.squirtles.data.preference.PreferenceKeys.PLAYER_EFFECT
 import com.squirtles.domain.preference.PlayerPreference
 import com.squirtles.domain.preference.PreferenceRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -30,12 +29,13 @@ class PreferenceRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun readPlayerPreference(): Flow<PlayerPreference> {
-        return dataStore.data.map { pref ->
+    override fun loadPlayerPreference(): Flow<PlayerPreference> {
+        val pref = dataStore.data.map { pref ->
             pref[PLAYER_EFFECT] ?: "NONE"
         }.map {
             PlayerPreference.valueOf(it)
         }
+        return pref
     }
 
     companion object {
