@@ -35,7 +35,6 @@ internal class CustomMediaSessionCallback : MediaSession.Callback {
 
             customCommands.forEach { commandButton ->
                 commandButton.sessionCommand.let {
-                    it
                     availableSessionCommands.add(it)
                 }
             }
