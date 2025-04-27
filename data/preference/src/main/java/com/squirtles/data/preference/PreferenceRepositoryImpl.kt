@@ -31,7 +31,7 @@ class PreferenceRepositoryImpl @Inject constructor(
 
     override fun loadPlayerPreference(): Flow<PlayerPreference> {
         val pref = dataStore.data.map { pref ->
-            pref[PLAYER_EFFECT] ?: "NONE"
+            pref[PLAYER_EFFECT] ?: "BAR"
         }.map {
             PlayerPreference.valueOf(it)
         }

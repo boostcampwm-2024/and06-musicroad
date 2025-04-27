@@ -23,7 +23,7 @@ class PlayerServiceViewModel @Inject constructor(
     val playerState: StateFlow<PlayerState> = mediaPlayerListenerUseCase.playerStateFlow()
         .stateIn(
             scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
+            started = SharingStarted.Eagerly,
             initialValue = PlayerState()
         )
 
