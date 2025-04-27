@@ -50,7 +50,7 @@ fun FirebasePick.toPick(): Pick = Pick(
     comment = comment.toString(),
     favoriteCount = favoriteCount,
     createdBy = Creator(
-        uid = createdBy?.get("userId") ?: "",
+        uid = createdBy?.get("uid") ?: "",
         userName = createdBy?.get("userName") ?: ""
     ),
     createdAt = createdAt?.toDate()?.formatTimestamp() ?: "",
