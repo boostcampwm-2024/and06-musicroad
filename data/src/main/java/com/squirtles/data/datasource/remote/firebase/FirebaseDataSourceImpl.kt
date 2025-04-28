@@ -5,10 +5,12 @@ import com.firebase.geofire.GeoFireUtils
 import com.firebase.geofire.GeoLocation
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
+import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.toObject
@@ -19,10 +21,15 @@ import com.squirtles.data.mapper.toFirebasePick
 import com.squirtles.data.mapper.toPick
 import com.squirtles.data.mapper.toUser
 import com.squirtles.domain.firebase.FirebaseRemoteDataSource
+import com.squirtles.domain.firebase.PickType
+import com.squirtles.domain.firebase.PickWithType
 import com.squirtles.domain.model.Pick
 import com.squirtles.domain.model.User
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.tasks.await
@@ -38,15 +45,28 @@ class FirebaseDataSourceImpl @Inject constructor(
 
     private val cloudFunctionHelper = CloudFunctionHelper()
 
-    override suspend fun createGoogleIdUser(uid: String, email: String, userName: String?, userProfileImage: String?): User? {
+    override suspend fun createGoogleIdUser(
+        uid: String,
+        email: String,
+        userName: String?,
+        userProfileImage: String?
+    ): User? {
         return suspendCancellableCoroutine { continuation ->
             val documentReference = db.collection("users").document(uid)
-            documentReference.set(FirebaseUser(email = email, name = userName, profileImage = userProfileImage))
+            documentReference.set(
+                FirebaseUser(
+                    email = email,
+                    name = userName,
+                    profileImage = userProfileImage
+                )
+            )
                 .addOnSuccessListener {
                     documentReference.get()
                         .addOnSuccessListener { documentSnapshot ->
                             val savedUser = documentSnapshot.toObject<FirebaseUser>()
-                            continuation.resume(savedUser?.toUser()?.copy(uid = documentReference.id))
+                            continuation.resume(
+                                savedUser?.toUser()?.copy(uid = documentReference.id)
+                            )
                         }
                         .addOnFailureListener { exception ->
                             continuation.resumeWithException(exception)
@@ -131,44 +151,60 @@ class FirebaseDataSourceImpl @Inject constructor(
         lat: Double,
         lng: Double,
         radiusInM: Double
-    ): List<Pick> {
-        val center = GeoLocation(lat, lng)
-        val bounds = GeoFireUtils.getGeoHashQueryBounds(center, radiusInM)
-
-        val queries: MutableList<Query> = ArrayList()
-        val tasks: MutableList<Task<QuerySnapshot>> = ArrayList()
-        val matchingPicks: MutableList<Pick> = ArrayList()
-
-        bounds.forEach { bound ->
-            val query = db.collection("picks")
-                .orderBy("geoHash")
-                .startAt(bound.startHash)
-                .endAt(bound.endHash)
-            queries.add(query)
-        }
-
+    ): Flow<List<PickWithType>> = callbackFlow {
+        val listeners = mutableListOf<ListenerRegistration>()
         try {
-            queries.forEach { query ->
-                tasks.add(query.get())
-            }
-            Tasks.whenAllComplete(tasks).await()
-        } catch (exception: Exception) {
-            Log.e("FirebaseDataSourceImpl", "Failed to fetch picks", exception)
-            throw exception
-        }
+            val center = GeoLocation(lat, lng)
+            val bounds = GeoFireUtils.getGeoHashQueryBounds(center, radiusInM)
 
-        tasks.forEach { task ->
-            val snap = task.result
-            snap.documents.forEach { doc ->
-                if (isAccurate(doc, center, radiusInM)) {
-                    doc.toObject<FirebasePick>()?.run {
-                        matchingPicks.add(this.toPick().copy(id = doc.id))
+            bounds.forEach { bound ->
+                val query = db.collection(COLLECTION_PICKS)
+                    .orderBy("geoHash")
+                    .startAt(bound.startHash)
+                    .endAt(bound.endHash)
+
+                val listener = query.addSnapshotListener { snapshots, e ->
+                    if (e != null) {
+                        Log.w("SnapshotListener", "listen:error", e)
+                        return@addSnapshotListener
                     }
+
+                    val pickData = mutableListOf<PickWithType>()
+                    for (dc in snapshots!!.documentChanges) {
+                        if (isAccurate(dc.document, center, radiusInM)) {
+                            dc.document.toObject<FirebasePick>().run {
+                                when (dc.type) {
+                                    DocumentChange.Type.ADDED, DocumentChange.Type.MODIFIED -> {
+                                        pickData.add(
+                                            PickWithType(
+                                                type = PickType.UPDATED,
+                                                pick = this.toPick().copy(id = dc.document.id)
+                                            )
+                                        )
+                                    }
+
+                                    DocumentChange.Type.REMOVED -> {
+                                        pickData.add(
+                                            PickWithType(
+                                                type = PickType.REMOVED,
+                                                pick = this.toPick().copy(id = dc.document.id)
+                                            )
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    trySend(pickData)
                 }
+                listeners.add(listener)
             }
+        } catch (e: Exception) {
+            close(e)
         }
 
-        return matchingPicks
+        // Flow 종료 시 모든 리스너 제거
+        awaitClose { listeners.forEach { it.remove() } }
     }
 
     /**

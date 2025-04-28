@@ -1,10 +1,14 @@
 package com.squirtles.data.repository
 
+import android.util.Log
 import com.squirtles.domain.firebase.FirebaseRemoteDataSource
 import com.squirtles.domain.firebase.FirebaseException
 import com.squirtles.domain.model.Pick
 import com.squirtles.domain.model.User
 import com.squirtles.domain.firebase.FirebaseRepository
+import com.squirtles.domain.firebase.PickType
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -13,7 +17,12 @@ class FirebaseRepositoryImpl @Inject constructor(
     private val firebaseRemoteDataSource: FirebaseRemoteDataSource
 ) : FirebaseRepository {
 
-    override suspend fun createGoogleIdUser(uid: String, email: String, userName: String?, userProfileImage: String?): Result<User> {
+    override suspend fun createGoogleIdUser(
+        uid: String,
+        email: String,
+        userName: String?,
+        userProfileImage: String?
+    ): Result<User> {
         return handleResult(FirebaseException.CreatedUserFailedException()) {
             firebaseRemoteDataSource.createGoogleIdUser(uid, email, userName, userProfileImage)
         }
@@ -47,11 +56,27 @@ class FirebaseRepositoryImpl @Inject constructor(
         lat: Double,
         lng: Double,
         radiusInM: Double
-    ): Result<List<Pick>> {
-        val pickList = firebaseRemoteDataSource.fetchPicksInArea(lat, lng, radiusInM)
-        return handleResult(FirebaseException.NoSuchPickInRadiusException()) {
-            pickList.ifEmpty { null }
-        }
+    ): Flow<List<Pick>> {
+        val latestNearPick = mutableMapOf<String, Pick>() // String : Pick Id
+
+        return firebaseRemoteDataSource.fetchPicksInArea(lat, lng, radiusInM)
+            .map { pickWithTypeList ->
+                pickWithTypeList.forEach { pickWithType ->
+                    val pick = pickWithType.pick
+                    when (pickWithType.type) {
+                        PickType.UPDATED -> {
+                            latestNearPick[pick.id] = pick
+                        }
+
+                        PickType.REMOVED -> {
+                            latestNearPick[pick.id]?.let {
+                                latestNearPick.remove(pick.id)
+                            }
+                        }
+                    }
+                }
+                latestNearPick.values.toList()
+            }
     }
 
     override suspend fun createPick(pick: Pick): Result<String> {

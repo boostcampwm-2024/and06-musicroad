@@ -2,6 +2,7 @@ package com.squirtles.domain.firebase
 
 import com.squirtles.domain.model.Pick
 import com.squirtles.domain.model.User
+import kotlinx.coroutines.flow.Flow
 
 interface FirebaseRepository {
     suspend fun createGoogleIdUser(uid: String, email: String, userName: String?, userProfileImage: String?): Result<User>
@@ -10,7 +11,7 @@ interface FirebaseRepository {
     suspend fun deleteUser(uid: String): Result<Boolean>
 
     suspend fun fetchPick(pickID: String): Result<Pick>
-    suspend fun fetchPicksInArea(lat: Double, lng: Double, radiusInM: Double): Result<List<Pick>>
+    suspend fun fetchPicksInArea(lat: Double, lng: Double, radiusInM: Double): Flow<List<Pick>>
     suspend fun createPick(pick: Pick): Result<String>
     suspend fun deletePick(pickId: String, uid: String): Result<Boolean>
 
