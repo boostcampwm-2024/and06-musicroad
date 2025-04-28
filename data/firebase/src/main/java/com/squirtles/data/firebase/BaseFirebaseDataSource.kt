@@ -4,7 +4,9 @@ import android.util.Log
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import com.squirtles.domain.firebase.FirebaseException
@@ -41,7 +43,7 @@ open class BaseFirebaseDataSource(
             }
             query.get().await()
         }.onFailure {
-            Log.e("FirebaseDataSource", "Failed to query documents", it)
+            Log.e("FirebaseDataSource", "Failed to get query result documents", it)
             throw FirebaseException.ExecuteQueryFailedException(collection = collection.name)
         }
     }
@@ -59,7 +61,25 @@ open class BaseFirebaseDataSource(
                 .get()
                 .await()
         }.onFailure {
-            Log.e("FirebaseDataSource", "Failed to create query for range", it)
+            Log.e("FirebaseDataSource", "Failed to get query result documents for range", it)
+            throw FirebaseException.ExecuteQueryFailedException(collection = collection.name)
+        }
+    }
+
+    protected fun streamDocumentsInRange(
+        collection: FirebaseCollections,
+        field: FirebaseDocumentFields,
+        start: String,
+        end: String,
+        listener: EventListener<QuerySnapshot>
+    ): ListenerRegistration {
+        return try {
+            fetchCollection(collection)
+                .whereGreaterThanOrEqualTo(field.name, start)
+                .whereLessThanOrEqualTo(field.name, end)
+                .addSnapshotListener(listener)
+        } catch (e: Exception) {
+            Log.e("FirebaseDataSource", "Failed to get query stream for range", e)
             throw FirebaseException.ExecuteQueryFailedException(collection = collection.name)
         }
     }
@@ -78,7 +98,7 @@ open class BaseFirebaseDataSource(
         }
     }
 
-    protected suspend fun setDocument(collection: FirebaseCollections, docId:String, value: Any): Result<Void> {
+    protected suspend fun setDocument(collection: FirebaseCollections, docId: String, value: Any): Result<Void> {
         return runCatching {
             fetchDocumentReference(collection, docId).set(value).await()
         }.onFailure {

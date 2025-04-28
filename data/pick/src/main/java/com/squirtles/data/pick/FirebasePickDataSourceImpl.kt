@@ -3,12 +3,12 @@ package com.squirtles.data.pick
 import android.util.Log
 import com.firebase.geofire.GeoFireUtils
 import com.firebase.geofire.GeoLocation
+import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.toObject
 import com.squirtles.data.firebase.BaseFirebaseDataSource
 import com.squirtles.data.firebase.FirebaseCollections
@@ -16,12 +16,13 @@ import com.squirtles.data.firebase.FirebaseDocumentFields
 import com.squirtles.data.firebase.model.FirebaseFavorite
 import com.squirtles.data.firebase.model.FirebasePick
 import com.squirtles.data.firebase.model.FirebaseUser
-import kotlinx.coroutines.suspendCancellableCoroutine
+import com.squirtles.data.firebase.model.toPick
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
 
 @Singleton
 class FirebasePickDataSourceImpl @Inject constructor(
@@ -38,36 +39,48 @@ class FirebasePickDataSourceImpl @Inject constructor(
         }
     }
 
-    /* Fetches picks within a given radius from Firestore */
     override suspend fun fetchPicksInArea(
         lat: Double,
         lng: Double,
         radiusInM: Double
-    ): Result<List<FirebasePick>> {
-        val center = GeoLocation(lat, lng)
-        val bounds = GeoFireUtils.getGeoHashQueryBounds(center, radiusInM)
+    ): Flow<List<PickWithType>> = callbackFlow {
+        val listeners = mutableListOf<ListenerRegistration>()
+        try {
+            val center = GeoLocation(lat, lng)
+            val bounds = GeoFireUtils.getGeoHashQueryBounds(center, radiusInM)
 
-        return runCatching {
-            val queryResults = bounds.map { bound ->
-                queryDocumentsInRange(
+            bounds.forEach { bound ->
+                val listenerRegistration = streamDocumentsInRange(
                     collection = FirebaseCollections.Picks,
                     field = FirebaseDocumentFields.GeoHash,
                     start = bound.startHash,
-                    end = bound.endHash
-                )
-            }
+                    end = bound.endHash,
+                ) { snapshot, e ->
+                    if (e != null) {
+                        Log.w("SnapshotListener", "listen:error", e)
+                        throw(e)
+                    } else {
+                        val pickData = snapshot?.documentChanges
+                            ?.filter { isAccurate(it.document, center, radiusInM) }
+                            ?.map { dc ->
+                                val pick = dc.document.toObject<FirebasePick>().toPick().copy(id = dc.document.id)
+                                when (dc.type) {
+                                    DocumentChange.Type.ADDED, DocumentChange.Type.MODIFIED -> PickWithType(PickType.UPDATED, pick)
+                                    DocumentChange.Type.REMOVED -> PickWithType(PickType.REMOVED, pick)
+                                }
+                            }.orEmpty()
 
-            queryResults.flatMap { querySnapshot ->
-                querySnapshot.getOrThrow().documents
-                    .filter { doc ->
-                        isAccurate(doc, center, radiusInM)
-                    }.mapNotNull { doc ->
-                        doc.toObject<FirebasePick>()!!.copy(id = doc.id)
+                        trySend(pickData)
                     }
+                }
+                listeners.add(listenerRegistration)
             }
-        }.onFailure { e ->
-            Log.e(TAG_LOG, "Failed to fetch picks", e)
+        } catch (e: Exception) {
+            close(e)
         }
+
+        // Flow 종료 시 모든 리스너 제거
+        awaitClose { listeners.forEach { it.remove() } }
     }
 
     /* Creates a new pick in Firestore */
@@ -162,19 +175,6 @@ class FirebasePickDataSourceImpl @Inject constructor(
             fields = listOf(FirebaseDocumentFields.Uid),
             values = listOf(userId)
         ).getOrThrow().documents
-    }
-
-    private suspend fun executeQuery(query: Query): QuerySnapshot {
-        return suspendCancellableCoroutine { continuation ->
-            query.get()
-                .addOnSuccessListener { result ->
-                    continuation.resume(result)
-                }
-                .addOnFailureListener { exception ->
-                    Log.w(TAG_LOG, "Error fetching favorite documents", exception)
-                    continuation.resumeWithException(exception)
-                }
-        }
     }
 
     companion object {

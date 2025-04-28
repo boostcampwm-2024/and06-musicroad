@@ -1,5 +1,6 @@
 package com.squirtles.feature.map
 
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -92,6 +93,14 @@ fun MapScreen(
                     }
                 }
         }
+
+        launch {
+            mapViewModel.fetchPicksErrorToast
+                .flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+                .collect {
+                    Toast.makeText(context, context.getString(R.string.error_message_fetch_picks_in_bounds), Toast.LENGTH_SHORT).show()
+                }
+        }
     }
 
     LaunchedEffect(playerState) {
@@ -133,29 +142,35 @@ fun MapScreen(
                 verticalArrangement = Arrangement.Bottom,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                clickedMarkerState.prevClickedMarker?.let {
-                    if (clickedMarkerState.curPickId != null) { // 단말 마커 클릭 시
-                        showBottomSheet = false
-                        mapViewModel.picks[clickedMarkerState.curPickId]?.let { pick ->
-                            InfoWindow(
-                                pick = pick,
-                                uid = mapViewModel.getUid(),
-                                navigateToPick = { pickId ->
-                                    onPickSummaryClick(pickId)
-                                },
-                                calculateDistance = { lat, lng ->
-                                    mapViewModel.calculateDistance(lat, lng).let { distance ->
-                                        when {
-                                            distance >= 1000.0 -> "%.1fkm".format(distance / 1000.0)
-                                            distance >= 0 -> "%.0fm".format(distance)
-                                            else -> ""
+                if (mapViewModel.lastCameraPosition != null &&
+                    clickedMarkerState.prevClickedMarker?.position == mapViewModel.lastCameraPosition?.target
+                ) {
+                    mapViewModel.resetClickedMarkerState(context)
+                } else {
+                    clickedMarkerState.prevClickedMarker?.let {
+                        if (clickedMarkerState.curPickId != null) { // 단말 마커 클릭 시
+                            showBottomSheet = false
+                            mapViewModel.picks[clickedMarkerState.curPickId]?.let { pick ->
+                                InfoWindow(
+                                    pick = pick,
+                                    uid = mapViewModel.getUid(),
+                                    navigateToPick = { pickId ->
+                                        onPickSummaryClick(pickId)
+                                    },
+                                    calculateDistance = { lat, lng ->
+                                        mapViewModel.calculateDistance(lat, lng).let { distance ->
+                                            when {
+                                                distance >= 1000.0 -> "%.1fkm".format(distance / 1000.0)
+                                                distance >= 0 -> "%.0fm".format(distance)
+                                                else -> ""
+                                            }
                                         }
                                     }
-                                }
-                            )
+                                )
+                            }
+                        } else { // 클러스터 마커 클릭 시
+                            showBottomSheet = true
                         }
-                    } else { // 클러스터 마커 클릭 시
-                        showBottomSheet = true
                     }
                 }
 
@@ -168,7 +183,8 @@ fun MapScreen(
                         mapViewModel.getUid()?.let { uid ->
                             onFavoriteClick(uid)
                         } ?: run {
-                            signInDialogDescription = getString(context, R.string.sign_in_dialog_title_favorite_picks)
+                            signInDialogDescription =
+                                getString(context, R.string.sign_in_dialog_title_favorite_picks)
                             showSignInDialog = true
                             onSignInSuccess = onFavoriteClick
                         }
@@ -178,7 +194,8 @@ fun MapScreen(
                             onCenterClick()
                             mapViewModel.saveCurLocationForced()
                         } ?: run {
-                            signInDialogDescription = getString(context, R.string.sign_in_dialog_title_add_pick)
+                            signInDialogDescription =
+                                getString(context, R.string.sign_in_dialog_title_add_pick)
                             showSignInDialog = true
                             onSignInSuccess = {
                                 onCenterClick()

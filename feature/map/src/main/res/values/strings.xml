@@ -2,6 +2,7 @@
 <resources>
     <string name="loading_current_location_dialog_text">현재 위치 로딩 중...</string>
     <string name="close_loading_current_location_dialog">종료</string>
+    <string name="error_message_fetch_picks_in_bounds">데이터를 불러오는 데 일시적인 오류가 발생했습니다.</string>
 
     <!-- Map -->
     <string name="map_navigation_favorite_icon_description">픽 보관함 이동 버튼 아이콘</string>

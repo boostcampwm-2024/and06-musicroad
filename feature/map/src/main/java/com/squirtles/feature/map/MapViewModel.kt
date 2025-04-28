@@ -16,9 +16,12 @@ import com.squirtles.core.model.Pick
 import com.squirtles.domain.pick.usecase.FetchPickUseCase
 import com.squirtles.domain.user.usecase.GetCurrentUidUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -51,8 +54,12 @@ class MapViewModel @Inject constructor(
     private val _clickedMarkerState = MutableStateFlow(MarkerState())
     val clickedMarkerState = _clickedMarkerState.asStateFlow()
 
+    private val _fetchPicksErrorToast = MutableSharedFlow<Unit>()
+    val fetchPicksErrorToast = _fetchPicksErrorToast.asSharedFlow()
+
     // FIXME : 네이버맵의 LocationChangeListener에서 실시간으로 변하는 위치 정보 -> 더 나은 방법이 있으면 고쳐주세요
     private var _currentLocation: Location? = null
+    val curLocation get() = _currentLocation
 
     // LocalDataSource에 저장되는 위치 정보
     // Firestore 데이터 쿼리 작업 최소화 및 위치데이터 공유 용도
@@ -120,10 +127,12 @@ class MapViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             val prevClickedMarker = _clickedMarkerState.value.prevClickedMarker
-            if (prevClickedMarker == marker) return@launch
+            // 클릭한 마커와 클릭되어 있는 마커가 다를 때만 크기 변경
+            if (prevClickedMarker != marker) {
+                prevClickedMarker?.toggleSizeByClick(context, false)
+                marker.toggleSizeByClick(context, true)
+            }
 
-            prevClickedMarker?.toggleSizeByClick(context, false)
-            marker.toggleSizeByClick(context, true)
             val pickList = clusterTag?.split(",")?.mapNotNull { id -> picks[id] }
             _clickedMarkerState.emit(MarkerState(marker, pickList, pickId))
         }
@@ -142,26 +151,25 @@ class MapViewModel @Inject constructor(
             _centerLatLng.value?.run {
                 val radiusInM = leftTop.distanceTo(this)
                 fetchPickUseCase(this.latitude, this.longitude, radiusInM)
-                    .onSuccess { pickList ->
+                    .catch {
+                        _fetchPicksErrorToast.emit(Unit)
+                    }
+                    .collect { pickList ->
                         val newKeyTagMap: MutableMap<MarkerKey, String> = mutableMapOf()
                         pickList.forEach { pick ->
                             newKeyTagMap[MarkerKey(pick)] = pick.id
                             _picks[pick.id] = pick
                         }
-                        _clickedMarkerState.value.clusterPickList?.let { clusterPickList -> // 클러스터 마커가 선택되어 있는 경우
-                            val updatedPickList = mutableListOf<Pick>()
-                            clusterPickList.forEach { pick ->
-                                _picks[pick.id]?.let { updatedPick ->
-                                    updatedPickList.add(updatedPick)
-                                }
+
+                        // 업데이트된 리스트에 기존 픽이 없으면 _picks와 clusterer에서 삭제
+                        val deletedKeyList = _picks.keys
+                            .filterNot { it in newKeyTagMap.values }
+                            .mapNotNull { pickId ->
+                                _picks.remove(pickId)?.let { MarkerKey(it) }
                             }
-                            _clickedMarkerState.emit(_clickedMarkerState.value.copy(clusterPickList = updatedPickList.toList())) // 최신 픽 정보로 clusterPickList 업데이트
-                        }
+
                         clusterer?.addAll(newKeyTagMap)
-                    }
-                    .onFailure {
-                        // TODO: NoSuchPickInRadiusException일 때
-                        Log.e("MapViewModel", "${it.message}")
+                        clusterer?.removeAll(deletedKeyList)
                     }
             }
         }
@@ -170,10 +178,11 @@ class MapViewModel @Inject constructor(
     fun requestPickNotificationArea(location: Location, notiRadius: Double) {
         viewModelScope.launch {
             fetchPickUseCase(location.latitude, location.longitude, notiRadius)
-                .onSuccess {
-                    _nearPicks.emit(it)
-                }.onFailure {
-                    _nearPicks.emit(emptyList())
+                .catch {
+                    _fetchPicksErrorToast.emit(Unit)
+                }
+                .collect { pickList ->
+                    _nearPicks.emit(pickList)
                 }
         }
     }

@@ -1,9 +1,11 @@
 package com.squirtles.data.pick
 
-import com.squirtles.domain.pick.FirebasePickRepository
+import com.squirtles.core.model.Pick
 import com.squirtles.data.firebase.model.toFirebasePick
 import com.squirtles.data.firebase.model.toPick
-import com.squirtles.core.model.Pick
+import com.squirtles.domain.pick.FirebasePickRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -39,11 +41,27 @@ class FirebasePickRepositoryImpl @Inject constructor(
         lat: Double,
         lng: Double,
         radiusInM: Double
-    ): Result<List<Pick>> {
-        return runCatching {
-            val firebasePicks = pickDataSource.fetchPicksInArea(lat, lng, radiusInM).getOrThrow()
-            firebasePicks.map { it.toPick() }
-        }
+    ): Flow<List<Pick>> {
+        val latestNearPick = mutableMapOf<String, Pick>() // String : Pick Id
+
+        return pickDataSource.fetchPicksInArea(lat, lng, radiusInM)
+            .map { pickWithTypeList ->
+                pickWithTypeList.forEach { pickWithType ->
+                    val pick = pickWithType.pick
+                    when (pickWithType.type) {
+                        PickType.UPDATED -> {
+                            latestNearPick[pick.id] = pick
+                        }
+
+                        PickType.REMOVED -> {
+                            latestNearPick[pick.id]?.let {
+                                latestNearPick.remove(pick.id)
+                            }
+                        }
+                    }
+                }
+                latestNearPick.values.toList()
+            }
     }
 
     override suspend fun fetchFavoritePicks(userId: String): Result<List<Pick>> {
