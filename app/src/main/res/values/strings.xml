@@ -141,7 +141,9 @@
     <string name="sign_in_dialog_title_user_info">픽을 담기 위해\n로그인이 필요합니다</string>
     <string name="sign_in_dialog">로그인이 필요합니다</string>
     <string name="sign_in_dialog_dismiss">취소</string>
+    <string name="sign_in_failure_message">로그인에 실패했습니다</string>
     <string name="google_id_no_credential_exception_message">기기에 로그인된 구글 계정이 없습니다</string>
+    <string name="google_id_credential_provider_exception_message">Google 로그인을 사용할 수 없는 기기입니다</string>
 
     <!--SignOut-->
     <string name="sign_out_dialog_title">로그아웃 하시겠습니까?</string>
