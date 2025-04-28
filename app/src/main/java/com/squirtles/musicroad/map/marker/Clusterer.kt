@@ -143,8 +143,7 @@ internal fun <T : ClusteringKey> buildClusterer(
                         true
                     }
 
-                    // 이거 있으면 2개짜리 클러스터 마커 누른 상태에서 이 중에 있는 거 삭제되면 바텀 시트가 인포윈도우로 바뀜
-                    // 이거 없으면 위 상황에서 지도의 마커는 클러스터 마커에서 단말 마커로 바뀌는데 여전히 바텀 시트에는 2개가 떠 있음
+                    // 2개짜리 클러스터 마커가 클릭된 상태에서 항목 삭제 시 바텀 시트 -> 인포윈도우
                     if (mapViewModel.clickedMarkerState.value.prevClickedMarker?.position == marker.position) {
                         mapViewModel.setClickedMarkerState(
                             context = context,

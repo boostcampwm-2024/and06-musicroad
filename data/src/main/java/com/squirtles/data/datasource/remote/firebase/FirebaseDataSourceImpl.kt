@@ -169,7 +169,6 @@ class FirebaseDataSourceImpl @Inject constructor(
                         return@addSnapshotListener
                     }
 
-                    Log.d("DataSource", "datasource 개수 : ${snapshots?.documents?.size}")
                     val pickData = mutableListOf<PickWithType>()
                     for (dc in snapshots!!.documentChanges) {
                         if (isAccurate(dc.document, center, radiusInM)) {
@@ -197,7 +196,6 @@ class FirebaseDataSourceImpl @Inject constructor(
                         }
                     }
                     trySend(pickData)
-                    Log.d("DataSource", "pickData: $pickData")
                 }
                 listeners.add(listener)
             }
