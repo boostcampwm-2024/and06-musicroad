@@ -13,7 +13,7 @@ import javax.inject.Singleton
 
 @Singleton
 class PreferenceRepositoryImpl @Inject constructor(
-    private val context: Context
+    context: Context
 ) : PreferenceRepository {
     private val Context.dataStore by preferencesDataStore(name = PLAYER_PREFERENCE_NAME)
     private val dataStore = context.dataStore
@@ -24,18 +24,13 @@ class PreferenceRepositoryImpl @Inject constructor(
                 pref[PLAYER_EFFECT] = preference.name
             }
             true
-        }.onFailure { e ->
-            return Result.failure(e)
         }
     }
 
     override fun loadPlayerPreference(): Flow<PlayerPreference> {
-        val pref = dataStore.data.map { pref ->
-            pref[PLAYER_EFFECT] ?: "BAR"
-        }.map {
-            PlayerPreference.valueOf(it)
+        return dataStore.data.map { pref ->
+            PlayerPreference.valueOf(pref[PLAYER_EFFECT] ?: "BAR")
         }
-        return pref
     }
 
     companion object {
