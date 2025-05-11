@@ -1,14 +1,19 @@
 package com.squirtles.feature.userinfo.screen
 
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
@@ -16,11 +21,7 @@ import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -40,29 +41,55 @@ import com.squirtles.core.preference.PreferenceViewModel
 import com.squirtles.domain.preference.PlayerPreference
 import com.squirtles.feature.userinfo.R
 
+data class PlayerEffect(
+    val preference: PlayerPreference,
+    @StringRes val name: Int,
+    @DrawableRes val drawable: Int,
+    val drawablePadding: Dp
+)
+
+enum class PlayerEffectType(val effect: PlayerEffect) {
+    NONE(PlayerEffect(
+        preference = PlayerPreference.NONE,
+        name = R.string.sound_effect_none,
+        drawable = R.drawable.soundeffectnone,
+        drawablePadding = 0.dp
+    )),
+    BAR(PlayerEffect(
+        preference = PlayerPreference.BAR,
+        name = R.string.sound_effect_bar,
+        drawable = R.drawable.soundeffectbar,
+        drawablePadding = 0.dp
+    )),
+    FILL(PlayerEffect(
+        preference = PlayerPreference.FILL,
+        name = R.string.sound_effect_wave_fill,
+        drawable = R.drawable.soundeffectfill,
+        drawablePadding = 15.dp
+    )),
+    STROKE(PlayerEffect(
+        preference = PlayerPreference.STROKE,
+        name = R.string.sound_effect_wave_stroke,
+        drawable = R.drawable.soundeffectstroke,
+        drawablePadding = 15.dp
+    )),
+}
+
 @Composable
 fun EditPlayerScreen(
-    modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
     preferenceViewModel: PreferenceViewModel = hiltViewModel()
 ) {
     val currentEffect by preferenceViewModel.playerPreference.collectAsStateWithLifecycle(null)
 
-    val effectNameMap = mapOf(
-        PlayerPreference.NONE to stringResource(R.string.sound_effect_none),
-        PlayerPreference.BAR to stringResource(R.string.sound_effect_bar),
-        PlayerPreference.STROKE to stringResource(R.string.sound_effect_wave_stroke),
-        PlayerPreference.FILL to stringResource(R.string.sound_effect_wave_fill)
-    )
-
     val savePreference: (PlayerPreference) -> Unit = {
         preferenceViewModel.savePlayerPreference(it)
     }
-    
+
     Scaffold(
         topBar = {
             DefaultTopAppBar(
-                title = "플레이어 설정",
+                title = stringResource(id = R.string.edit_player_screen_top_app_bar_title),
                 onBackClick = onBackClick
             )
         }
@@ -73,78 +100,34 @@ fun EditPlayerScreen(
                 .background(Brush.verticalGradient(colorStops = COLOR_STOPS))
                 .padding(innerPadding),
         ) {
-            if(currentEffect != null){
+            if (currentEffect != null) {
                 Column(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(vertical = 50.dp)
+                        .fillMaxWidth()
+                        .wrapContentHeight(),
+                    verticalArrangement = Arrangement.Center,
                 ) {
-                    Row(
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(15.dp)
-                            .weight(1f),
+                            .padding(vertical = 45.dp),
+                        verticalArrangement = Arrangement.spacedBy(20.dp),
                     ) {
-                        SoundEffectItem(
-                            imageRes = R.drawable.soundeffectnone,
-                            effectName = effectNameMap[PlayerPreference.NONE].toString(),
-                            effect = PlayerPreference.NONE,
-                            currentEffect = currentEffect!!,
-                            onClick = {
-                                savePreference(PlayerPreference.NONE)
-                            },
-                            modifier = Modifier
-                                .weight(1f)
-                                .align(Alignment.CenterVertically),
-                        )
+                        items(4) { index ->
+                            val effectType = PlayerEffectType.entries[index]
 
-                        SoundEffectItem(
-                            imageRes = R.drawable.soundeffectbar,
-                            effectName = effectNameMap[PlayerPreference.BAR].toString(),
-                            effect = PlayerPreference.BAR,
-                            currentEffect = currentEffect!!,
-                            onClick = {
-                                savePreference(PlayerPreference.BAR)
-                            },
-                            modifier = Modifier
-                                .weight(1f)
-                                .align(Alignment.CenterVertically)
-                        )
-                    }
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(15.dp)
-                            .weight(1f)
-                    ) {
-                        SoundEffectItem(
-                            imageRes = R.drawable.soundeffectstroke,
-                            effectName = effectNameMap[PlayerPreference.STROKE].toString(),
-                            effect = PlayerPreference.STROKE,
-                            currentEffect = currentEffect!!,
-                            onClick = {
-                                savePreference(PlayerPreference.STROKE)
-                            },
-                            modifier = Modifier
-                                .weight(1f)
-                                .align(Alignment.CenterVertically),
-                            imagePadding = 15.dp
-                        )
-
-                        SoundEffectItem(
-                            imageRes = R.drawable.soundeffectfill,
-                            effectName = effectNameMap[PlayerPreference.FILL].toString(),
-                            effect = PlayerPreference.FILL,
-                            currentEffect = currentEffect!!,
-                            onClick = {
-                                savePreference(PlayerPreference.FILL)
-                            },
-                            modifier = Modifier
-                                .weight(1f)
-                                .align(Alignment.CenterVertically),
-                            imagePadding = 15.dp
-                        )
+                            SoundEffectItem(
+                                imageRes = effectType.effect.drawable,
+                                effectName = stringResource(effectType.effect.name),
+                                effect = effectType.effect.preference,
+                                currentEffect = currentEffect!!,
+                                onClick = {
+                                    savePreference(effectType.effect.preference)
+                                },
+                                imagePadding = effectType.effect.drawablePadding
+                            )
+                        }
                     }
                 }
             }
@@ -164,7 +147,6 @@ fun SoundEffectItem(
 ) {
     Column(
         modifier = modifier
-            .fillMaxSize()
     ) {
         Image(
             painter = painterResource(id = imageRes),

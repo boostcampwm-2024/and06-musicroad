@@ -3,6 +3,7 @@
 
     <!-- Top App Bar -->
     <string name="top_app_bar_back_description">상단 바 뒤로 가기 버튼</string>
+    <string name="edit_player_screen_top_app_bar_title">플레이어 효과</string>
 
     <!-- User Info -->
     <string name="user_info_navigate_to_menu">메뉴로 이동하기 아이콘</string>
