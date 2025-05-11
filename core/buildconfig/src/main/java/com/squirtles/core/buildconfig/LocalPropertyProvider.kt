@@ -1,15 +1,11 @@
 package com.squirtles.core.buildconfig
 
 object LocalPropertyProvider {
-    val googleClientId: String
-        get() = BuildConfig.GOOGLE_CLIENT_ID
+    const val googleClientId: String = BuildConfig.GOOGLE_CLIENT_ID
 
-    val appleMusicApiToken: String
-        get() = BuildConfig.APPLE_MUSIC_API_TOKEN
+    const val appleMusicApiToken: String = BuildConfig.APPLE_MUSIC_API_TOKEN
 
-    val firestoreDbId: String
-        get() = BuildConfig.FIRESTORE_DB_ID
+    const val firestoreDbId: String = BuildConfig.FIRESTORE_DB_ID
 
-    val httpsCallable: String
-        get() = BuildConfig.HTTPS_CALLABLE
+    const val httpsCallable: String = BuildConfig.HTTPS_CALLABLE
 }
