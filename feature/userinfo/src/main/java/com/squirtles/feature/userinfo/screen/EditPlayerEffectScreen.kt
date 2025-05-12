@@ -4,6 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -147,6 +148,11 @@ fun SoundEffectItem(
 ) {
     Column(
         modifier = modifier
+            .selectable(
+                selected = (effect == currentEffect),
+                onClick = onClick,
+                role = Role.RadioButton
+            ),
     ) {
         Image(
             painter = painterResource(id = imageRes),
@@ -157,9 +163,7 @@ fun SoundEffectItem(
         )
         SelectEffectButton(
             text = effectName,
-            effect = effect,
-            currentEffect = currentEffect,
-            onClick = onClick,
+            selected = (effect == currentEffect),
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
     }
@@ -168,22 +172,15 @@ fun SoundEffectItem(
 @Composable
 fun SelectEffectButton(
     text: String,
-    effect: PlayerPreference,
-    currentEffect: PlayerPreference,
-    onClick: () -> Unit,
+    selected: Boolean,
     modifier: Modifier = Modifier
 ) {
     Row(
-        modifier
-            .selectable(
-                selected = (effect == currentEffect),
-                onClick = onClick,
-                role = Role.RadioButton
-            ),
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
         RadioButton(
-            selected = (effect == currentEffect),
+            selected = selected,
             onClick = null,
             colors = RadioButtonDefaults.colors(
                 selectedColor = Primary
