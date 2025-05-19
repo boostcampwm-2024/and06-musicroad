@@ -2,9 +2,9 @@ package com.squirtles.data.applemusic
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.squirtles.core.model.Song
 import com.squirtles.data.applemusic.api.AppleMusicApi
 import com.squirtles.data.applemusic.model.toSong
-import com.squirtles.core.model.Song
 import retrofit2.HttpException
 import java.io.IOException
 
