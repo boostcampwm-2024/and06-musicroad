@@ -1,0 +1,36 @@
+<resources>
+    <string name="latest_create_order">최근 등록순</string>
+    <string name="latest_favorite_order">최근 담은순</string>
+    <string name="oldest_favorite_order">과거 담은순</string>
+    <string name="oldest_create_order">과거 등록순</string>
+    <string name="favorite_count_desc">담기 많은순</string>
+    <string name="selected_icon_description">체크 아이콘</string>
+    <string name="close_button_text">닫기</string>
+
+    <string name="favorite_picks_top_app_bar_title">픽 보관함</string>
+    <string name="my_picks_top_app_bar_title">등록한 픽</string>
+
+    <string name="favorite_picks_empty">담은 픽이 없습니다</string>
+    <string name="my_picks_empty">등록한 픽이 없습니다</string>
+    <string name="error_loading_pick_list">일시적인 오류가 발생했습니다.</string>
+
+    <!-- Delete Pick Dialog -->
+    <string name="delete_pick_dialog_title">삭제하시겠습니까?</string>
+    <string name="delete_pick_dialog_body">등록하신 픽이 삭제됩니다.</string>
+    <string name="delete_pick_dialog_cancel">취소</string>
+    <string name="delete_pick_dialog_delete">삭제하기</string>
+    <string name="delete_selected_favorite_pick_dialog_body">픽 보관함에서 %d개의 픽이 삭제됩니다.</string>
+    <string name="delete_selected_pick_dialog_body">선택하신 %d개의 픽이 삭제됩니다.</string>
+
+    <!-- Pick List -->
+    <string name="pick_list_deactivate_edit_mode_button_text">취소</string>
+    <string name="pick_list_delete_selection_button_text">선택 삭제</string>
+    <string name="outlined_check_circle_icon_description">원 윤곽선이 있는 체크 아이콘</string>
+    <string name="total_count_text">전체</string>
+    <string name="selected_count_text">선택</string>
+
+    <!-- Top App Bar -->
+    <string name="pick_list_activate_edit_mode_button_description">픽 목록 편집 모드 활성화 버튼</string>
+    <string name="pick_list_select_all_button_text">전체 선택</string>
+    <string name="pick_list_deselect_all_button_text">선택 해제</string>
+</resources>

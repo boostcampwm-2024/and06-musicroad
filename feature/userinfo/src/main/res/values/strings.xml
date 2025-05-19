@@ -1,0 +1,48 @@
+<resources>
+    <string name="app_name">MusicRoad</string>
+
+    <!-- Top App Bar -->
+    <string name="top_app_bar_back_description">상단 바 뒤로 가기 버튼</string>
+
+    <!-- User Info -->
+    <string name="user_info_navigate_to_menu">메뉴로 이동하기 아이콘</string>
+    <string name="user_info_profile_image">프로필 이미지</string>
+    <string name="user_info_pick_category_title">Pick</string>
+    <string name="user_info_favorite_menu_title">픽 보관함</string>
+    <string name="user_info_created_by_self_menu_title">등록한 픽</string>
+    <string name="user_info_favorite_menu_icon_description">픽 보관함 메뉴 아이콘</string>
+    <string name="user_info_created_by_self_menu_icon_description">등록한 픽 메뉴 아이콘</string>
+    <string name="user_info_setting_category_title">Settings</string>
+    <string name="user_info_setting_profile_menu_title">프로필</string>
+    <string name="user_info_setting_notification_menu_title">알림</string>
+    <string name="user_info_setting_sign_out_menu_title">로그아웃</string>
+    <string name="user_info_setting_delete_user_account">회원 탈퇴</string>
+    <string name="user_info_setting_profile_menu_icon_description">프로필 설정 메뉴 아이콘</string>
+    <string name="user_info_setting_notification_menu_icon_description">알림 메뉴 아이콘</string>
+    <string name="user_info_setting_sign_out_menu_icon_description">로그아웃 메뉴 아이콘</string>
+    <string name="user_info_icon_map_description">지도 아이콘</string>
+    <string name="user_info_back_to_map_button_text">지도로 돌아가기</string>
+
+    <!-- Setting -->
+    <string name="setting_notification_title">알림 설정</string>
+    <string name="setting_notification_description">준비 중인 기능입니다!</string>
+    <string name="setting_profile_title">프로필 설정</string>
+    <string name="setting_profile_nickname">닉네임</string>
+    <string name="setting_profile_nickname_message_format_fail">닉네임에는 한글, 영문, 숫자만 사용할 수 있습니다.</string>
+    <string name="setting_profile_nickname_message_length_fail_min">닉네임을 2글자 이상 입력해주세요.</string>
+    <string name="setting_profile_nickname_message_length_fail_max">닉네임은 10글자 이하로 가능합니다.</string>
+    <string name="setting_profile_confirm_icon_description">변경 사항 적용</string>
+    <string name="setting_profile_update_nickname_success">변경 사항이 적용되었습니다.</string>
+    <string name="setting_profile_update_nickname_failure">일시적인 오류가 발생했습니다.</string>
+
+    <!--SignOut-->
+    <string name="sign_out_dialog_title">로그아웃 하시겠습니까?</string>
+    <string name="sign_out_dialog_dismiss">취소</string>
+    <string name="sign_out_dialog_confirm">로그아웃</string>
+
+    <string name="delete_account_dialog_title">정말 탈퇴하시겠습니까?</string>
+    <string name="delete_account_dialog_description">탈퇴 시 회원 정보와 픽 데이터가 삭제되며, 복구할 수 없습니다.</string>
+    <string name="delete_account_dialog_dismiss">취소</string>
+    <string name="delete_account_dialog_confirm">탈퇴</string>
+
+</resources>

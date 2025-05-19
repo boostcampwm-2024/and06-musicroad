@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="confirm_text">확인</string>
+    <string name="request_permissions_title">권한 요청</string>
+    <string name="request_permissions_body">앱 실행을 위해\n위치와 마이크 권한이 필요합니다.</string>
+
+    <!--Permission Bar-->
+    <string name="snackbar_text">설정(앱 정보)에서 권한을 허용해주세요.</string>
+    <string name="action_to_setting">설정으로 이동</string>
+
+    <!--MainActivity-->
+    <string name="main_network_error_message">네트워크 연결이 원활하지 않습니다.</string>
+    <string name="main_user_not_found_message">유저 정보가 존재하지 않습니다. 앱을 재설치 해주세요.</string>
+    <string name="main_create_user_fail_message">유저 등록 실패. 문의해주세요</string>
+</resources>
