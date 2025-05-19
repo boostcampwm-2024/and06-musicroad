@@ -20,6 +20,7 @@ import com.miller198.audiovisualizer.configs.VisualizerConfig
 import com.miller198.audiovisualizer.soundeffect.SoundEffects
 import com.miller198.audiovisualizer.ui.CircleVisualizer
 import com.squirtles.core.model.Song
+import com.squirtles.domain.preference.PlayerPreference
 import com.squirtles.feature.detail.R
 
 @Composable
@@ -30,14 +31,22 @@ internal fun CircleAlbumCover(
     duration: () -> Long,
     audioEffectColor: Color,
     onSeekChanged: (Long) -> Unit,
+    loadPlayerPreference: PlayerPreference,
     modifier: Modifier = Modifier,
 ) {
+    val soundEffect = when(loadPlayerPreference) {
+        PlayerPreference.BAR -> SoundEffects.BAR
+        PlayerPreference.FILL -> SoundEffects.WAVE_FILL
+        PlayerPreference.STROKE -> SoundEffects.WAVE_STROKE
+        PlayerPreference.NONE -> SoundEffects.NONE
+    }
+
     Box(
         modifier = modifier
     ) {
         CircleVisualizer(
             audioSessionId = audioSessionId,
-            soundEffects = SoundEffects.BAR,
+            soundEffects = soundEffect,
             visualizerConfig = VisualizerConfig.FftCaptureConfig.Default,
             gradientConfig = GradientConfig.Enabled(
                 color = audioEffectColor.mixedWhite(),

@@ -3,6 +3,7 @@
 
     <!-- Top App Bar -->
     <string name="top_app_bar_back_description">상단 바 뒤로 가기 버튼</string>
+    <string name="edit_player_screen_top_app_bar_title">플레이어 효과</string>
 
     <!-- User Info -->
     <string name="user_info_navigate_to_menu">메뉴로 이동하기 아이콘</string>
@@ -15,10 +16,12 @@
     <string name="user_info_setting_category_title">Settings</string>
     <string name="user_info_setting_profile_menu_title">프로필</string>
     <string name="user_info_setting_notification_menu_title">알림</string>
+    <string name="user_info_setting_sound_effect_menu_title">플레이어</string>
     <string name="user_info_setting_sign_out_menu_title">로그아웃</string>
     <string name="user_info_setting_delete_user_account">회원 탈퇴</string>
     <string name="user_info_setting_profile_menu_icon_description">프로필 설정 메뉴 아이콘</string>
     <string name="user_info_setting_notification_menu_icon_description">알림 메뉴 아이콘</string>
+    <string name="user_info_setting_sound_effect_menu_icon_description">사운드효과 메뉴 아이콘</string>
     <string name="user_info_setting_sign_out_menu_icon_description">로그아웃 메뉴 아이콘</string>
     <string name="user_info_icon_map_description">지도 아이콘</string>
     <string name="user_info_back_to_map_button_text">지도로 돌아가기</string>
@@ -45,4 +48,9 @@
     <string name="delete_account_dialog_dismiss">취소</string>
     <string name="delete_account_dialog_confirm">탈퇴</string>
 
+    <!--SoundEffect-->
+    <string name="sound_effect_none">없음</string>
+    <string name="sound_effect_bar">막대형</string>
+    <string name="sound_effect_wave_fill">파도형</string>
+    <string name="sound_effect_wave_stroke">선형</string>
 </resources>

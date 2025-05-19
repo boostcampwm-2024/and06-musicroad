@@ -17,9 +17,7 @@ class MediaPlayerUseCase @Inject constructor(
 ) {
     private var mediaController: MediaController? = null
 
-    val audioSessionId = flow {
-        emit(mediaControllerProvider.audioSessionFlow.first())
-    }
+    val audioSessionId = mediaControllerProvider.audioSessionFlow
 
     suspend fun readyPlayer() {
         mediaController = mediaControllerProvider.mediaControllerFlow.first()

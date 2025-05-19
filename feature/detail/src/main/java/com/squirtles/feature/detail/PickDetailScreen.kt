@@ -75,6 +75,8 @@ import com.squirtles.feature.detail.components.music.MusicPlayer
 import com.squirtles.feature.detail.videoplayer.MusicVideoScreen
 import com.squirtles.core.model.Pick
 import com.squirtles.core.musicplayer.PlayerServiceViewModel
+import com.squirtles.core.preference.PreferenceViewModel
+import com.squirtles.domain.preference.PlayerPreference
 import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 
@@ -86,7 +88,8 @@ fun PickDetailScreen(
     onDeleted: (Context) -> Unit,
     playerServiceViewModel: PlayerServiceViewModel,
     detailViewModel: DetailViewModel = hiltViewModel(),
-    accountViewModel: AccountViewModel = hiltViewModel()
+    accountViewModel: AccountViewModel = hiltViewModel(),
+    preferenceViewModel: PreferenceViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -98,6 +101,9 @@ fun PickDetailScreen(
     // Sign In Dialog
     var showSignInDialog by remember { mutableStateOf(false) }
     var signInDialogDescription by remember { mutableStateOf("") }
+
+    // PlayerPreference
+    val currentEffect by preferenceViewModel.playerPreference.collectAsStateWithLifecycle()
 
     BackHandler {
         if (showProcessIndicator.not()) {
@@ -224,6 +230,7 @@ fun PickDetailScreen(
                             favoriteCount = favoriteCount,
                             isMusicVideoAvailable = isMusicVideoAvailable,
                             onUserInfoClick = onUserInfoClick,
+                            playerPreference = currentEffect ?: PlayerPreference.NONE,
                             playerServiceViewModel = playerServiceViewModel,
                             onBackClick = {
                                 onBackClick()
@@ -292,6 +299,7 @@ fun PickDetailScreen(
                 pickUserName = "",
                 favoriteCount = 0,
                 isMusicVideoAvailable = false,
+                playerPreference = PlayerPreference.BAR,
                 playerServiceViewModel = playerServiceViewModel,
                 onUserInfoClick = onUserInfoClick,
                 onBackClick = onBackClick,
@@ -375,6 +383,7 @@ private fun PickDetailContents(
     pickUserName: String,
     favoriteCount: Int,
     isMusicVideoAvailable: Boolean,
+    playerPreference: PlayerPreference,
     playerServiceViewModel: PlayerServiceViewModel,
     onUserInfoClick: (String) -> Unit,
     onBackClick: () -> Unit,
@@ -473,6 +482,7 @@ private fun PickDetailContents(
                             onSeekChanged = { timeMs ->
                                 playerServiceViewModel.onSeekingFinished(timeMs)
                             },
+                            loadPlayerPreference = playerPreference
                         )
                     }
 
@@ -536,6 +546,7 @@ private fun PickDetailPreview() {
         playerServiceViewModel = hiltViewModel(),
         onBackClick = {},
         onActionClick = {},
+        playerPreference = PlayerPreference.BAR
     )
 }
 

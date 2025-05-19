@@ -66,6 +66,7 @@ internal fun MainNavHost(
             onFavoritePicksClick = navigator::navigateFavorite,
             onMyPicksClick = navigator::navigateMyPicks,
             onEditProfileClick = navigator::navigateEditProfile,
+            onEditPlayerClick = navigator::navigateEditPlayer,
             onEditNotificationClick = navigator::navigateEditNotificationSetting,
         )
 

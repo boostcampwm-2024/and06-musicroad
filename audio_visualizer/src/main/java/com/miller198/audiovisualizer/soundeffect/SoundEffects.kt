@@ -18,20 +18,28 @@ enum class SoundEffects(
     ) -> Unit
 ) {
     /** No effect. This does not render any audio visualization. */
-    NONE({ _, _, _ -> }),
+    NONE(
+        drawEffect = { _, _, _ -> }
+    ),
 
     /** A vertical bar graph representation of the audio data. */
-    BAR({ audioData, color, modifier ->
-        DrawSoundBar(audioData, color, modifier)
-    }),
+    BAR(
+        drawEffect = { audioData, color, modifier ->
+            DrawSoundBar(audioData, color, modifier)
+        }
+    ),
 
     /** A waveform rendered using stroke (outline only). */
-    WAVE_STROKE({ audioData, color, modifier ->
-        DrawSoundWaveStroke(audioData, color, modifier)
-    }),
+    WAVE_STROKE(
+        drawEffect = { audioData, color, modifier ->
+            DrawSoundWaveStroke(audioData, color, modifier)
+        }
+    ),
 
     /** A waveform rendered as a filled shape. */
-    WAVE_FILL({ audioData, color, modifier ->
-        DrawSoundWaveFill(audioData, color, modifier)
-    })
+    WAVE_FILL(
+        drawEffect = { audioData, color, modifier ->
+            DrawSoundWaveFill(audioData, color, modifier)
+        }
+    )
 }

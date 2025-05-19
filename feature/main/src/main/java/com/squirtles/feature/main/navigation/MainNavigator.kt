@@ -18,6 +18,7 @@ import com.squirtles.core.navigation.Route
 import com.squirtles.feature.search.navigation.navigateSearch
 import com.squirtles.feature.userinfo.navigation.navigateEditNotificationSetting
 import com.squirtles.feature.userinfo.navigation.navigateEditProfile
+import com.squirtles.feature.userinfo.navigation.navigateToEditPlayer
 import com.squirtles.feature.userinfo.navigation.navigateUserInfo
 
 internal class MainNavigator(
@@ -86,6 +87,12 @@ internal class MainNavigator(
 
     fun navigateEditNotificationSetting() {
         navController.navigateEditNotificationSetting(
+            navOptions = navOptions { launchSingleTop = true }
+        )
+    }
+
+    fun navigateEditPlayer() {
+        navController.navigateToEditPlayer(
             navOptions = navOptions { launchSingleTop = true }
         )
     }

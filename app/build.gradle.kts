@@ -75,6 +75,7 @@ dependencies {
     implementation(projects.data.favorite)
     implementation(projects.data.location)
     implementation(projects.data.order)
+    implementation(projects.data.preference)
     implementation(projects.feature.main)
     implementation(projects.feature.userinfo)
     implementation(projects.feature.search)
