@@ -20,6 +20,7 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven("https://repository.map.naver.com/archive/maven")
+        maven("https://jitpack.io")
         gradlePluginPortal()
     }
 }
@@ -61,7 +62,6 @@ include(":core:buildconfig")
 include(":feature:search")
 include(":feature:userinfo")
 include(":feature:mypick")
-include(":audio_visualizer")
 include(":feature:detail")
 include(":feature:map")
 include(":feature:main")

@@ -8,7 +8,6 @@ android {
 }
 
 dependencies {
-    implementation(projects.audioVisualizer)
     implementation(projects.core.account)
     implementation(projects.core.musicplayer)
     implementation(projects.core.preference)
@@ -18,6 +17,7 @@ dependencies {
     implementation(projects.domain.preference)
     implementation(projects.domain.favorite)
 
+    implementation(libs.audio.visualizer)
     implementation(libs.coil.compose)
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.googleid)
