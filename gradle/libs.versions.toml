@@ -1,9 +1,9 @@
 [versions]
 
 # SDK versions
-compileSdk = "34"
+compileSdk = "35"
 minSdk = "26"
-targetSdk = "34"
+targetSdk = "35"
 jvmTarget = "17"
 jdkVersion = "17"
 
@@ -22,6 +22,9 @@ androidx-lifecycle-runtime-ktx = "2.8.7"
 androidx-datastore-preferences = "1.1.1"
 androidx-appcompat = "1.7.0"
 androidx-navigation-common-ktx = "2.8.5"
+
+# AudioVisualizer
+audioVisualizer = "1.0.1"
 
 # Splash
 androidx-core-splashscreen = "1.0.1"
@@ -105,6 +108,9 @@ androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = 
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "androidx-datastore-preferences" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "androidx-lifecycle-runtime-ktx" }
 androidx-navigation-common-ktx = { group = "androidx.navigation", name = "navigation-common-ktx", version.ref = "androidx-navigation-common-ktx" }
+
+# AudioVisualizer
+audio-visualizer = { module = "com.github.miller198:ComposeCircleAudioVisualizer", version.ref = "audioVisualizer" }
 
 # Splash
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "androidx-core-splashscreen" }
