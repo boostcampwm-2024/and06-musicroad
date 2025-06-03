@@ -23,6 +23,11 @@
     <string name="user_info_setting_notification_menu_icon_description">알림 메뉴 아이콘</string>
     <string name="user_info_setting_sound_effect_menu_icon_description">사운드효과 메뉴 아이콘</string>
     <string name="user_info_setting_sign_out_menu_icon_description">로그아웃 메뉴 아이콘</string>
+    <string name="user_info_support_category_title">Support</string>
+    <string name="user_info_support_terms_title">이용약관</string>
+    <string name="user_info_support_terms_icon_description">이용약관 메뉴 아이콘</string>
+    <string name="user_info_support_policy_title">개인정보처리방침</string>
+    <string name="user_info_support_policy_icon_description">개인정보처리방침 메뉴 아이콘</string>
     <string name="user_info_icon_map_description">지도 아이콘</string>
     <string name="user_info_back_to_map_button_text">지도로 돌아가기</string>
 

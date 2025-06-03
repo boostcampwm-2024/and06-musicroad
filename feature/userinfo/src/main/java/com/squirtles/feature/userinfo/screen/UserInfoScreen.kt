@@ -16,8 +16,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Logout
 import androidx.compose.material.icons.filled.MusicNote
+import androidx.compose.material.icons.filled.Policy
 import androidx.compose.material.icons.outlined.AllOut
 import androidx.compose.material.icons.outlined.Archive
+import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.Map
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.SmartDisplay
@@ -194,7 +196,7 @@ fun UserInfoScreenContent(
                     contentScale = ContentScale.Crop,
                 )
 
-                VerticalSpacer(40)
+                VerticalSpacer(30)
 
                 UserInfoMenus(
                     title = stringResource(R.string.user_info_pick_category_title),
@@ -241,6 +243,24 @@ fun UserInfoScreenContent(
                                 contentDescription = stringResource(R.string.user_info_setting_sign_out_menu_icon_description),
                                 menuTitle = stringResource(R.string.user_info_setting_sign_out_menu_title),
                                 onMenuClick = onLogOutMenuClick
+                            )
+                        )
+                    )
+
+                    UserInfoMenus(
+                        title = stringResource(R.string.user_info_support_category_title),
+                        menus = listOf(
+                            MenuItem(
+                                imageVector = Icons.Outlined.Description,
+                                contentDescription = stringResource(R.string.user_info_support_terms_icon_description),
+                                menuTitle = stringResource(R.string.user_info_support_terms_title),
+                                onMenuClick = onFavoritePicksClick
+                            ),
+                            MenuItem(
+                                imageVector = Icons.Default.Policy,
+                                contentDescription = stringResource(R.string.user_info_support_policy_icon_description),
+                                menuTitle = stringResource(R.string.user_info_support_policy_title),
+                                onMenuClick = onMyPicksClick
                             )
                         )
                     )
