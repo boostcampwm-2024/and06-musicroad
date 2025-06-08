@@ -58,4 +58,8 @@
     <string name="sound_effect_bar">막대형</string>
     <string name="sound_effect_wave_fill">파도형</string>
     <string name="sound_effect_wave_stroke">선형</string>
+
+    <!--WebPages-->
+    <string name="terms_page">https://www.naver.com</string>
+    <string name="privacy_page">https://github.com/boostcampwm-2024/and06-musicroad/wiki/%EA%B0%9C%EC%9D%B8%EC%A0%95%EB%B3%B4%EC%B2%98%EB%A6%AC%EB%B0%A9%EC%B9%A8</string>
 </resources>

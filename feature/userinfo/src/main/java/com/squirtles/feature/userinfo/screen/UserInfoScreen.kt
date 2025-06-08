@@ -1,7 +1,11 @@
 package com.squirtles.feature.userinfo.screen
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.net.http.SslError
+import android.util.Log
 import android.webkit.SslErrorHandler
 import android.webkit.WebSettings
 import android.webkit.WebSettings.LOAD_DEFAULT
@@ -13,7 +17,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -32,6 +39,7 @@ import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.SmartDisplay
 import androidx.compose.material.icons.outlined.SwitchAccount
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -56,6 +64,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -168,24 +177,36 @@ fun UserInfoScreenContent(
     onDismissLogOutDialog: () -> Unit,
     onConfirmLogOutDialog: () -> Unit,
 ) {
+    val context = LocalContext.current
     val scrollState = rememberScrollState()
+    val webViewScrollState = rememberScrollState()
 
     val webView = rememberWebView()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var showSheet by remember { mutableStateOf(false) }
     var currentWebUrl by remember { mutableStateOf("") }
 
+    // WebPages
+    val termsUrl = stringResource(R.string.terms_page)
+    val policyUrl = stringResource(R.string.privacy_page)
+
     if(showSheet && currentWebUrl.isNotEmpty()) {
         ModalBottomSheet(
             onDismissRequest = { currentWebUrl = "" },
-            sheetState = sheetState
+            sheetState = sheetState,
         ) {
-            webView.loadUrl(currentWebUrl)
-
-            AndroidView(
-                factory = { webView },
-                modifier = Modifier.fillMaxSize()
-            )
+            Column(
+                modifier = Modifier
+                    .fillMaxHeight(0.95f)
+                    .verticalScroll(webViewScrollState)
+            ) {
+                AndroidView(
+                    factory = { webView },
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    it.loadUrl(currentWebUrl)
+                }
+            }
         }
     }
 
@@ -285,8 +306,8 @@ fun UserInfoScreenContent(
                                 contentDescription = stringResource(R.string.user_info_support_terms_icon_description),
                                 menuTitle = stringResource(R.string.user_info_support_terms_title),
                                 onMenuClick = {
+                                    currentWebUrl = termsUrl
                                     showSheet = true
-                                    currentWebUrl = "https://www.naver.com" // FIXME: Terms page url
                                 }
                             ),
                             MenuItem(
@@ -294,8 +315,8 @@ fun UserInfoScreenContent(
                                 contentDescription = stringResource(R.string.user_info_support_policy_icon_description),
                                 menuTitle = stringResource(R.string.user_info_support_policy_title),
                                 onMenuClick = {
+                                    currentWebUrl = policyUrl
                                     showSheet = true
-                                    currentWebUrl = "https://www.google.com" // FIXME: Policy page url
                                 }
                             )
                         )
