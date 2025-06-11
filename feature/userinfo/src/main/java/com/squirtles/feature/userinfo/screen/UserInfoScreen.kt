@@ -34,6 +34,7 @@ import androidx.compose.material.icons.filled.Policy
 import androidx.compose.material.icons.outlined.AllOut
 import androidx.compose.material.icons.outlined.Archive
 import androidx.compose.material.icons.outlined.Description
+import androidx.compose.material.icons.outlined.EditNote
 import androidx.compose.material.icons.outlined.Map
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.SmartDisplay
@@ -179,35 +180,15 @@ fun UserInfoScreenContent(
 ) {
     val context = LocalContext.current
     val scrollState = rememberScrollState()
-    val webViewScrollState = rememberScrollState()
-
-    val webView = rememberWebView()
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    var showSheet by remember { mutableStateOf(false) }
-    var currentWebUrl by remember { mutableStateOf("") }
 
     // WebPages
+    val askUrl = stringResource(R.string.ask_page)
     val termsUrl = stringResource(R.string.terms_page)
     val policyUrl = stringResource(R.string.privacy_page)
 
-    if(showSheet && currentWebUrl.isNotEmpty()) {
-        ModalBottomSheet(
-            onDismissRequest = { currentWebUrl = "" },
-            sheetState = sheetState,
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxHeight(0.95f)
-                    .verticalScroll(webViewScrollState)
-            ) {
-                AndroidView(
-                    factory = { webView },
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    it.loadUrl(currentWebUrl)
-                }
-            }
-        }
+    val startBrowser: (String) -> Unit = { url ->
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        context.startActivity(intent)
     }
 
     Scaffold(
@@ -302,12 +283,19 @@ fun UserInfoScreenContent(
                         title = stringResource(R.string.user_info_support_category_title),
                         menus = listOf(
                             MenuItem(
+                                imageVector = Icons.Outlined.EditNote,
+                                contentDescription = stringResource(R.string.user_info_support_ask_icon_description),
+                                menuTitle = stringResource(R.string.user_info_support_ask_title),
+                                onMenuClick = {
+                                    startBrowser(askUrl)
+                                }
+                            ),
+                            MenuItem(
                                 imageVector = Icons.Outlined.Description,
                                 contentDescription = stringResource(R.string.user_info_support_terms_icon_description),
                                 menuTitle = stringResource(R.string.user_info_support_terms_title),
                                 onMenuClick = {
-                                    currentWebUrl = termsUrl
-                                    showSheet = true
+                                    startBrowser(termsUrl)
                                 }
                             ),
                             MenuItem(
@@ -315,8 +303,7 @@ fun UserInfoScreenContent(
                                 contentDescription = stringResource(R.string.user_info_support_policy_icon_description),
                                 menuTitle = stringResource(R.string.user_info_support_policy_title),
                                 onMenuClick = {
-                                    currentWebUrl = policyUrl
-                                    showSheet = true
+                                    startBrowser(policyUrl)
                                 }
                             )
                         )
@@ -388,27 +375,6 @@ fun UserInfoScreenContent(
             }
         }
     }
-}
-
-@SuppressLint("SetJavaScriptEnabled")
-@Composable
-fun rememberWebView(): WebView {
-    val context = LocalContext.current
-    val webView = remember {
-        WebView(context).apply {
-            settings.apply {
-                javaScriptEnabled = true
-                mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW  // HTTPS/HTTP 혼합 컨텐츠 허용
-                cacheMode = LOAD_DEFAULT
-            }
-            webViewClient = object : WebViewClient() {
-                override fun onReceivedSslError(view: WebView?, handler: SslErrorHandler?, error: SslError?) {
-                    handler?.proceed()  // SSL 에러 무시하고 진행
-                }
-            }
-        }
-    }
-    return webView
 }
 
 @Preview(showBackground = true)
