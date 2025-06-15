@@ -10,21 +10,24 @@ import com.squirtles.feature.favorite.navigation.favoriteNavGraph
 import com.squirtles.feature.map.MapViewModel
 import com.squirtles.feature.map.navigation.mapNavGraph
 import com.squirtles.core.musicplayer.PlayerServiceViewModel
+import com.squirtles.core.navigation.Route
 import com.squirtles.feature.mypick.navigation.myPickNavGraph
+import com.squirtles.feature.permission.navigation.permissionNavGraph
 import com.squirtles.feature.search.navigation.searchNavGraph
 import com.squirtles.feature.userinfo.navigation.userInfoNavGraph
 
 @Composable
 internal fun MainNavHost(
-    modifier: Modifier = Modifier,
+    checkPermission: Boolean,
     navigator: MainNavigator,
     finishActivity: () -> Unit,
+    modifier: Modifier = Modifier,
     mapViewModel: MapViewModel = hiltViewModel(),
     playerServiceViewModel: PlayerServiceViewModel = hiltViewModel(),
 ) {
     NavHost(
         navController = navigator.navController,
-        startDestination = navigator.startDestination,
+        startDestination = if(checkPermission) navigator.mapDestination else Route.Permission,
     ) {
         mapNavGraph(
             mapViewModel = mapViewModel,
@@ -34,6 +37,11 @@ internal fun MainNavHost(
             onUserInfoClick = navigator::navigateUserInfo,
             onPickSummaryClick = navigator::navigatePickDetail,
             onLoadingDialogCloseClick = finishActivity
+        )
+
+        permissionNavGraph(
+            onBackClick = finishActivity,
+            onNextClick = navigator::navigateMap
         )
 
         searchNavGraph(

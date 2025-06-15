@@ -42,11 +42,13 @@ class MainActivity : AppCompatActivity() {
         setKeepOnScreenCondition(splashScreen)
         enableEdgeToEdge()
 
-        if (!checkSelfPermission()) {
-            requestPermissions(PERMISSIONS, REQUEST_PERMISSION_CODE)
-        } else {
-            setMusicRoadContent()
-        }
+//        if (!checkSelfPermission()) {
+//            requestPermissions(PERMISSIONS, REQUEST_PERMISSION_CODE)
+//        } else {
+//            setMusicRoadContent()
+//        }
+
+        setMusicRoadContent()
     }
 
     override fun onRequestPermissionsResult(
@@ -80,11 +82,11 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        if (checkSelfPermission()) {
-            setMusicRoadContent()
-        } else if (mainViewModel.canRequestPermission.not()) {
-            showPermissionBar()
-        }
+//        if (checkSelfPermission()) {
+//            setMusicRoadContent()
+//        } else if (mainViewModel.canRequestPermission.not()) {
+//            showPermissionBar()
+//        }
     }
 
     private fun setKeepOnScreenCondition(splashScreen: SplashScreen) {
@@ -140,6 +142,7 @@ class MainActivity : AppCompatActivity() {
 
             MusicRoadTheme {
                 MainNavHost(
+                    checkPermission = checkSelfPermission(),
                     navigator = navigator,
                     finishActivity = { this.finish() },
                 )

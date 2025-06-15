@@ -1,0 +1,20 @@
+<resources>
+    <string name="permission_screen_title">뮤직로드 권한 안내</string>
+    <string name="permission_screen_desc">뮤직로드 이용에는 다음과 같은 권한이 필요해요.
+권한 요청 시 허용해주세요.</string>
+
+    <string name="essential">(필수)</string>
+    <string name="optional">(선택)</string>
+    <string name="next">다음</string>
+
+    <!-- Permissions    -->
+    <string name="permission_mic">마이크</string>
+    <string name="permission_mic_content_desc">마이크 권한</string>
+    <string name="permission_mic_desc">앱 내 음원 시각화 기능 구현을 위한 오디오 데이터 접근에 필요합니다.
+        실제 오디오 녹음은 발생하지 않으며, 어떠한 음성 데이터도 저장하거나 전송하지 않습니다.
+    </string>
+
+    <string name="permission_location">위치</string>
+    <string name="permission_location_content_desc">위치 권한</string>
+    <string name="permission_location_desc">지도의 내 위치에 음악을 등록하기 위해 위치권한이 필요합니다.</string>
+</resources>
