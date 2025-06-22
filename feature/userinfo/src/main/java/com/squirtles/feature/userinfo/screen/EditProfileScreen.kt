@@ -159,7 +159,7 @@ internal fun EditProfileScreen(
                     .padding(vertical = 20.dp)
                     .clickable { showDeleteAccountDialog = true }
                     .align(Alignment.BottomCenter),
-                color = White,
+                color = Gray,
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.bodyMedium
             )
