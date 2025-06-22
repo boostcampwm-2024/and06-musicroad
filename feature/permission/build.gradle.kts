@@ -7,7 +7,7 @@ android {
 }
 
 dependencies {
-
+    implementation(libs.accompanist.permissions)
     testImplementation(libs.junit)
     androidTestImplementation(libs.bundles.test)
 }

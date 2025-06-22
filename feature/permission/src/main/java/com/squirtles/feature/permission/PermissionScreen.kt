@@ -1,7 +1,8 @@
 package com.squirtles.feature.permission
 
-import android.app.Activity
-import android.view.WindowInsets
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
@@ -13,13 +14,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.MyLocation
-import androidx.compose.material3.BottomAppBarDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -37,16 +36,31 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import com.google.accompanist.permissions.shouldShowRationale
+import com.squirtles.core.common.ui.MusicRoadPermissions.ALL_PERMISSIONS
+import com.squirtles.core.common.ui.MusicRoadPermissions.CORE_PERMISSIONS
 import com.squirtles.core.common.ui.theme.Black
 import com.squirtles.core.common.ui.theme.DarkGray
 import com.squirtles.core.common.ui.theme.Primary80
 import com.squirtles.core.common.ui.theme.White
 
+
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun PermissionScreen(
     onNextClick: () -> Unit,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
 ) {
+    val context = LocalContext.current
+    val permissionState = rememberMultiplePermissionsState(ALL_PERMISSIONS)
+
+    var showPermissionBar by remember { mutableStateOf(false) }
+    var hasRequestedPermission by remember { mutableStateOf(false) }
+
     DoubleBackPressToExit(onBackClick = onBackClick)
 
     Scaffold(
@@ -96,19 +110,42 @@ fun PermissionScreen(
                                 contentDescription = stringResource(R.string.permission_location_content_desc),
                                 permissionTitle = stringResource(R.string.permission_location),
                                 permissionDescription = stringResource(R.string.permission_location_desc),
-                                isOptional = true
                             )
                         )
                     )
                 }
 
+                // 다음 버튼
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(56.dp)
                         .background(color = Primary80)
                         .clickable {
-                            onNextClick()
+                            // 필수 권한 중 허용되지 않은 권한
+                            val deniedCorePermissions = permissionState.permissions.filter { permission ->
+                                permission.permission in CORE_PERMISSIONS && !permission.status.isGranted
+                            }
+
+                            // 두번 이상 요청하여 더 이상 권한 요청 할 수 없는 권한 유무
+                            val hasBlockedPermissions = hasRequestedPermission && deniedCorePermissions.any {
+                                !it.status.shouldShowRationale
+                            }
+
+                            when {
+                                deniedCorePermissions.isEmpty() -> {
+                                    onNextClick()
+                                }
+
+                                hasBlockedPermissions -> {
+                                    showPermissionBar = true
+                                }
+
+                                else -> {
+                                    hasRequestedPermission = true
+                                    permissionState.launchMultiplePermissionRequest()
+                                }
+                            }
                         },
                     contentAlignment = Alignment.Center
                 ) {
@@ -118,9 +155,23 @@ fun PermissionScreen(
                     )
                 }
             }
+
+            if (showPermissionBar) {
+                PermissionBar(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .zIndex(1f), // 다른 요소 위로 띄우기
+                    onClick = {
+                        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                        val uri = Uri.fromParts("package", context.packageName, null)
+                        intent.data = uri
+                        context.startActivity(intent)
+                        showPermissionBar = false
+                    }
+                )
+            }
         }
     }
-
 }
 
 @Composable
@@ -193,14 +244,15 @@ private fun PermissionItem(
 fun DoubleBackPressToExit(enabled: Boolean = true, onBackClick: () -> Unit) {
     var backPressedTime by remember { mutableStateOf(0L) }
     val context = LocalContext.current
+    val backExitString = stringResource(R.string.back_to_exit)
 
     BackHandler(enabled = enabled) {
         val currentTime = System.currentTimeMillis()
-        if (currentTime - backPressedTime < 1500) {
+        if (currentTime - backPressedTime < 2000) {
             onBackClick()
         } else {
             backPressedTime = currentTime
-            Toast.makeText(context, "한 번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, backExitString, Toast.LENGTH_SHORT).show()
         }
     }
 }

@@ -4,21 +4,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
+import com.squirtles.core.musicplayer.PlayerServiceViewModel
 import com.squirtles.feature.create.navigation.createNavGraph
 import com.squirtles.feature.detail.navigation.detailNavGraph
 import com.squirtles.feature.favorite.navigation.favoriteNavGraph
 import com.squirtles.feature.map.MapViewModel
 import com.squirtles.feature.map.navigation.mapNavGraph
-import com.squirtles.core.musicplayer.PlayerServiceViewModel
-import com.squirtles.core.navigation.Route
 import com.squirtles.feature.mypick.navigation.myPickNavGraph
-import com.squirtles.feature.permission.navigation.permissionNavGraph
 import com.squirtles.feature.search.navigation.searchNavGraph
 import com.squirtles.feature.userinfo.navigation.userInfoNavGraph
 
 @Composable
 internal fun MainNavHost(
-    checkPermission: Boolean,
     navigator: MainNavigator,
     finishActivity: () -> Unit,
     modifier: Modifier = Modifier,
@@ -27,7 +24,7 @@ internal fun MainNavHost(
 ) {
     NavHost(
         navController = navigator.navController,
-        startDestination = if(checkPermission) navigator.mapDestination else Route.Permission,
+        startDestination = navigator.mapDestination
     ) {
         mapNavGraph(
             mapViewModel = mapViewModel,
@@ -37,11 +34,6 @@ internal fun MainNavHost(
             onUserInfoClick = navigator::navigateUserInfo,
             onPickSummaryClick = navigator::navigatePickDetail,
             onLoadingDialogCloseClick = finishActivity
-        )
-
-        permissionNavGraph(
-            onBackClick = finishActivity,
-            onNextClick = navigator::navigateMap
         )
 
         searchNavGraph(

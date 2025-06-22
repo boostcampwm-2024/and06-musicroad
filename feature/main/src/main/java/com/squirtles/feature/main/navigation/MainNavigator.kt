@@ -15,7 +15,6 @@ import com.squirtles.feature.detail.navigation.navigatePickDetail
 import com.squirtles.feature.favorite.navigation.navigateFavorite
 import com.squirtles.feature.map.navigation.navigateMap
 import com.squirtles.feature.mypick.navigation.navigateMyPicks
-import com.squirtles.feature.permission.navigation.navigatePermission
 import com.squirtles.feature.search.navigation.navigateSearch
 import com.squirtles.feature.userinfo.navigation.navigateEditNotificationSetting
 import com.squirtles.feature.userinfo.navigation.navigateEditProfile
@@ -37,14 +36,6 @@ internal class MainNavigator(
                 popUpTo(mapDestination) {
                     inclusive = true
                 }
-                launchSingleTop = true
-            }
-        )
-    }
-
-    fun navigatePermission() {
-        navController.navigatePermission(
-            navOptions {
                 launchSingleTop = true
             }
         )
