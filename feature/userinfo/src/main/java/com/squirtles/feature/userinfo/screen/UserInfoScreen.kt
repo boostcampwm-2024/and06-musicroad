@@ -1,12 +1,26 @@
 package com.squirtles.feature.userinfo.screen
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.net.http.SslError
+import android.util.Log
+import android.webkit.SslErrorHandler
+import android.webkit.WebSettings
+import android.webkit.WebSettings.LOAD_DEFAULT
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -16,23 +30,30 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Logout
 import androidx.compose.material.icons.filled.MusicNote
+import androidx.compose.material.icons.filled.Policy
 import androidx.compose.material.icons.outlined.AllOut
 import androidx.compose.material.icons.outlined.Archive
+import androidx.compose.material.icons.outlined.Description
+import androidx.compose.material.icons.outlined.EditNote
 import androidx.compose.material.icons.outlined.Map
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.SmartDisplay
 import androidx.compose.material.icons.outlined.SwitchAccount
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -44,8 +65,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -155,7 +178,18 @@ fun UserInfoScreenContent(
     onDismissLogOutDialog: () -> Unit,
     onConfirmLogOutDialog: () -> Unit,
 ) {
+    val context = LocalContext.current
     val scrollState = rememberScrollState()
+
+    // WebPages
+    val askUrl = stringResource(R.string.ask_page)
+    val termsUrl = stringResource(R.string.terms_page)
+    val policyUrl = stringResource(R.string.privacy_page)
+
+    val startBrowser: (String) -> Unit = { url ->
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        context.startActivity(intent)
+    }
 
     Scaffold(
         topBar = {
@@ -194,7 +228,7 @@ fun UserInfoScreenContent(
                     contentScale = ContentScale.Crop,
                 )
 
-                VerticalSpacer(40)
+                VerticalSpacer(30)
 
                 UserInfoMenus(
                     title = stringResource(R.string.user_info_pick_category_title),
@@ -241,6 +275,36 @@ fun UserInfoScreenContent(
                                 contentDescription = stringResource(R.string.user_info_setting_sign_out_menu_icon_description),
                                 menuTitle = stringResource(R.string.user_info_setting_sign_out_menu_title),
                                 onMenuClick = onLogOutMenuClick
+                            )
+                        )
+                    )
+
+                    UserInfoMenus(
+                        title = stringResource(R.string.user_info_support_category_title),
+                        menus = listOf(
+                            MenuItem(
+                                imageVector = Icons.Outlined.EditNote,
+                                contentDescription = stringResource(R.string.user_info_support_ask_icon_description),
+                                menuTitle = stringResource(R.string.user_info_support_ask_title),
+                                onMenuClick = {
+                                    startBrowser(askUrl)
+                                }
+                            ),
+                            MenuItem(
+                                imageVector = Icons.Outlined.Description,
+                                contentDescription = stringResource(R.string.user_info_support_terms_icon_description),
+                                menuTitle = stringResource(R.string.user_info_support_terms_title),
+                                onMenuClick = {
+                                    startBrowser(termsUrl)
+                                }
+                            ),
+                            MenuItem(
+                                imageVector = Icons.Default.Policy,
+                                contentDescription = stringResource(R.string.user_info_support_policy_icon_description),
+                                menuTitle = stringResource(R.string.user_info_support_policy_title),
+                                onMenuClick = {
+                                    startBrowser(policyUrl)
+                                }
                             )
                         )
                     )
