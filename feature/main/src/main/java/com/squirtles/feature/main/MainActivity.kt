@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             mainViewModel.isPermissionGranted.collect { isGranted ->
-                if(isGranted) {
+                if (isGranted) {
                     setMusicRoadContent()
                 } else {
                     showPermissionScreen()
@@ -113,7 +113,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun showPermissionScreen(){
+    private fun showPermissionScreen() {
         setContent {
             MusicRoadTheme {
                 PermissionScreen(
