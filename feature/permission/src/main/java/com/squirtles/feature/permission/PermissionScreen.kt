@@ -11,10 +11,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Mic
@@ -41,6 +44,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.accompanist.permissions.shouldShowRationale
+import com.squirtles.core.common.ui.DoubleBackPressToExit
 import com.squirtles.core.common.ui.MusicRoadPermissions.ALL_PERMISSIONS
 import com.squirtles.core.common.ui.MusicRoadPermissions.CORE_PERMISSIONS
 import com.squirtles.core.common.ui.theme.Black
@@ -64,6 +68,48 @@ fun PermissionScreen(
     DoubleBackPressToExit(onBackClick = onBackClick)
 
     Scaffold(
+        bottomBar = {
+            // 다음 버튼
+            Box(
+                modifier = Modifier
+                    .windowInsetsPadding(WindowInsets.navigationBars)
+                    .fillMaxWidth()
+                    .height(56.dp)
+                    .background(color = Primary80)
+                    .clickable {
+                        // 필수 권한 중 허용되지 않은 권한
+                        val deniedCorePermissions = permissionState.permissions.filter { permission ->
+                            permission.permission in CORE_PERMISSIONS && !permission.status.isGranted
+                        }
+
+                        // 두번 이상 요청하여 더 이상 권한 요청 할 수 없는 권한 유무
+                        val hasBlockedPermissions = hasRequestedPermission && deniedCorePermissions.any {
+                            !it.status.shouldShowRationale
+                        }
+
+                        when {
+                            deniedCorePermissions.isEmpty() -> {
+                                onNextClick()
+                            }
+
+                            hasBlockedPermissions -> {
+                                showPermissionBar = true
+                            }
+
+                            else -> {
+                                hasRequestedPermission = true
+                                permissionState.launchMultiplePermissionRequest()
+                            }
+                        }
+                    },
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = stringResource(R.string.next),
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+            }
+        }
     ) { innerPadding ->
         Box(
             modifier = Modifier
@@ -112,46 +158,6 @@ fun PermissionScreen(
                                 permissionDescription = stringResource(R.string.permission_location_desc),
                             )
                         )
-                    )
-                }
-
-                // 다음 버튼
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp)
-                        .background(color = Primary80)
-                        .clickable {
-                            // 필수 권한 중 허용되지 않은 권한
-                            val deniedCorePermissions = permissionState.permissions.filter { permission ->
-                                permission.permission in CORE_PERMISSIONS && !permission.status.isGranted
-                            }
-
-                            // 두번 이상 요청하여 더 이상 권한 요청 할 수 없는 권한 유무
-                            val hasBlockedPermissions = hasRequestedPermission && deniedCorePermissions.any {
-                                !it.status.shouldShowRationale
-                            }
-
-                            when {
-                                deniedCorePermissions.isEmpty() -> {
-                                    onNextClick()
-                                }
-
-                                hasBlockedPermissions -> {
-                                    showPermissionBar = true
-                                }
-
-                                else -> {
-                                    hasRequestedPermission = true
-                                    permissionState.launchMultiplePermissionRequest()
-                                }
-                            }
-                        },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = stringResource(R.string.next),
-                        style = MaterialTheme.typography.bodyLarge,
                     )
                 }
             }
@@ -236,23 +242,6 @@ private fun PermissionItem(
                 style = MaterialTheme.typography.bodySmall,
                 color = DarkGray
             )
-        }
-    }
-}
-
-@Composable
-fun DoubleBackPressToExit(enabled: Boolean = true, onBackClick: () -> Unit) {
-    var backPressedTime by remember { mutableStateOf(0L) }
-    val context = LocalContext.current
-    val backExitString = stringResource(R.string.back_to_exit)
-
-    BackHandler(enabled = enabled) {
-        val currentTime = System.currentTimeMillis()
-        if (currentTime - backPressedTime < 2000) {
-            onBackClick()
-        } else {
-            backPressedTime = currentTime
-            Toast.makeText(context, backExitString, Toast.LENGTH_SHORT).show()
         }
     }
 }

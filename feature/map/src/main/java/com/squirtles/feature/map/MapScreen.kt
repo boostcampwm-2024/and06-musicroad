@@ -1,7 +1,6 @@
 package com.squirtles.feature.map
 
 import android.widget.Toast
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -36,6 +35,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import com.squirtles.core.account.AccountViewModel
 import com.squirtles.core.account.GoogleId
+import com.squirtles.core.common.ui.DoubleBackPressToExit
 import com.squirtles.core.common.ui.SignInAlertDialog
 import com.squirtles.core.common.ui.VerticalSpacer
 import com.squirtles.core.common.ui.theme.Black
@@ -55,7 +55,7 @@ fun MapScreen(
     onCenterClick: () -> Unit,
     onUserInfoClick: (String) -> Unit,
     onPickSummaryClick: (String) -> Unit,
-    onLoadingDialogCloseClick: () -> Unit,
+    finishActivity: () -> Unit,
     accountViewModel: AccountViewModel = hiltViewModel()
 ) {
     val nearPicks by mapViewModel.nearPicks.collectAsStateWithLifecycle()
@@ -76,7 +76,9 @@ fun MapScreen(
     var onSignInSuccess by remember { mutableStateOf<(String) -> Unit>({}) }
     var showLoadingIndicator by rememberSaveable { mutableStateOf(false) }
 
-    BackHandler(enabled = showLoadingIndicator) { }
+    DoubleBackPressToExit(!showLoadingIndicator) {
+        finishActivity()
+    }
 
     LaunchedEffect(Unit) {
         playerServiceViewModel.readyPlayer()
@@ -249,7 +251,7 @@ fun MapScreen(
                 ) {
                     LoadingDialog(
                         onCloseClick = {
-                            onLoadingDialogCloseClick()
+                            finishActivity()
                         }
                     )
                 }
