@@ -23,7 +23,7 @@ class MainViewModel @Inject constructor(
     val loadingState = _loadingState.asStateFlow()
 
     private var _isPermissionGranted = MutableStateFlow(false)
-    val isPermissionGranted get() = _isPermissionGranted
+    val isPermissionGranted = _isPermissionGranted.asStateFlow()
 
     init {
         viewModelScope.launch {
