@@ -37,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -107,6 +108,7 @@ fun PermissionScreen(
                 Text(
                     text = stringResource(R.string.next),
                     style = MaterialTheme.typography.bodyLarge,
+                    color = Black
                 )
             }
         }
@@ -225,6 +227,7 @@ private fun PermissionItem(
                 .padding(10.dp),
             imageVector = imageVector,
             contentDescription = contentDescription,
+            tint = Black
         )
 
         Column(
