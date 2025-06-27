@@ -26,7 +26,7 @@ fun PermissionBar(
 ) {
     Box(
         modifier = modifier
-    ){
+    ) {
         ElevatedCard(
             modifier = Modifier
                 .fillMaxWidth()

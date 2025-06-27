@@ -1,10 +1,11 @@
 package com.squirtles.feature.permission
 
+import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.content.res.Configuration.UI_MODE_TYPE_NORMAL
 import android.net.Uri
 import android.provider.Settings
-import android.widget.Toast
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -30,14 +31,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -49,10 +49,7 @@ import com.squirtles.core.common.ui.DoubleBackPressToExit
 import com.squirtles.core.common.ui.MusicRoadPermissions.ALL_PERMISSIONS
 import com.squirtles.core.common.ui.MusicRoadPermissions.CORE_PERMISSIONS
 import com.squirtles.core.common.ui.theme.Black
-import com.squirtles.core.common.ui.theme.DarkGray
 import com.squirtles.core.common.ui.theme.Primary80
-import com.squirtles.core.common.ui.theme.White
-
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -63,8 +60,7 @@ fun PermissionScreen(
     val context = LocalContext.current
     val permissionState = rememberMultiplePermissionsState(ALL_PERMISSIONS)
 
-    var showPermissionBar by remember { mutableStateOf(false) }
-    var hasRequestedPermission by remember { mutableStateOf(false) }
+    var showPermissionBar by rememberSaveable { mutableStateOf(false) }
 
     DoubleBackPressToExit(onBackClick = onBackClick)
 
@@ -84,7 +80,7 @@ fun PermissionScreen(
                         }
 
                         // 두번 이상 요청하여 더 이상 권한 요청 할 수 없는 권한 유무
-                        val hasBlockedPermissions = hasRequestedPermission && deniedCorePermissions.any {
+                        val hasBlockedPermissions = readHasRequestedPermission(context) && deniedCorePermissions.any {
                             !it.status.shouldShowRationale
                         }
 
@@ -98,7 +94,7 @@ fun PermissionScreen(
                             }
 
                             else -> {
-                                hasRequestedPermission = true
+                                writeHasRequestedPermission(context, true)
                                 permissionState.launchMultiplePermissionRequest()
                             }
                         }
@@ -116,7 +112,7 @@ fun PermissionScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(color = White)
+                .background(color = MaterialTheme.colorScheme.surface)
                 .padding(innerPadding)
         ) {
             Column(
@@ -133,16 +129,17 @@ fun PermissionScreen(
                     Text(
                         text = stringResource(R.string.permission_screen_title),
                         style = MaterialTheme.typography.titleLarge,
-                        color = Black
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                     Text(
                         text = stringResource(R.string.permission_screen_desc),
                         style = MaterialTheme.typography.bodyMedium,
-                        color = DarkGray
+                        color = MaterialTheme.colorScheme.onSurface
                     )
 
                     HorizontalDivider(
-                        modifier = Modifier.padding(top = 10.dp, bottom = 20.dp)
+                        modifier = Modifier.padding(top = 10.dp, bottom = 20.dp),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
 
                     PermissionMenus(
@@ -238,21 +235,32 @@ private fun PermissionItem(
             Text(
                 text = permissionTitle,
                 style = MaterialTheme.typography.bodyMedium,
-                color = Black
+                color = MaterialTheme.colorScheme.onSurface
             )
             Text(
                 text = permissionDescription,
                 style = MaterialTheme.typography.bodySmall,
-                color = DarkGray
+                color = MaterialTheme.colorScheme.onSecondary
             )
         }
     }
 }
 
-@Preview
+private fun readHasRequestedPermission(context: Context): Boolean =
+    context.getSharedPreferences(SHARED_PREF_PERMISSION, 0).getBoolean(HAS_REQUESTED_PERMISSION_KEY, false)
+
+private fun writeHasRequestedPermission(context: Context, value: Boolean) =
+    context.getSharedPreferences(SHARED_PREF_PERMISSION, 0).edit().putBoolean(HAS_REQUESTED_PERMISSION_KEY, value).apply()
+
+
+@Preview(name = "Light")
+@Preview(name = "Dark", uiMode = UI_MODE_NIGHT_YES or UI_MODE_TYPE_NORMAL)
 @Composable
 private fun PermissionScreenPreview() {
     PermissionScreen(
         {}, {}
     )
 }
+
+private const val SHARED_PREF_PERMISSION = "shared_pref_permission"
+private const val HAS_REQUESTED_PERMISSION_KEY = "shared_pref_permission_key"
