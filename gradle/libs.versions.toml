@@ -88,7 +88,7 @@ paging = "3.3.4"
 kotlinxSerializationJson = "1.6.0"
 
 # Map
-mapSdk = "3.19.1"
+mapSdk = "3.22.0"
 playServicesLocation = "21.3.0"
 
 # Network
