@@ -8,13 +8,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
+import com.squirtles.core.model.Song
+import com.squirtles.core.navigation.Route
 import com.squirtles.feature.create.navigation.navigateCreate
 import com.squirtles.feature.detail.navigation.navigatePickDetail
 import com.squirtles.feature.favorite.navigation.navigateFavorite
 import com.squirtles.feature.map.navigation.navigateMap
-import com.squirtles.core.model.Song
 import com.squirtles.feature.mypick.navigation.navigateMyPicks
-import com.squirtles.core.navigation.Route
 import com.squirtles.feature.search.navigation.navigateSearch
 import com.squirtles.feature.userinfo.navigation.navigateEditNotificationSetting
 import com.squirtles.feature.userinfo.navigation.navigateEditProfile
@@ -28,12 +28,12 @@ internal class MainNavigator(
         @Composable get() = navController
             .currentBackStackEntryAsState().value?.destination
 
-    val startDestination = Route.Map
+    val mapDestination = Route.Map
 
     fun navigateMap() {
         navController.navigateMap(
             navOptions {
-                popUpTo(startDestination) {
+                popUpTo(mapDestination) {
                     inclusive = true
                 }
                 launchSingleTop = true
@@ -55,7 +55,7 @@ internal class MainNavigator(
             pickId = pickId,
             navOptions = navOptions {
                 if (navigateToMap) {
-                    popUpTo(startDestination) {
+                    popUpTo(mapDestination) {
                         inclusive = false
                     }
                 }

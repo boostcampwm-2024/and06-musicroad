@@ -9,6 +9,7 @@ android {
 
 dependencies {
     implementation(projects.feature.map)
+    implementation(projects.feature.permission)
     implementation(projects.feature.create)
     implementation(projects.feature.detail)
     implementation(projects.feature.mypick)

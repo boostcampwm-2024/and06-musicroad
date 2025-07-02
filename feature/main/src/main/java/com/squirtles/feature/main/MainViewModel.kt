@@ -7,6 +7,7 @@ import com.squirtles.domain.firebase.FirebaseException
 import com.squirtles.domain.user.usecase.FetchUserByIdUseCase
 import com.squirtles.domain.user.usecase.GetCurrentUidUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -21,8 +22,8 @@ class MainViewModel @Inject constructor(
     private val _loadingState = MutableStateFlow<LoadingState>(LoadingState.Loading)
     val loadingState = _loadingState.asStateFlow()
 
-    private var _canRequestPermission = true
-    val canRequestPermission get() = _canRequestPermission
+    private var _isPermissionGranted = MutableStateFlow(false)
+    val isPermissionGranted = _isPermissionGranted.asStateFlow()
 
     init {
         viewModelScope.launch {
@@ -37,8 +38,10 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun setCanRequestPermission(canRequest: Boolean) {
-        _canRequestPermission = canRequest
+    fun setPermissionGranted(isGranted: Boolean) {
+        viewModelScope.launch {
+            _isPermissionGranted.emit(isGranted)
+        }
     }
 
     private suspend fun fetchUser(uid: String) {

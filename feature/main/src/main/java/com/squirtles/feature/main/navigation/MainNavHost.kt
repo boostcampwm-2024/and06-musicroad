@@ -4,27 +4,27 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
+import com.squirtles.core.musicplayer.PlayerServiceViewModel
 import com.squirtles.feature.create.navigation.createNavGraph
 import com.squirtles.feature.detail.navigation.detailNavGraph
 import com.squirtles.feature.favorite.navigation.favoriteNavGraph
 import com.squirtles.feature.map.MapViewModel
 import com.squirtles.feature.map.navigation.mapNavGraph
-import com.squirtles.core.musicplayer.PlayerServiceViewModel
 import com.squirtles.feature.mypick.navigation.myPickNavGraph
 import com.squirtles.feature.search.navigation.searchNavGraph
 import com.squirtles.feature.userinfo.navigation.userInfoNavGraph
 
 @Composable
 internal fun MainNavHost(
-    modifier: Modifier = Modifier,
     navigator: MainNavigator,
     finishActivity: () -> Unit,
+    modifier: Modifier = Modifier,
     mapViewModel: MapViewModel = hiltViewModel(),
     playerServiceViewModel: PlayerServiceViewModel = hiltViewModel(),
 ) {
     NavHost(
         navController = navigator.navController,
-        startDestination = navigator.startDestination,
+        startDestination = navigator.mapDestination
     ) {
         mapNavGraph(
             mapViewModel = mapViewModel,

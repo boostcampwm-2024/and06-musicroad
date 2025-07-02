@@ -30,7 +30,7 @@ fun NavGraphBuilder.mapNavGraph(
             onCenterClick = onCenterClick,
             onUserInfoClick = onUserInfoClick,
             onPickSummaryClick = onPickSummaryClick,
-            onLoadingDialogCloseClick = onLoadingDialogCloseClick
+            finishActivity = onLoadingDialogCloseClick
         )
     }
 }
