@@ -1,10 +1,10 @@
 package com.squirtles.domain.location
 
-import android.location.Location
-import kotlinx.coroutines.flow.StateFlow
+import com.squirtles.core.model.LocationPoint
+import kotlinx.coroutines.flow.Flow
 
 interface LocalLocationRepository {
-    val lastLocation: StateFlow<Location?>
 
-    suspend fun saveCurrentLocation(geoLocation: Location)
+    fun readLastLocation(): Flow<LocationPoint?>
+    suspend fun saveLastLocation(location: LocationPoint)
 }

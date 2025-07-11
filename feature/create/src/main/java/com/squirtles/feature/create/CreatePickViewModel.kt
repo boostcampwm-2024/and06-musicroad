@@ -1,23 +1,22 @@
 package com.squirtles.feature.create
 
-import android.location.Location
 import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.squirtles.domain.applemusic.usecase.FetchMusicVideoUseCase
-import com.squirtles.domain.location.usecase.GetLastLocationUseCase
 import com.squirtles.core.model.Creator
 import com.squirtles.core.model.LocationPoint
 import com.squirtles.core.model.Pick
 import com.squirtles.core.model.Song
 import com.squirtles.core.navigation.SearchRoute
+import com.squirtles.core.util.serializableType
+import com.squirtles.core.util.throttleFirst
+import com.squirtles.domain.applemusic.usecase.FetchMusicVideoUseCase
+import com.squirtles.domain.location.usecase.GetLastLocationUseCase
 import com.squirtles.domain.pick.usecase.CreatePickUseCase
 import com.squirtles.domain.user.usecase.FetchUserByIdUseCase
 import com.squirtles.domain.user.usecase.GetCurrentUidUseCase
-import com.squirtles.core.util.serializableType
-import com.squirtles.core.util.throttleFirst
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -45,7 +44,7 @@ class CreatePickViewModel @Inject constructor(
     private val _comment = MutableStateFlow("")
     val comment get() = _comment
 
-    private var lastLocation: Location? = null
+    private var lastLocation: LocationPoint? = null
     private val createPickClick = MutableSharedFlow<Unit>()
 
     init {

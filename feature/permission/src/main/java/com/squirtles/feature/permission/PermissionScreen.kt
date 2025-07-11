@@ -152,6 +152,7 @@ fun PermissionScreen(
                             ),
                             PermissionData(
                                 imageVector = Icons.Default.MyLocation,
+                                isOptional = true,
                                 contentDescription = stringResource(R.string.permission_location_content_desc),
                                 permissionTitle = stringResource(R.string.permission_location),
                                 permissionDescription = stringResource(R.string.permission_location_desc),

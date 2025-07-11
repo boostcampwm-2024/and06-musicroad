@@ -9,6 +9,10 @@ android {
 
 dependencies {
     implementation(projects.domain.location)
+    implementation(projects.core.model)
+
+    // Datastore
+    implementation(libs.androidx.datastore.preferences)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.bundles.test)

@@ -80,26 +80,27 @@ fun PickNotificationBanner(
 private fun PickNotificationBannerPreview() {
     MusicRoadTheme {
         PickNotificationBanner(
-            nearPicks = listOf( Pick(
-                id = "",
-                song = Song(
+            nearPicks = listOf(
+                Pick(
                     id = "",
-                    songName = "",
-                    artistName = "",
-                    albumName = "",
-                    imageUrl = "",
-                    genreNames = listOf(),
-                    bgColor = "#000000".toColorInt(),
-                    externalUrl = "",
-                    previewUrl = ""
-                ),
-                comment = "",
-                createdAt = "",
-                createdBy = Creator(uid = "", userName = "짱구"),
-                favoriteCount = 0,
-                location = LocationPoint(1.0, 1.0),
-                musicVideoUrl = "",
-            )
+                    song = Song(
+                        id = "",
+                        songName = "",
+                        artistName = "",
+                        albumName = "",
+                        imageUrl = "",
+                        genreNames = listOf(),
+                        bgColor = "#000000".toColorInt(),
+                        externalUrl = "",
+                        previewUrl = ""
+                    ),
+                    comment = "",
+                    createdAt = "",
+                    createdBy = Creator(uid = "", userName = "짱구"),
+                    favoriteCount = 0,
+                    location = LocationPoint(1.0, 1.0),
+                    musicVideoUrl = "",
+                )
             ),
             onClick = { }
         )

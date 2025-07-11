@@ -6,5 +6,5 @@ import javax.inject.Inject
 class GetLastLocationUseCase @Inject constructor(
     private val localLocationRepository: LocalLocationRepository
 ) {
-    operator fun invoke() = localLocationRepository.lastLocation
+    operator fun invoke() = localLocationRepository.readLastLocation()
 }

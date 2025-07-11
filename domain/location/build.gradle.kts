@@ -8,6 +8,7 @@ android {
 
 dependencies {
     implementation(libs.inject)
+    implementation(projects.core.model)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.bundles.test)

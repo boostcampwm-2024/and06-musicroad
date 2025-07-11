@@ -1,26 +1,28 @@
 package com.squirtles.feature.map
 
 import android.content.Context
-import android.location.Location
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraPosition
 import com.naver.maps.map.clustering.Clusterer
 import com.naver.maps.map.overlay.Marker
+import com.squirtles.core.model.LocationPoint
+import com.squirtles.core.model.Pick
 import com.squirtles.domain.location.usecase.GetLastLocationUseCase
 import com.squirtles.domain.location.usecase.SaveLastLocationUseCase
-import com.squirtles.feature.map.marker.MarkerKey
-import com.squirtles.core.model.Pick
 import com.squirtles.domain.pick.usecase.FetchPickUseCase
 import com.squirtles.domain.user.usecase.GetCurrentUidUseCase
+import com.squirtles.feature.map.marker.MarkerKey
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -38,8 +40,8 @@ class MapViewModel @Inject constructor(
     private val getCurrentUidUseCase: GetCurrentUidUseCase
 ) : ViewModel() {
 
-    private val _centerLatLng: MutableStateFlow<LatLng?> = MutableStateFlow(null)
-    val centerLatLng = _centerLatLng.asStateFlow()
+    private val _centerPoint: MutableStateFlow<LocationPoint?> = MutableStateFlow(null)
+    val centerPoint = _centerPoint.asStateFlow()
 
     private var _lastCameraPosition: CameraPosition? = null
     val lastCameraPosition get() = _lastCameraPosition
@@ -57,12 +59,15 @@ class MapViewModel @Inject constructor(
     val fetchPicksErrorToast = _fetchPicksErrorToast.asSharedFlow()
 
     // FIXME : 네이버맵의 LocationChangeListener에서 실시간으로 변하는 위치 정보 -> 더 나은 방법이 있으면 고쳐주세요
-    private var _currentLocation: Location? = null
-    val curLocation get() = _currentLocation
+    private var _currentLocation: LocationPoint? = null
 
     // LocalDataSource에 저장되는 위치 정보
     // Firestore 데이터 쿼리 작업 최소화 및 위치데이터 공유 용도
-    val lastLocation: StateFlow<Location?> = getLastLocationUseCase()
+    val lastLocation: StateFlow<LocationPoint?> = getLastLocationUseCase().stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(3000L),
+        initialValue = null
+    )
 
     fun getUid() = getCurrentUidUseCase()
 
@@ -70,17 +75,18 @@ class MapViewModel @Inject constructor(
         _lastCameraPosition = cameraPosition
     }
 
-    fun updateCurLocation(location: Location) {
-        _currentLocation = location
+    fun updateCurLocation(lat: Double, lng: Double) {
+        val point = LocationPoint(lat, lng)
+        _currentLocation = point
 
         if (lastLocation.value == null
-            || calculateDistance(location.latitude, location.longitude) > 5.0
+            || calculateDistance(lat, lng) > 5.0
         ) {
-            saveCurLocation(location)
+            saveCurLocation(point)
         }
     }
 
-    private fun saveCurLocation(location: Location) {
+    private fun saveCurLocation(location: LocationPoint) {
         viewModelScope.launch {
             saveLastLocationUseCase(location)
         }
@@ -95,19 +101,16 @@ class MapViewModel @Inject constructor(
     fun calculateDistance(
         lat: Double,
         lng: Double,
-        from: Location? = lastLocation.value,
+        from: LocationPoint? = lastLocation.value,
     ): Double {
         return from?.let {
-            val location = Location("pickLocation").apply {
-                latitude = lat
-                longitude = lng
-            }
-            from.distanceTo(location).toDouble()
+            val pickLatLng = LatLng(lat, lng)
+            LatLng(from.latitude, from.longitude).distanceTo(pickLatLng)
         } ?: -1.0
     }
 
-    fun updateCenterLatLng(latLng: LatLng) {
-        _centerLatLng.value = latLng
+    fun updateCenterLatLng(lat: Double, lng: Double) {
+        _centerPoint.value = LocationPoint(lat, lng)
     }
 
     // FIXME: 인자로 Context 받는 것 수정하기
@@ -145,10 +148,11 @@ class MapViewModel @Inject constructor(
         }
     }
 
+    // 유저 화면 내 픽 불러오기
     fun fetchPicksInBounds(leftTop: LatLng, clusterer: Clusterer<MarkerKey>?) {
         viewModelScope.launch {
-            _centerLatLng.value?.run {
-                val radiusInM = leftTop.distanceTo(this)
+            _centerPoint.value?.run {
+                val radiusInM = leftTop.distanceTo(LatLng(this.latitude, this.longitude))
                 fetchPickUseCase(this.latitude, this.longitude, radiusInM)
                     .catch {
                         _fetchPicksErrorToast.emit(Unit)
@@ -174,9 +178,10 @@ class MapViewModel @Inject constructor(
         }
     }
 
-    fun requestPickNotificationArea(location: Location, notiRadius: Double) {
+    // CircleOverlay 내 픽 불러오기
+    fun requestPickNotificationArea(location: LocationPoint, notifyRadius: Double) {
         viewModelScope.launch {
-            fetchPickUseCase(location.latitude, location.longitude, notiRadius)
+            fetchPickUseCase(location.latitude, location.longitude, notifyRadius)
                 .catch {
                     _fetchPicksErrorToast.emit(Unit)
                 }

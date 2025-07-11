@@ -36,6 +36,7 @@ import androidx.lifecycle.flowWithLifecycle
 import com.squirtles.core.account.AccountViewModel
 import com.squirtles.core.account.GoogleId
 import com.squirtles.core.common.ui.DoubleBackPressToExit
+import com.squirtles.core.common.ui.MusicRoadPermissions.checkLocationPermission
 import com.squirtles.core.common.ui.SignInAlertDialog
 import com.squirtles.core.common.ui.VerticalSpacer
 import com.squirtles.core.common.ui.theme.Black
@@ -100,7 +101,10 @@ fun MapScreen(
             mapViewModel.fetchPicksErrorToast
                 .flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
                 .collect {
-                    Toast.makeText(context, context.getString(R.string.error_message_fetch_picks_in_bounds), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.error_message_fetch_picks_in_bounds), Toast.LENGTH_SHORT
+                    ).show()
                 }
         }
     }
@@ -123,7 +127,7 @@ fun MapScreen(
         ) {
             NaverMap(
                 mapViewModel = mapViewModel,
-                lastLocation = lastLocation
+                lastLocation = lastLocation,
             )
 
             if (nearPicks.isNotEmpty()) {
@@ -180,7 +184,7 @@ fun MapScreen(
 
                 MapBottomNavBar(
                     modifier = Modifier.padding(bottom = 16.dp),
-                    lastLocation = lastLocation,
+                    isActivated = checkLocationPermission(context),
                     onFavoriteClick = {
                         mapViewModel.getUid()?.let { uid ->
                             onFavoriteClick(uid)
@@ -213,7 +217,7 @@ fun MapScreen(
                             showSignInDialog = true
                             onSignInSuccess = onUserInfoClick
                         }
-                    }
+                    },
                 )
             }
 
