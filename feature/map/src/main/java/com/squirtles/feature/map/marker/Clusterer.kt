@@ -1,6 +1,7 @@
 package com.squirtles.feature.map.marker
 
 import android.content.Context
+import android.graphics.Color
 import android.graphics.PointF
 import android.view.View
 import androidx.compose.ui.graphics.toArgb
@@ -55,7 +56,7 @@ internal fun <T : ClusteringKey> buildClusterer(
                 with(marker) {
                     icon = OverlayImage.fromView(View(context))
                     setCaptionAligns(Align.Center)
-                    captionHaloColor = android.graphics.Color.TRANSPARENT
+                    captionHaloColor = Color.TRANSPARENT
                 }
                 return marker
             }
@@ -78,23 +79,18 @@ internal fun <T : ClusteringKey> buildClusterer(
                     else -> White
                 }
                 val clusterMarkerIconView = ClusterMarkerIconView(context, densityType)
+
                 marker.icon = OverlayImage.fromView(clusterMarkerIconView)
                 marker.zIndex = DEFAULT_MARKER_Z_INDEX
                 marker.anchor = PointF(0.5F, 0.5F)
                 marker.captionText = info.size.toString()
                 marker.captionColor = captionColor.toArgb()
                 marker.onClickListener = Overlay.OnClickListener {
-                    marker.map?.let { map ->
-                        setCameraToMarker(
-                            map = map,
-                            clickedMarkerPosition = marker.position
-                        )
-                        mapViewModel.setClickedMarkerState(
-                            context = context,
-                            marker = marker,
-                            clusterTag = info.tag.toString()
-                        )
-                    }
+                    marker.handleMarkerClick(
+                        context = context,
+                        clusterTag = info.tag.toString(),
+                        setClickedMarkerState = mapViewModel::setClickedMarkerState,
+                    )
                     true
                 }
 
@@ -135,17 +131,11 @@ internal fun <T : ClusteringKey> buildClusterer(
                 ) {
                     marker.icon = OverlayImage.fromView(leafMarkerIconView)
                     marker.setOnClickListener {
-                        marker.map?.let { map ->
-                            setCameraToMarker(
-                                map = map,
-                                clickedMarkerPosition = marker.position
-                            )
-                            mapViewModel.setClickedMarkerState(
-                                context = context,
-                                marker = marker,
-                                pickId = pick.id
-                            )
-                        }
+                        marker.handleMarkerClick(
+                            context = context,
+                            pickId = pick.id,
+                            setClickedMarkerState = mapViewModel::setClickedMarkerState
+                        )
                         true
                     }
 
@@ -166,4 +156,16 @@ internal fun <T : ClusteringKey> buildClusterer(
             }
         })
         .build()
+}
+
+fun Marker.handleMarkerClick(
+    context: Context,
+    clusterTag: String? = null,
+    pickId: String? = null,
+    setClickedMarkerState: (context: Context, marker: Marker, clusterTag: String?, pickId: String?) -> Unit,
+) {
+    map?.let { map ->
+        map.setCameraToMarker(clickedMarkerPosition = position)
+        setClickedMarkerState(context, this, clusterTag, pickId)
+    }
 }
