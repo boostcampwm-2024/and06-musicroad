@@ -38,7 +38,6 @@ import com.naver.maps.map.overlay.CircleOverlay
 import com.naver.maps.map.overlay.LocationOverlay
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.util.FusedLocationSource
-import com.squirtles.core.common.ui.MusicRoadPermissions.checkLocationPermission
 import com.squirtles.core.common.ui.theme.Primary
 import com.squirtles.core.common.ui.theme.Purple15
 import com.squirtles.core.model.LocationPoint

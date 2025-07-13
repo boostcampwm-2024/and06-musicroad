@@ -20,9 +20,6 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Mic
-import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -143,21 +140,7 @@ fun PermissionScreen(
                     )
 
                     PermissionMenus(
-                        items = listOf(
-                            PermissionData(
-                                imageVector = Icons.Default.Mic,
-                                contentDescription = stringResource(R.string.permission_mic_content_desc),
-                                permissionTitle = stringResource(R.string.permission_mic),
-                                permissionDescription = stringResource(R.string.permission_mic_desc)
-                            ),
-                            PermissionData(
-                                imageVector = Icons.Default.MyLocation,
-                                isOptional = true,
-                                contentDescription = stringResource(R.string.permission_location_content_desc),
-                                permissionTitle = stringResource(R.string.permission_location),
-                                permissionDescription = stringResource(R.string.permission_location_desc),
-                            )
-                        )
+                        permissions = ALL_PERMISSIONS
                     )
                 }
             }
@@ -182,29 +165,36 @@ fun PermissionScreen(
 
 @Composable
 private fun PermissionMenus(
-    items: List<PermissionData>,
+    permissions: List<String>,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
     val essentialString = stringResource(R.string.essential)
     val optionalString = stringResource(R.string.optional)
+
+    val items = permissions.map { permission ->
+        PermissionDataFactory.from(permission, context)
+    }
 
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(30.dp)
     ) {
         for (item in items) {
-            PermissionItem(
-                imageVector = item.imageVector,
-                contentDescription = item.contentDescription,
-                permissionTitle = item.permissionTitle + " " + if (item.isOptional) optionalString else essentialString,
-                permissionDescription = item.permissionDescription
-            )
+            item?.run {
+                PermissionMenuItem(
+                    imageVector = imageVector,
+                    contentDescription = contentDescription,
+                    permissionTitle = permissionTitle + " " + if (isOptional) optionalString else essentialString,
+                    permissionDescription = permissionDescription
+                )
+            }
         }
     }
 }
 
 @Composable
-private fun PermissionItem(
+private fun PermissionMenuItem(
     imageVector: ImageVector,
     contentDescription: String,
     permissionTitle: String,

@@ -16,7 +16,7 @@ object MusicRoadPermissions {
         Manifest.permission.RECORD_AUDIO,
     )
 
-    val ALL_PERMISSIONS = OPTIONAL_PERMISSIONS + CORE_PERMISSIONS
+    val ALL_PERMISSIONS = CORE_PERMISSIONS + OPTIONAL_PERMISSIONS
 
     fun checkLocationPermission(context: Context): Boolean {
         return OPTIONAL_PERMISSIONS.all {
