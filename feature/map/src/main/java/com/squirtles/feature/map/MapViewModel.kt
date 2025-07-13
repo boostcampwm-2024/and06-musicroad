@@ -109,7 +109,7 @@ class MapViewModel @Inject constructor(
         } ?: -1.0
     }
 
-    fun updateCenterLatLng(lat: Double, lng: Double) {
+    fun updateCenterLocation(lat: Double, lng: Double) {
         _centerPoint.value = LocationPoint(lat, lng)
     }
 
@@ -179,9 +179,9 @@ class MapViewModel @Inject constructor(
     }
 
     // CircleOverlay 내 픽 불러오기
-    fun requestPickNotificationArea(location: LocationPoint, notifyRadius: Double) {
+    fun requestPickNotificationArea(lat: Double, lng: Double, notifyRadius: Double) {
         viewModelScope.launch {
-            fetchPickUseCase(location.latitude, location.longitude, notifyRadius)
+            fetchPickUseCase(lat, lng, notifyRadius)
                 .catch {
                     _fetchPicksErrorToast.emit(Unit)
                 }

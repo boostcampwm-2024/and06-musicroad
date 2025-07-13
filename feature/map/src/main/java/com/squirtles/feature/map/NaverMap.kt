@@ -22,7 +22,6 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.naver.maps.geometry.LatLng
@@ -37,7 +36,6 @@ import com.naver.maps.map.UiSettings
 import com.naver.maps.map.clustering.Clusterer
 import com.naver.maps.map.overlay.CircleOverlay
 import com.naver.maps.map.overlay.LocationOverlay
-import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.util.FusedLocationSource
 import com.squirtles.core.common.ui.MusicRoadPermissions.checkLocationPermission
@@ -45,20 +43,41 @@ import com.squirtles.core.common.ui.theme.Primary
 import com.squirtles.core.common.ui.theme.Purple15
 import com.squirtles.core.model.LocationPoint
 import com.squirtles.feature.map.marker.MarkerKey
-import com.squirtles.feature.map.marker.buildClusterer
 import kotlinx.coroutines.launch
 
+internal data class NaverMapActions(
+    val fetchPicksInBounds: (LatLng, Clusterer<MarkerKey>?) -> Unit,
+    val resetClickedMarkerState: (Context) -> Unit,
+    val requestPickNotificationArea: (Double, Double, Double) -> Unit,
+    val updateCurLocation: (Double, Double) -> Unit,
+    val updateCenterLocation: (Double, Double) -> Unit,
+    val setLastCameraPosition: (CameraPosition) -> Unit,
+    val getLastCameraPosition: () -> CameraPosition?
+) {
+    companion object {
+        val preview = NaverMapActions(
+            requestPickNotificationArea = { _, _, _ -> },
+            fetchPicksInBounds = { _, _ -> },
+            setLastCameraPosition = { },
+            resetClickedMarkerState = { },
+            updateCenterLocation = { _, _ -> },
+            updateCurLocation = { _, _ -> },
+            getLastCameraPosition = { null }
+        )
+    }
+}
+
 @Composable
-fun NaverMap(
-    mapViewModel: MapViewModel,
-    lastLocation: LocationPoint?
+internal fun NaverMap(
+    naverMapActions: NaverMapActions,
+    centerPoint: LocationPoint?,
+    lastLocation: LocationPoint?,
+    hasPermission: () -> Boolean,
+    getClusterer: () -> Clusterer<MarkerKey>?
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val coroutineScope = rememberCoroutineScope()
-
-    // permission
-    val hasPermission by remember { mutableStateOf(checkLocationPermission(context)) }
 
     // map
     val mapView = remember { MapView(context) }
@@ -73,41 +92,32 @@ fun NaverMap(
     val locationSource = remember { FusedLocationSource(context as Activity, LOCATION_PERMISSION_REQUEST_CODE) }
     var clusterer by remember { mutableStateOf<Clusterer<MarkerKey>?>(null) }
 
-    // location points
-    val centerPoint by mapViewModel.centerPoint.collectAsStateWithLifecycle()
-
-    // clicked marker
-    val clickedMarkerState by mapViewModel.clickedMarkerState.collectAsStateWithLifecycle()
-
     LaunchedEffect(naverMap.value, lastLocation) {
-        if (naverMap.value != null && !hasPermission) {
+        if (naverMap.value != null && !hasPermission()) {
             lastLocation?.let {
-                naverMap.value?.initCameraPosition(mapViewModel.lastCameraPosition, lastLocation)
+                naverMap.value?.initCameraPosition(naverMapActions.getLastCameraPosition(), lastLocation)
             }
         }
 
         lastLocation?.let {
-            mapViewModel.requestPickNotificationArea(it, CIRCLE_RADIUS_METER)
+            naverMapActions.requestPickNotificationArea(it.latitude, it.longitude, CIRCLE_RADIUS_METER)
         }
     }
 
     LaunchedEffect(centerPoint) {
         naverMap.value?.projection?.fromScreenLocation(PointF(0F, 0F))?.run {
-            mapViewModel.fetchPicksInBounds(
-                leftTop = this,
-                clusterer = clusterer
-            )
+            naverMapActions.fetchPicksInBounds(this, clusterer)
         }
     }
 
     DisposableEffect(Unit) {
-        clusterer = buildClusterer(context, mapViewModel)
+        clusterer = getClusterer()
 
         onDispose {
             clusterer?.clear()
 
             naverMap.value?.let {
-                mapViewModel.setLastCameraPosition(it.cameraPosition)
+                naverMapActions.setLastCameraPosition(it.cameraPosition)
             }
         }
     }
@@ -141,21 +151,21 @@ fun NaverMap(
                         naverMap.value = map
                         map.run {
                             initMapSettings()
-                            initLocationSource(hasPermission, locationSource)
+                            initLocationSource(hasPermission(), locationSource)
                             initDeviceLocation(
-                                hasPermission = hasPermission,
+                                hasPermission = hasPermission(),
                                 circleOverlay = circleOverlay,
                                 fusedLocationClient = fusedLocationClient,
-                                lastCameraPosition = mapViewModel.lastCameraPosition
+                                lastCameraPosition = naverMapActions.getLastCameraPosition()
                             )
-                            initLocationOverlay(hasPermission) { overlay ->
+                            initLocationOverlay(hasPermission()) { overlay ->
                                 locationOverlay.value = overlay
                             }
                             moveCamera(CameraUpdate.zoomTo(INITIAL_CAMERA_ZOOM))
-                            setLocationChangeListener(circleOverlay, mapViewModel)
-                            setMapClickListener { mapViewModel.resetClickedMarkerState(context) }
+                            setLocationChangeListener(circleOverlay, naverMapActions.updateCurLocation)
+                            setMapClickListener { naverMapActions.resetClickedMarkerState(context) }
                             setCameraIdleListener { centerLatLng ->
-                                mapViewModel.updateCenterLatLng(centerLatLng.latitude, centerLatLng.longitude)
+                                naverMapActions.updateCenterLocation(centerLatLng.latitude, centerLatLng.longitude)
                             }
                             clusterer?.map = this
                         }
@@ -235,11 +245,11 @@ private fun NaverMap.initCameraPosition(
 
 private fun NaverMap.setLocationChangeListener(
     circleOverlay: CircleOverlay,
-    mapViewModel: MapViewModel
+    updateCurLocation: (Double, Double) -> Unit,
 ) {
     addOnLocationChangeListener { location ->
         setCircleOverlayLocation(circleOverlay, location)
-        mapViewModel.updateCurLocation(location.latitude, location.longitude)
+        updateCurLocation(location.latitude, location.longitude)
     }
 }
 
