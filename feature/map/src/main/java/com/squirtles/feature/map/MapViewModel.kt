@@ -121,7 +121,7 @@ class MapViewModel @Inject constructor(
         }
     }
 
-    fun setClickedMarkerState(
+    fun updateClickedMarkerState(
         context: Context,
         marker: Marker,
         clusterTag: String? = null,

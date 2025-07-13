@@ -89,14 +89,14 @@ internal fun <T : ClusteringKey> buildClusterer(
                     marker.handleMarkerClick(
                         context = context,
                         clusterTag = info.tag.toString(),
-                        setClickedMarkerState = mapViewModel::setClickedMarkerState,
+                        setClickedMarkerState = mapViewModel::updateClickedMarkerState,
                     )
                     true
                 }
 
                 if (mapViewModel.clickedMarkerState.value.prevClickedMarker?.position == marker.position) {
                     mapViewModel.clickedMarkerState.value.clusterPickList?.let {
-                        mapViewModel.setClickedMarkerState(
+                        mapViewModel.updateClickedMarkerState(
                             context = context,
                             marker = marker,
                             clusterTag = info.tag.toString()
@@ -134,14 +134,14 @@ internal fun <T : ClusteringKey> buildClusterer(
                         marker.handleMarkerClick(
                             context = context,
                             pickId = pick.id,
-                            setClickedMarkerState = mapViewModel::setClickedMarkerState
+                            setClickedMarkerState = mapViewModel::updateClickedMarkerState
                         )
                         true
                     }
 
                     // 2개짜리 클러스터 마커가 클릭된 상태에서 항목 삭제 시 바텀 시트 -> 인포윈도우
                     if (mapViewModel.clickedMarkerState.value.prevClickedMarker?.position == marker.position) {
-                        mapViewModel.setClickedMarkerState(
+                        mapViewModel.updateClickedMarkerState(
                             context = context,
                             marker = marker,
                             pickId = pick.id
