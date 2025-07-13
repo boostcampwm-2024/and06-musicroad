@@ -1,15 +1,10 @@
 plugins {
-    alias(libs.plugins.musicroad.android.library)
-}
-
-android {
-    namespace = "com.squirtles.domain.location"
+    id(libs.plugins.musicroad.java.library.get().pluginId)
 }
 
 dependencies {
-    implementation(libs.inject)
     implementation(projects.core.model)
-
+    implementation(libs.kotlinx.coroutines.core)
+    
     testImplementation(libs.junit)
-    androidTestImplementation(libs.bundles.test)
 }

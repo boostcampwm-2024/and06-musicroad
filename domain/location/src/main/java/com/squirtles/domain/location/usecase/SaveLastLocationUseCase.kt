@@ -1,6 +1,5 @@
 package com.squirtles.domain.location.usecase
 
-import android.location.Location
 import com.squirtles.core.model.LocationPoint
 import com.squirtles.domain.location.LocalLocationRepository
 import javax.inject.Inject
