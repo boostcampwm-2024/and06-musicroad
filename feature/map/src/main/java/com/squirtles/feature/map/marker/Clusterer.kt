@@ -86,11 +86,16 @@ internal fun <T : ClusteringKey> buildClusterer(
                 marker.captionText = info.size.toString()
                 marker.captionColor = captionColor.toArgb()
                 marker.onClickListener = Overlay.OnClickListener {
-                    marker.handleMarkerClick(
-                        context = context,
-                        clusterTag = info.tag.toString(),
-                        setClickedMarkerState = mapViewModel::updateClickedMarkerState,
-                    )
+                    marker.map?.let { map ->
+                        map.setCameraToMarker(
+                            clickedMarkerPosition = marker.position
+                        )
+                        mapViewModel.updateClickedMarkerState(
+                            context = context,
+                            marker = marker,
+                            clusterTag = info.tag.toString()
+                        )
+                    }
                     true
                 }
 
@@ -131,11 +136,16 @@ internal fun <T : ClusteringKey> buildClusterer(
                 ) {
                     marker.icon = OverlayImage.fromView(leafMarkerIconView)
                     marker.setOnClickListener {
-                        marker.handleMarkerClick(
-                            context = context,
-                            pickId = pick.id,
-                            setClickedMarkerState = mapViewModel::updateClickedMarkerState
-                        )
+                        marker.map?.let { map ->
+                            map.setCameraToMarker(
+                                clickedMarkerPosition = marker.position
+                            )
+                            mapViewModel.updateClickedMarkerState(
+                                context = context,
+                                marker = marker,
+                                pickId = pick.id
+                            )
+                        }
                         true
                     }
 
@@ -156,16 +166,4 @@ internal fun <T : ClusteringKey> buildClusterer(
             }
         })
         .build()
-}
-
-fun Marker.handleMarkerClick(
-    context: Context,
-    clusterTag: String? = null,
-    pickId: String? = null,
-    setClickedMarkerState: (context: Context, marker: Marker, clusterTag: String?, pickId: String?) -> Unit,
-) {
-    map?.let { map ->
-        map.setCameraToMarker(clickedMarkerPosition = position)
-        setClickedMarkerState(context, this, clusterTag, pickId)
-    }
 }
