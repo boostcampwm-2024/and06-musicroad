@@ -73,10 +73,7 @@ fun NaverMap(
 
     // location points
     val centerPoint by mapViewModel.centerPoint.collectAsStateWithLifecycle()
-
-    // clicked marker
-    val clickedMarkerState by mapViewModel.clickedMarkerState.collectAsStateWithLifecycle()
-
+    
     LaunchedEffect(naverMap.value, lastLocation) {
         if (naverMap.value != null && !hasPermission) {
             lastLocation?.let {
@@ -84,8 +81,10 @@ fun NaverMap(
             }
         }
 
-        lastLocation?.let {
-            mapViewModel.requestPickNotificationArea(it.latitude, it.longitude, CIRCLE_RADIUS_METER)
+        if (hasPermission) {
+            lastLocation?.let {
+                mapViewModel.requestPickNotificationArea(it.latitude, it.longitude, CIRCLE_RADIUS_METER)
+            }
         }
     }
 

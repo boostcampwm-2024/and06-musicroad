@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class MarkerState(
-    val prevClickedMarker: Marker? = null, // 이전에 클릭한 마커(클러스터 마커 & 단말 마커)
+    val lastClickedMarker: Marker? = null, // 이전에 클릭한 마커(클러스터 마커 & 단말 마커)
     val clusterPickList: List<Pick>? = null, // 클러스터 마커의 픽 정보
     val curPickId: String? = null // 현재 선택한 마커의 pick id
 )
@@ -117,7 +117,7 @@ class MapViewModel @Inject constructor(
     fun setClickedMarker(context: Context, marker: Marker) {
         viewModelScope.launch {
             marker.toggleSizeByClick(context, true)
-            _clickedMarkerState.emit(_clickedMarkerState.value.copy(prevClickedMarker = marker))
+            _clickedMarkerState.emit(_clickedMarkerState.value.copy(lastClickedMarker = marker))
         }
     }
 
@@ -128,10 +128,10 @@ class MapViewModel @Inject constructor(
         pickId: String? = null
     ) {
         viewModelScope.launch {
-            val prevClickedMarker = _clickedMarkerState.value.prevClickedMarker
+            val lastClickedMarker = _clickedMarkerState.value.lastClickedMarker
             // 클릭한 마커와 클릭되어 있는 마커가 다를 때만 크기 변경
-            if (prevClickedMarker != marker) {
-                prevClickedMarker?.toggleSizeByClick(context, false)
+            if (lastClickedMarker != marker) {
+                lastClickedMarker?.toggleSizeByClick(context, false)
                 marker.toggleSizeByClick(context, true)
             }
 
@@ -142,8 +142,8 @@ class MapViewModel @Inject constructor(
 
     fun resetClickedMarkerState(context: Context) {
         viewModelScope.launch {
-            val prevClickedMarker = _clickedMarkerState.value.prevClickedMarker
-            prevClickedMarker?.toggleSizeByClick(context, false)
+            val lastClickedMarker = _clickedMarkerState.value.lastClickedMarker
+            lastClickedMarker?.toggleSizeByClick(context, false)
             _clickedMarkerState.emit(MarkerState(null, null, null))
         }
     }

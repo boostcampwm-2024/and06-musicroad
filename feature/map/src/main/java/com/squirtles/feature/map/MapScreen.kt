@@ -1,6 +1,5 @@
 package com.squirtles.feature.map
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -145,11 +144,11 @@ fun MapScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 if (mapViewModel.lastCameraPosition != null &&
-                    clickedMarkerState.prevClickedMarker?.position == mapViewModel.lastCameraPosition?.target
+                    clickedMarkerState.lastClickedMarker?.position == mapViewModel.lastCameraPosition?.target
                 ) {
                     mapViewModel.resetClickedMarkerState(context)
                 } else {
-                    clickedMarkerState.prevClickedMarker?.let {
+                    clickedMarkerState.lastClickedMarker?.let {
                         if (clickedMarkerState.curPickId != null) { // 단말 마커 클릭 시
                             showBottomSheet = false
                             mapViewModel.picks[clickedMarkerState.curPickId]?.let { pick ->
