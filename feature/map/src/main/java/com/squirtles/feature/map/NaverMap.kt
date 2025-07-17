@@ -48,15 +48,13 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun NaverMap(
+    hasPermission: Boolean,
     mapViewModel: MapViewModel,
     lastLocation: LocationPoint?
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val coroutineScope = rememberCoroutineScope()
-
-    // permission
-    val hasPermission by remember { mutableStateOf(checkLocationPermission(context)) }
 
     // map
     val mapView = remember { MapView(context) }
@@ -73,7 +71,7 @@ fun NaverMap(
 
     // location points
     val centerPoint by mapViewModel.centerPoint.collectAsStateWithLifecycle()
-    
+
     LaunchedEffect(naverMap.value, lastLocation) {
         if (naverMap.value != null && !hasPermission) {
             lastLocation?.let {

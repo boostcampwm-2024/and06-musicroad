@@ -76,6 +76,9 @@ fun MapScreen(
     var onSignInSuccess by remember { mutableStateOf<(String) -> Unit>({}) }
     var showLoadingIndicator by rememberSaveable { mutableStateOf(false) }
 
+    // permission
+    val hasPermission by remember { mutableStateOf(checkLocationPermission(context)) }
+
     DoubleBackPressToExit(!showLoadingIndicator) {
         finishActivity()
     }
@@ -109,9 +112,9 @@ fun MapScreen(
     }
 
     LaunchedEffect(lastLocation) {
-        showLocationLoading = lastLocation == null
+        showLocationLoading = if (hasPermission) lastLocation == null else false
     }
-
+    
     Scaffold(
         contentWindowInsets = WindowInsets.navigationBars
     ) { innerPadding ->
@@ -121,6 +124,7 @@ fun MapScreen(
                 .padding(innerPadding)
         ) {
             NaverMap(
+                hasPermission = hasPermission,
                 mapViewModel = mapViewModel,
                 lastLocation = lastLocation,
             )
