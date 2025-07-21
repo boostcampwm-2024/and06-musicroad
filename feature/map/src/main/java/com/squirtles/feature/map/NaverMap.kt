@@ -74,9 +74,7 @@ fun NaverMap(
 
     LaunchedEffect(naverMap.value, lastLocation) {
         if (naverMap.value != null && !hasPermission) {
-            lastLocation?.let {
-                naverMap.value?.initCameraPosition(mapViewModel.lastCameraPosition, lastLocation)
-            }
+            naverMap.value?.initCameraPosition(mapViewModel.lastCameraPosition, lastLocation)
         }
 
         if (hasPermission) {
