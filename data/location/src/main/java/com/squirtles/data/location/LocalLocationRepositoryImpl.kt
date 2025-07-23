@@ -22,11 +22,10 @@ class LocalLocationRepositoryImpl @Inject constructor(
 
     override fun readLastLocation(): Flow<LocationPoint?> {
         return context.dataStore.data.map { preferences ->
-            preferences[latKey]?.let { lat ->
-                preferences[lngKey]?.let { lng ->
-                    LocationPoint(lat.toDouble(), lng.toDouble())
-                }
-            }
+            val lat = preferences[latKey]?.toDoubleOrNull()
+            val lng = preferences[lngKey]?.toDoubleOrNull()
+
+            if (lat != null && lng != null) LocationPoint(lat, lng) else null
         }
     }
 
