@@ -1,7 +1,6 @@
 package com.squirtles.feature.map.components
 
 import android.content.res.Configuration
-import android.location.Location
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -25,15 +24,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.squirtles.core.common.ui.theme.MusicRoadTheme
 import com.squirtles.core.common.ui.theme.Primary
-import com.squirtles.feature.map.BottomNavigationSize
 import com.squirtles.feature.map.BottomNavigationIconSize
+import com.squirtles.feature.map.BottomNavigationSize
 import com.squirtles.feature.map.R
 import com.squirtles.feature.map.navigation.NavTab
 
 @Composable
 internal fun MapBottomNavBar(
     modifier: Modifier = Modifier,
-    lastLocation: Location?,
+    isActivated: Boolean,
     onFavoriteClick: () -> Unit,
     onCenterClick: () -> Unit,
     onUserInfoClick: () -> Unit,
@@ -79,29 +78,34 @@ internal fun MapBottomNavBar(
                 .size(BottomNavigationIconSize.CENTER.size.dp)
                 .clip(CircleShape)
                 .background(
-                    color = lastLocation?.let {
+                    color = if (isActivated)
                         MaterialTheme.colorScheme.primary
-                    } ?: Color.Gray
+                    else
+                        Color.Gray
                 ),
             tab = NavTab.SEARCH,
             painter = painterResource(R.drawable.ic_musical_note_64),
             tint = MaterialTheme.colorScheme.onPrimary,
-            onClick = onCenterClick
+            onClick = onCenterClick,
+            isActivated = isActivated,
         )
     }
 }
 
 @Composable
 private fun MapBottomNavigationItem(
-    modifier: Modifier = Modifier,
     tab: NavTab,
     painter: Painter?,
     tint: Color,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    isActivated: Boolean = true
 ) {
     Box(
         modifier = modifier
-            .clickable { onClick() },
+            .clickable {
+                if (isActivated) onClick()
+            },
         contentAlignment = Alignment.Center,
     ) {
         Icon(
@@ -119,7 +123,7 @@ fun BottomNavigationLightPreview() {
     MusicRoadTheme {
         MapBottomNavBar(
             onFavoriteClick = {},
-            lastLocation = null,
+            isActivated = false,
             onCenterClick = {},
             onUserInfoClick = {}
         )
@@ -132,7 +136,7 @@ fun BottomNavigationDarkPreview() {
     MusicRoadTheme {
         MapBottomNavBar(
             onFavoriteClick = {},
-            lastLocation = null,
+            isActivated = true,
             onCenterClick = {},
             onUserInfoClick = {}
         )

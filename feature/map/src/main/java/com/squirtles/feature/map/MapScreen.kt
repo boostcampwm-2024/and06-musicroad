@@ -36,6 +36,7 @@ import androidx.lifecycle.flowWithLifecycle
 import com.squirtles.core.account.AccountViewModel
 import com.squirtles.core.account.GoogleId
 import com.squirtles.core.common.ui.DoubleBackPressToExit
+import com.squirtles.core.common.ui.MusicRoadPermissions.checkLocationPermission
 import com.squirtles.core.common.ui.SignInAlertDialog
 import com.squirtles.core.common.ui.VerticalSpacer
 import com.squirtles.core.common.ui.theme.Black
@@ -68,13 +69,15 @@ fun MapScreen(
     val lifecycleOwner = LocalLifecycleOwner.current
     var showBottomSheet by remember { mutableStateOf(false) }
     var showLocationLoading by rememberSaveable { mutableStateOf(true) }
-    var isPlaying: Boolean by remember { mutableStateOf(false) }
 
     // Sign In Dialog
     var showSignInDialog by remember { mutableStateOf(false) }
     var signInDialogDescription by remember { mutableStateOf("") }
     var onSignInSuccess by remember { mutableStateOf<(String) -> Unit>({}) }
     var showLoadingIndicator by rememberSaveable { mutableStateOf(false) }
+
+    // permission
+    val hasPermission by remember { mutableStateOf(checkLocationPermission(context)) }
 
     DoubleBackPressToExit(!showLoadingIndicator) {
         finishActivity()
@@ -100,19 +103,18 @@ fun MapScreen(
             mapViewModel.fetchPicksErrorToast
                 .flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
                 .collect {
-                    Toast.makeText(context, context.getString(R.string.error_message_fetch_picks_in_bounds), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.error_message_fetch_picks_in_bounds), Toast.LENGTH_SHORT
+                    ).show()
                 }
         }
     }
 
-    LaunchedEffect(playerState) {
-        isPlaying = playerState.isPlaying
-    }
-
     LaunchedEffect(lastLocation) {
-        showLocationLoading = lastLocation == null
+        showLocationLoading = if (hasPermission) lastLocation == null else false
     }
-
+    
     Scaffold(
         contentWindowInsets = WindowInsets.navigationBars
     ) { innerPadding ->
@@ -122,14 +124,15 @@ fun MapScreen(
                 .padding(innerPadding)
         ) {
             NaverMap(
+                hasPermission = hasPermission,
                 mapViewModel = mapViewModel,
-                lastLocation = lastLocation
+                lastLocation = lastLocation,
             )
 
             if (nearPicks.isNotEmpty()) {
                 PickNotificationBanner(
                     nearPicks = nearPicks,
-                    isPlaying = isPlaying,
+                    isPlaying = playerState.isPlaying,
                     onClick = {
                         playerServiceViewModel.shuffleNext(
                             if (nearPicks.size == 1) nearPicks.first()
@@ -145,11 +148,11 @@ fun MapScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 if (mapViewModel.lastCameraPosition != null &&
-                    clickedMarkerState.prevClickedMarker?.position == mapViewModel.lastCameraPosition?.target
+                    clickedMarkerState.lastClickedMarker?.position == mapViewModel.lastCameraPosition?.target
                 ) {
                     mapViewModel.resetClickedMarkerState(context)
                 } else {
-                    clickedMarkerState.prevClickedMarker?.let {
+                    clickedMarkerState.lastClickedMarker?.let {
                         if (clickedMarkerState.curPickId != null) { // 단말 마커 클릭 시
                             showBottomSheet = false
                             mapViewModel.picks[clickedMarkerState.curPickId]?.let { pick ->
@@ -180,7 +183,7 @@ fun MapScreen(
 
                 MapBottomNavBar(
                     modifier = Modifier.padding(bottom = 16.dp),
-                    lastLocation = lastLocation,
+                    isActivated = checkLocationPermission(context),
                     onFavoriteClick = {
                         mapViewModel.getUid()?.let { uid ->
                             onFavoriteClick(uid)
@@ -213,7 +216,7 @@ fun MapScreen(
                             showSignInDialog = true
                             onSignInSuccess = onUserInfoClick
                         }
-                    }
+                    },
                 )
             }
 

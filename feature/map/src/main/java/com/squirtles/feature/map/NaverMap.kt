@@ -1,8 +1,7 @@
 package com.squirtles.feature.map
 
-import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
 import android.graphics.PointF
 import android.location.Location
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -10,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -20,7 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.content.PermissionChecker
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -43,41 +40,50 @@ import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.util.FusedLocationSource
 import com.squirtles.core.common.ui.theme.Primary
 import com.squirtles.core.common.ui.theme.Purple15
+import com.squirtles.core.model.LocationPoint
 import com.squirtles.feature.map.marker.MarkerKey
 import com.squirtles.feature.map.marker.buildClusterer
 import kotlinx.coroutines.launch
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 @Composable
 fun NaverMap(
+    hasPermission: Boolean,
     mapViewModel: MapViewModel,
-    lastLocation: Location?
+    lastLocation: LocationPoint?
 ) {
     val context = LocalContext.current
-    val mapView = remember { MapView(context) }
-    val naverMap = remember { mutableStateOf<NaverMap?>(null) }
-
-    val fusedLocationClient = remember { LocationServices.getFusedLocationProviderClient(context) }
-    val locationSource =
-        remember { FusedLocationSource(context as Activity, LOCATION_PERMISSION_REQUEST_CODE) }
-    val locationOverlay = remember { mutableStateOf<LocationOverlay?>(null) }
-    val circleOverlay = remember { CircleOverlay() }
-    var clusterer by remember { mutableStateOf<Clusterer<MarkerKey>?>(null) }
-
     val lifecycleOwner = LocalLifecycleOwner.current
     val coroutineScope = rememberCoroutineScope()
 
-    val centerLatLng by mapViewModel.centerLatLng.collectAsStateWithLifecycle()
+    // map
+    val mapView = remember { MapView(context) }
+    val naverMap = remember { mutableStateOf<NaverMap?>(null) }
 
-    LaunchedEffect(lastLocation) {
-        // 현재 위치와 마지막 위치가 5미터 이상 차이가 날때만 현위치 기준 반경 100m 픽 정보 개수 불러오기
-        lastLocation?.let {
-            mapViewModel.requestPickNotificationArea(lastLocation, CIRCLE_RADIUS_METER)
+    // overlays
+    val locationOverlay = remember { mutableStateOf<LocationOverlay?>(null) }
+    val circleOverlay = remember { CircleOverlay().apply { initCircleOverlay() } }
+
+    // location sources
+    val fusedLocationClient = remember { LocationServices.getFusedLocationProviderClient(context) }
+    val locationSource = remember { FusedLocationSource(context as Activity, LOCATION_PERMISSION_REQUEST_CODE) }
+    var clusterer by remember { mutableStateOf<Clusterer<MarkerKey>?>(null) }
+
+    // location points
+    val centerPoint by mapViewModel.centerPoint.collectAsStateWithLifecycle()
+
+    LaunchedEffect(naverMap.value, lastLocation) {
+        if (naverMap.value != null && !hasPermission) {
+            naverMap.value?.initCameraPosition(mapViewModel.lastCameraPosition, lastLocation)
+        }
+
+        if (hasPermission) {
+            lastLocation?.let {
+                mapViewModel.requestPickNotificationArea(it.latitude, it.longitude, CIRCLE_RADIUS_METER)
+            }
         }
     }
 
-    LaunchedEffect(centerLatLng) {
+    LaunchedEffect(centerPoint) {
         naverMap.value?.projection?.fromScreenLocation(PointF(0F, 0F))?.run {
             mapViewModel.fetchPicksInBounds(
                 leftTop = this,
@@ -91,6 +97,10 @@ fun NaverMap(
 
         onDispose {
             clusterer?.clear()
+
+            naverMap.value?.let {
+                mapViewModel.setLastCameraPosition(it.cameraPosition)
+            }
         }
     }
 
@@ -110,9 +120,6 @@ fun NaverMap(
         lifecycleOwner.lifecycle.addObserver(mapLifecycleObserver)
 
         onDispose {
-            naverMap.value?.let {
-                mapViewModel.setLastCameraPosition(it.cameraPosition)
-            }
             lifecycleOwner.lifecycle.removeObserver(mapLifecycleObserver)
             mapView.onDestroy()
         }
@@ -122,33 +129,28 @@ fun NaverMap(
         factory = {
             mapView.apply {
                 coroutineScope.launch {
-                    naverMap.value = suspendCoroutine { continuation ->
-                        getMapAsync {
-                            continuation.resume(it)
-                        }
-                    }
-
-                    naverMap.value?.run {
-                        mapType = NaverMap.MapType.Navi
-                        initMapSettings()
-                        initDeviceLocation(
-                            context = context,
-                            circleOverlay = circleOverlay,
-                            fusedLocationClient = fusedLocationClient,
-                            lastCameraPosition = mapViewModel.lastCameraPosition
-                        ) {
-                            mapViewModel.fetchPicksInBounds(
-                                leftTop = this.projection.fromScreenLocation(PointF(0F, 0F)),
-                                clusterer = clusterer
+                    mapView.getMapAsync { map ->
+                        naverMap.value = map
+                        map.run {
+                            initMapSettings()
+                            initLocationSource(hasPermission, locationSource)
+                            initDeviceLocation(
+                                hasPermission = hasPermission,
+                                circleOverlay = circleOverlay,
+                                fusedLocationClient = fusedLocationClient,
+                                lastCameraPosition = mapViewModel.lastCameraPosition
                             )
+                            initLocationOverlay(hasPermission) { overlay ->
+                                locationOverlay.value = overlay
+                            }
+                            moveCamera(CameraUpdate.zoomTo(INITIAL_CAMERA_ZOOM))
+                            setLocationChangeListener(circleOverlay, mapViewModel)
+                            setMapClickListener { mapViewModel.resetClickedMarkerState(context) }
+                            setCameraIdleListener { centerLatLng ->
+                                mapViewModel.updateCenterLocation(centerLatLng.latitude, centerLatLng.longitude)
+                            }
+                            clusterer?.map = this
                         }
-                        initLocationOverlay(locationSource, locationOverlay)
-                        setLocationChangeListener(circleOverlay, mapViewModel)
-                        setMapClickListener { mapViewModel.resetClickedMarkerState(context) }
-                        setCameraIdleListener { centerLatLng ->
-                            mapViewModel.updateCenterLatLng(centerLatLng)
-                        }
-                        clusterer?.map = this
                     }
                 }
             }
@@ -161,49 +163,64 @@ fun NaverMap(
     }
 }
 
-internal fun setCameraToMarker(
-    map: NaverMap,
+internal fun NaverMap.setCameraToMarker(
     clickedMarkerPosition: LatLng
 ) {
     val cameraUpdate = CameraUpdate
         .scrollTo(clickedMarkerPosition)
         .animate(CameraAnimation.Easing)
-    map.moveCamera(cameraUpdate)
+    moveCamera(cameraUpdate)
 }
 
-private fun NaverMap.initLocationOverlay(
+private fun NaverMap.initLocationSource(
+    hasPermission: Boolean,
     currentLocationSource: FusedLocationSource,
-    currentLocationOverlay: MutableState<LocationOverlay?>
 ) {
-    locationSource = currentLocationSource
-    locationTrackingMode = LocationTrackingMode.Follow
-    currentLocationOverlay.value = locationOverlay
-    currentLocationOverlay.value?.run {
-        isVisible = true
-        icon = OverlayImage.fromResource(R.drawable.ic_location)
+    if (hasPermission) {
+        locationSource = currentLocationSource
+        locationTrackingMode = LocationTrackingMode.Follow
     }
 }
 
+private fun NaverMap.initLocationOverlay(
+    hasPermission: Boolean,
+    setLocationOverlayState: (LocationOverlay) -> (Unit),
+) {
+    if (hasPermission) {
+        setLocationOverlayState(locationOverlay.apply {
+            isVisible = true
+            icon = OverlayImage.fromResource(R.drawable.ic_location)
+        })
+    }
+}
+
+@SuppressLint("MissingPermission")
 private fun NaverMap.initDeviceLocation(
-    context: Context,
+    hasPermission: Boolean,
     circleOverlay: CircleOverlay,
     fusedLocationClient: FusedLocationProviderClient,
     lastCameraPosition: CameraPosition?,
-    fetchPicksInBounds: () -> Unit,
 ) {
-    if (checkSelfPermission(context)) {
+    if (hasPermission) {
         fusedLocationClient.lastLocation.addOnSuccessListener { location ->
             if (location != null) {
                 locationOverlay.position = LatLng(location)
-                setCircleOverlay(circleOverlay, location)
-                lastCameraPosition?.let {
-                    moveCamera(CameraUpdate.toCameraPosition(it))
-                    fetchPicksInBounds()
-                } ?: run {
-                    moveCamera(CameraUpdate.scrollTo(LatLng(location)))
-                    moveCamera(CameraUpdate.zoomTo(INITIAL_CAMERA_ZOOM))
-                }
+                setCircleOverlayLocation(circleOverlay, location)
+                initCameraPosition(lastCameraPosition, LocationPoint(location.latitude, location.longitude))
             }
+        }
+    }
+}
+
+private fun NaverMap.initCameraPosition(
+    lastCameraPosition: CameraPosition?,
+    lastLocation: LocationPoint?
+) {
+    lastCameraPosition?.let {
+        moveCamera(CameraUpdate.toCameraPosition(it))
+    } ?: run {
+        lastLocation?.let {
+            moveCamera(CameraUpdate.scrollTo(LatLng(it.latitude, it.longitude)))
         }
     }
 }
@@ -213,27 +230,31 @@ private fun NaverMap.setLocationChangeListener(
     mapViewModel: MapViewModel
 ) {
     addOnLocationChangeListener { location ->
-        this.setCircleOverlay(circleOverlay, location)
-        mapViewModel.updateCurLocation(location)
+        setCircleOverlayLocation(circleOverlay, location)
+        mapViewModel.updateCurLocation(location.latitude, location.longitude)
     }
 }
 
-private fun NaverMap.setCircleOverlay(circleOverlay: CircleOverlay, location: Location) {
+private fun CircleOverlay.initCircleOverlay() {
+    color = Purple15.toArgb()
+    outlineColor = Primary.toArgb()
+    outlineWidth = 3
+    radius = CIRCLE_RADIUS_METER
+}
+
+private fun NaverMap.setCircleOverlayLocation(circleOverlay: CircleOverlay, location: Location) {
     circleOverlay.center = LatLng(location.latitude, location.longitude)
-    circleOverlay.color = Purple15.toArgb()
-    circleOverlay.outlineColor = Primary.toArgb()
-    circleOverlay.outlineWidth = 3
-    circleOverlay.radius = CIRCLE_RADIUS_METER
-    circleOverlay.map = this
+    if (circleOverlay.map == null) circleOverlay.map = this
 }
 
 private fun NaverMap.initMapSettings() {
-    extent = LatLngBounds(SOUTHWEST, NORTHEAST)
+    mapType = MAP_TYPE
+    extent = LatLngBounds(SOUTHWEST_LIMIT, NORTHEAST_LIMIT)
     setCameraZoomLimit()
-    uiSettings.setNaverMapMapUi()
+    uiSettings.setNaverMapUi()
 }
 
-private fun UiSettings.setNaverMapMapUi() {
+private fun UiSettings.setNaverMapUi() {
     isLocationButtonEnabled = true
     isZoomControlEnabled = false
     isTiltGesturesEnabled = false
@@ -262,23 +283,13 @@ private fun NaverMap.setCameraIdleListener(
     }
 }
 
-private fun checkSelfPermission(context: Context): Boolean {
-    return PermissionChecker.checkSelfPermission(context, PERMISSIONS[0]) ==
-            PermissionChecker.PERMISSION_GRANTED &&
-            PermissionChecker.checkSelfPermission(context, PERMISSIONS[1]) ==
-            PermissionChecker.PERMISSION_GRANTED
-}
-
-private val SOUTHWEST = LatLng(33.011268, 124.344361)
-private val NORTHEAST = LatLng(39.346507, 130.826372)
+private val MAP_TYPE = NaverMap.MapType.Navi
+private val SOUTHWEST_LIMIT = LatLng(33.011268, 124.344361)
+private val NORTHEAST_LIMIT = LatLng(39.346507, 130.826372)
 private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
 private const val CIRCLE_RADIUS_METER = 100.0
 private const val INITIAL_CAMERA_ZOOM = 16.5
 private const val MIN_ZOOM_LEVEL = 6.0
 private const val MAX_ZOOM_LEVEL = 18.0
-private val PERMISSIONS = arrayOf(
-    Manifest.permission.ACCESS_FINE_LOCATION,
-    Manifest.permission.ACCESS_COARSE_LOCATION
-)
 internal const val DEFAULT_MARKER_Z_INDEX = 0
 internal const val CLICKED_MARKER_Z_INDEX = 100

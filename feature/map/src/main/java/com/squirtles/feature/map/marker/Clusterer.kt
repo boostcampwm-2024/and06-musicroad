@@ -1,6 +1,7 @@
 package com.squirtles.feature.map.marker
 
 import android.content.Context
+import android.graphics.Color
 import android.graphics.PointF
 import android.view.View
 import androidx.compose.ui.graphics.toArgb
@@ -55,7 +56,7 @@ internal fun <T : ClusteringKey> buildClusterer(
                 with(marker) {
                     icon = OverlayImage.fromView(View(context))
                     setCaptionAligns(Align.Center)
-                    captionHaloColor = android.graphics.Color.TRANSPARENT
+                    captionHaloColor = Color.TRANSPARENT
                 }
                 return marker
             }
@@ -78,6 +79,7 @@ internal fun <T : ClusteringKey> buildClusterer(
                     else -> White
                 }
                 val clusterMarkerIconView = ClusterMarkerIconView(context, densityType)
+
                 marker.icon = OverlayImage.fromView(clusterMarkerIconView)
                 marker.zIndex = DEFAULT_MARKER_Z_INDEX
                 marker.anchor = PointF(0.5F, 0.5F)
@@ -85,11 +87,10 @@ internal fun <T : ClusteringKey> buildClusterer(
                 marker.captionColor = captionColor.toArgb()
                 marker.onClickListener = Overlay.OnClickListener {
                     marker.map?.let { map ->
-                        setCameraToMarker(
-                            map = map,
+                        map.setCameraToMarker(
                             clickedMarkerPosition = marker.position
                         )
-                        mapViewModel.setClickedMarkerState(
+                        mapViewModel.updateClickedMarkerState(
                             context = context,
                             marker = marker,
                             clusterTag = info.tag.toString()
@@ -98,9 +99,9 @@ internal fun <T : ClusteringKey> buildClusterer(
                     true
                 }
 
-                if (mapViewModel.clickedMarkerState.value.prevClickedMarker?.position == marker.position) {
+                if (mapViewModel.clickedMarkerState.value.lastClickedMarker?.position == marker.position) {
                     mapViewModel.clickedMarkerState.value.clusterPickList?.let {
-                        mapViewModel.setClickedMarkerState(
+                        mapViewModel.updateClickedMarkerState(
                             context = context,
                             marker = marker,
                             clusterTag = info.tag.toString()
@@ -136,11 +137,10 @@ internal fun <T : ClusteringKey> buildClusterer(
                     marker.icon = OverlayImage.fromView(leafMarkerIconView)
                     marker.setOnClickListener {
                         marker.map?.let { map ->
-                            setCameraToMarker(
-                                map = map,
+                            map.setCameraToMarker(
                                 clickedMarkerPosition = marker.position
                             )
-                            mapViewModel.setClickedMarkerState(
+                            mapViewModel.updateClickedMarkerState(
                                 context = context,
                                 marker = marker,
                                 pickId = pick.id
@@ -150,8 +150,8 @@ internal fun <T : ClusteringKey> buildClusterer(
                     }
 
                     // 2개짜리 클러스터 마커가 클릭된 상태에서 항목 삭제 시 바텀 시트 -> 인포윈도우
-                    if (mapViewModel.clickedMarkerState.value.prevClickedMarker?.position == marker.position) {
-                        mapViewModel.setClickedMarkerState(
+                    if (mapViewModel.clickedMarkerState.value.lastClickedMarker?.position == marker.position) {
+                        mapViewModel.updateClickedMarkerState(
                             context = context,
                             marker = marker,
                             pickId = pick.id

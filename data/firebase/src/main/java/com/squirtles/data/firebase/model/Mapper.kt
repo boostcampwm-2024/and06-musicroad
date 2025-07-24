@@ -1,14 +1,14 @@
 package com.squirtles.data.firebase.model
 
 import androidx.core.graphics.toColorInt
+import com.firebase.geofire.GeoFireUtils
+import com.firebase.geofire.GeoLocation
+import com.google.firebase.firestore.GeoPoint
 import com.squirtles.core.model.Creator
 import com.squirtles.core.model.LocationPoint
 import com.squirtles.core.model.Pick
 import com.squirtles.core.model.Song
 import com.squirtles.core.model.User
-import com.firebase.geofire.GeoFireUtils
-import com.firebase.geofire.GeoLocation
-import com.google.firebase.firestore.GeoPoint
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
