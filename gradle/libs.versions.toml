@@ -9,8 +9,8 @@ jvmTarget = "17"
 jdkVersion = "17"
 
 # App Version
-versionCode = "10100"
-versionName = "1.1.0"
+versionCode = "10000"
+versionName = "1.0.0"
 
 # Build
 agp = "8.5.1"
@@ -57,7 +57,7 @@ coil = "3.0.0"
 
 # Firebase
 firebaseBom = "33.5.1"
-firebaseDynamicModuleSupportVersion = "16.0.0-beta03"
+firebaseDynamicModuleSupportVersion = "16.0.0-beta04"
 firebaseFirestoreKtx = "25.1.1"
 firebaseFunctionsKtx = "21.1.0"
 firebaseCrashlytics = "3.0.2"
