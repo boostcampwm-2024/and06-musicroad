@@ -78,9 +78,10 @@ internal class MainNavigator(
         )
     }
 
-    fun navigateEditProfile(userName: String) {
+    fun navigateEditProfile(userName: String, userProfileImage: String?) {
         navController.navigateEditProfile(
             userName = userName,
+            userProfileImage = userProfileImage,
             navOptions = navOptions { launchSingleTop = true }
         )
     }

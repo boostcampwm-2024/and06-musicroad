@@ -1,23 +1,35 @@
 package com.squirtles.feature.userinfo.screen
 
 import android.content.Context
+import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -37,20 +49,26 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.flowWithLifecycle
+import coil3.compose.AsyncImage
 import com.squirtles.core.account.AccountViewModel
 import com.squirtles.core.account.GoogleId
 import com.squirtles.core.common.ui.Constants.COLOR_STOPS
@@ -58,7 +76,6 @@ import com.squirtles.core.common.ui.DialogTextButton
 import com.squirtles.core.common.ui.HorizontalSpacer
 import com.squirtles.core.common.ui.MessageAlertDialog
 import com.squirtles.core.common.ui.theme.Black
-import com.squirtles.core.common.ui.theme.DarkGray
 import com.squirtles.core.common.ui.theme.Gray
 import com.squirtles.core.common.ui.theme.MusicRoadTheme
 import com.squirtles.core.common.ui.theme.Primary
@@ -73,6 +90,7 @@ import java.util.regex.Pattern
 @Composable
 internal fun EditProfileScreen(
     currentUserName: String,
+    currentUserProfileImage: String?,
     onBackToMapClick: () -> Unit,
     onBackClick: () -> Unit,
     userInfoViewModel: UserInfoViewModel = hiltViewModel(),
@@ -85,6 +103,7 @@ internal fun EditProfileScreen(
     val nickNameErrorMessage = remember { mutableStateOf("") }
     var showLoadingIndicator by rememberSaveable { mutableStateOf(false) }
     var showDeleteAccountDialog by remember { mutableStateOf(false) }
+    var selectedImage by remember { mutableStateOf(currentUserProfileImage?.toUri()) }
 
     val onDeleteAccountClick: () -> Unit = {
         GoogleId(context).signOut()
@@ -150,7 +169,12 @@ internal fun EditProfileScreen(
                 .padding(innerPadding)
         ) {
             // 프로필 수정
-            EditProfileContents(userName, nickNameErrorMessage)
+            EditProfileContents(
+                userName = userName,
+                nickNameErrorMessage = nickNameErrorMessage,
+                profileImage = selectedImage.toString(),
+                onImageSelected = { uri -> selectedImage = uri }
+            )
 
             // 회원 탈퇴
             Text(
@@ -267,7 +291,9 @@ private fun validateUserName(userName: String, context: Context) = when {
 @Composable
 private fun EditProfileContents(
     userName: MutableState<String>,
-    nickNameErrorMessage: MutableState<String>
+    nickNameErrorMessage: MutableState<String>,
+    profileImage: String?,
+    onImageSelected: (Uri?) -> Unit
 ) {
     val context = LocalContext.current
     Column(
@@ -276,6 +302,14 @@ private fun EditProfileContents(
             .padding(vertical = 30.dp, horizontal = 30.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
+        ProfileImagePicker(
+            currentImageUrl = profileImage,
+            onImageSelected = onImageSelected,
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(bottom = 32.dp)
+        )
+
         Text(
             text = stringResource(id = R.string.setting_profile_nickname),
             fontSize = 20.sp,
@@ -308,6 +342,134 @@ private fun EditProfileContents(
     }
 }
 
+@Composable
+fun ProfileImagePicker(
+    currentImageUrl: String?,
+    onImageSelected: (Uri?) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var showProfileMenu by remember { mutableStateOf(false) }
+
+    val galleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri -> onImageSelected(uri) }
+
+    Box(
+        modifier = modifier.size(180.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .clip(CircleShape)
+                .clickable { showProfileMenu = true }
+                .background(Color.Gray.copy(alpha = 0.2f)),
+            contentAlignment = Alignment.Center
+        ) {
+            if (currentImageUrl != null) {
+                AsyncImage(
+                    model = currentImageUrl,
+                    contentDescription = stringResource(R.string.user_info_profile_image),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clip(CircleShape),
+                    placeholder = painterResource(R.drawable.img_user_default_profile),
+                    error = painterResource(R.drawable.img_user_default_profile),
+                    contentScale = ContentScale.Crop
+                )
+            } else {
+                Icon(
+                    painter = painterResource(R.drawable.img_user_default_profile),
+                    contentDescription = stringResource(R.string.user_info_profile_image),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clip(CircleShape)
+                )
+            }
+        }
+
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .offset(x = 8.dp)
+                .size(50.dp)
+                .clip(CircleShape)
+                .clickable { showProfileMenu = true }
+                .background(Color.White, CircleShape)
+                .border(2.dp, Color.Gray.copy(alpha = 0.3f), CircleShape),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = Icons.Default.CameraAlt,
+                contentDescription = stringResource(R.string.setting_profile_image_description),
+                modifier = Modifier.size(36.dp),
+                tint = Color.Gray
+            )
+        }
+
+        ProfileOptionsDropdown(
+            expanded = showProfileMenu,
+            onDismiss = { showProfileMenu = false },
+            onGalleryClick = {
+                galleryLauncher.launch("image/*")
+                showProfileMenu = false
+            },
+            onDefaultClick = {
+                onImageSelected(null)
+                showProfileMenu = false
+            }
+        )
+    }
+}
+
+@Composable
+fun ProfileOptionsDropdown(
+    expanded: Boolean,
+    onDismiss: () -> Unit,
+    onGalleryClick: () -> Unit,
+    onDefaultClick: () -> Unit
+) {
+    DropdownMenu(
+        expanded = expanded,
+        offset = DpOffset(0.dp, (-20).dp),
+        onDismissRequest = onDismiss,
+        shape = RoundedCornerShape(12.dp),
+        containerColor = MaterialTheme.colorScheme.secondaryContainer
+    ) {
+        DropdownMenuItem(
+            text = {
+                Text(
+                    text = stringResource(R.string.setting_profile_image_option_album),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            },
+            onClick = {
+                onGalleryClick()
+                onDismiss()
+            },
+            modifier = Modifier.fillMaxWidth(),
+            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp)
+        )
+
+        DropdownMenuItem(
+            text = {
+                Text(
+                    text = stringResource(R.string.setting_profile_image_option_default),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            },
+            onClick = {
+                onDefaultClick()
+                onDismiss()
+            },
+            modifier = Modifier.fillMaxWidth(),
+            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp)
+        )
+    }
+}
+
 @Preview
 @Composable
 private fun EditProfileAppBarPreview() {
@@ -319,8 +481,10 @@ private fun EditProfileAppBarPreview() {
 private fun EditProfileContentPreview() {
     MusicRoadTheme {
         EditProfileContents(
-            remember { mutableStateOf("짱구") },
-            remember { mutableStateOf("") }
+            userName = remember { mutableStateOf("짱구") },
+            nickNameErrorMessage = remember { mutableStateOf("") },
+            profileImage = null,
+            onImageSelected = {}
         )
     }
 }
