@@ -153,7 +153,7 @@ internal fun EditProfileScreen(
         topBar = {
             EditProfileAppBar(
                 confirmEnabled = nickNameErrorMessage.value.isEmpty() &&
-                        currentUserName != userName.value,
+                        (currentUserName != userName.value || currentUserProfileImage?.toUri() != selectedImage),
                 onConfirmClick = {
                     showLoadingIndicator = true
                     userInfoViewModel.updateUsername(userName.value)
