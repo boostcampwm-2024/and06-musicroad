@@ -80,9 +80,11 @@ import com.squirtles.core.common.ui.theme.Gray
 import com.squirtles.core.common.ui.theme.MusicRoadTheme
 import com.squirtles.core.common.ui.theme.Primary
 import com.squirtles.core.common.ui.theme.White
+import com.squirtles.feature.userinfo.ProfileImageState
 import com.squirtles.feature.userinfo.R
 import com.squirtles.feature.userinfo.UserInfoConstants.USERNAME_PATTERN
 import com.squirtles.feature.userinfo.UserInfoViewModel
+import com.squirtles.feature.userinfo.UserNameState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.regex.Pattern
@@ -114,25 +116,30 @@ internal fun EditProfileScreen(
 
     LaunchedEffect(Unit) {
         launch {
-            userInfoViewModel.updateSuccess
+            userInfoViewModel.updateState
                 .flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
-                .collect { isSuccess ->
+                .collect { updateState ->
                     focusManager.clearFocus()
                     delay(100)
-                    if (isSuccess) {
-                        Toast.makeText(
-                            context,
-                            context.getString(R.string.setting_profile_update_nickname_success),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        onBackClick()
-                    } else {
-                        showLoadingIndicator = false
-                        Toast.makeText(
-                            context,
-                            context.getString(R.string.setting_profile_update_nickname_failure),
-                            Toast.LENGTH_SHORT
-                        ).show()
+
+                    when {
+                        updateState.nameSuccess && updateState.imageSuccess -> {
+                            Toast.makeText(
+                                context,
+                                context.getString(R.string.setting_profile_update_nickname_success),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            onBackClick()
+                        }
+
+                        else -> {
+                            showLoadingIndicator = false
+                            Toast.makeText(
+                                context,
+                                context.getString(R.string.setting_profile_update_nickname_failure),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
                 }
         }
@@ -156,7 +163,20 @@ internal fun EditProfileScreen(
                         (currentUserName != userName.value || currentUserProfileImage?.toUri() != selectedImage),
                 onConfirmClick = {
                     showLoadingIndicator = true
-                    userInfoViewModel.updateUsername(userName.value)
+                    userInfoViewModel.updateProfile(
+                        userNameState = if (currentUserName == userName.value) {
+                            UserNameState.Unchanged
+                        } else {
+                            UserNameState.New(userName.value)
+                        },
+                        profileImageState = if (currentUserProfileImage?.toUri() == selectedImage) {
+                            ProfileImageState.Unchanged
+                        } else if (selectedImage == null) {
+                            ProfileImageState.Remove
+                        } else {
+                            ProfileImageState.New(selectedImage.toString())
+                        }
+                    )
                 },
                 onBackClick = onBackClick
             )
