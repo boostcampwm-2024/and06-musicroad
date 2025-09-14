@@ -2,6 +2,7 @@ package com.squirtles.data.user.di
 
 import android.content.Context
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import com.squirtles.data.user.FirebaseUserDataSource
 import com.squirtles.data.user.FirebaseUserDataSourceImpl
 import com.squirtles.domain.user.FirebaseUserRepository
@@ -37,6 +38,6 @@ object UserDiModule {
 
     @Provides
     @Singleton
-    fun provideFirebaseUserDataSource(db: FirebaseFirestore): FirebaseUserDataSource =
-        FirebaseUserDataSourceImpl(db)
+    fun provideFirebaseUserDataSource(db: FirebaseFirestore, storage: FirebaseStorage): FirebaseUserDataSource =
+        FirebaseUserDataSourceImpl(db, storage)
 }

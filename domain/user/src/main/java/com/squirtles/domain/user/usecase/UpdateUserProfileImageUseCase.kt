@@ -6,7 +6,7 @@ import javax.inject.Inject
 class UpdateUserProfileImageUseCase @Inject constructor(
     private val firebaseUserRepository: FirebaseUserRepository
 ) {
-    suspend operator fun invoke(userId: String, newUserProfileImage: String?) {
-        // TODO 프로필 이미지 업데이트
+    suspend operator fun invoke(userId: String, newImageData: ByteArray) {
+        firebaseUserRepository.updateUserProfileImage(userId, newImageData)
     }
 }

@@ -4,6 +4,7 @@ import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.toObject
+import com.google.firebase.storage.FirebaseStorage
 import com.squirtles.data.firebase.BaseFirebaseDataSource
 import com.squirtles.data.firebase.FirebaseCollections
 import com.squirtles.data.firebase.FirebaseDocumentFields
@@ -14,7 +15,8 @@ import javax.inject.Singleton
 
 @Singleton
 class FirebaseUserDataSourceImpl @Inject constructor(
-    private val db: FirebaseFirestore
+    private val db: FirebaseFirestore,
+    private val storage: FirebaseStorage
 ) : BaseFirebaseDataSource(db), FirebaseUserDataSource {
 
     override suspend fun createGoogleIdUser(uid: String, newUser: FirebaseUser): Result<FirebaseUser> {
@@ -60,6 +62,60 @@ class FirebaseUserDataSourceImpl @Inject constructor(
             return deleteDocument(FirebaseCollections.Users, uid)
         }.onFailure {
             Log.e(TAG_LOG, "Failed to delete a user", it)
+        }
+    }
+
+    private suspend fun deleteImageFromStorage(imageUrl: String) {
+        try {
+            val storageRef = storage.getReferenceFromUrl(imageUrl)
+            storageRef.delete().await()
+        } catch (e: Exception) {
+            Log.w(TAG_LOG, "No image found in storage for url: $imageUrl", e)
+        }
+    }
+
+    override suspend fun updateUserProfileImage(uid: String, imageData: ByteArray): Result<Boolean> {
+        return runCatching {
+            val fileName = "profile_images/${uid}_${System.currentTimeMillis()}.jpg"
+            val storageRef = storage.reference.child(fileName)
+
+            storageRef.putBytes(imageData).await()
+            val downloadUrl = storageRef.downloadUrl.await().toString()
+            val userDocRef = db.collection(FirebaseCollections.Users.name).document(uid)
+
+            try {
+                var oldImageUrl: String? = null
+                db.runTransaction { transaction ->
+                    val snapshot = transaction.get(userDocRef)
+                    oldImageUrl = snapshot.getString(FirebaseDocumentFields.ProfileImage.name)
+                    transaction.update(userDocRef, FirebaseDocumentFields.ProfileImage.name, downloadUrl)
+                }.await()
+
+                oldImageUrl?.let { url -> deleteImageFromStorage(url) }
+            } catch (dbError: Exception) {
+                storageRef.delete().await()
+                throw dbError
+            }
+
+            true
+        }.onFailure { e ->
+            Log.e(TAG_LOG, "Failed to update user profile image", e)
+        }
+    }
+
+    override suspend fun deleteUserProfileImage(uid: String): Result<Boolean> {
+        return runCatching {
+            val userDocSnap = fetchDocumentSnapshot(FirebaseCollections.Users, uid).getOrThrow()
+            val currentProfileImageUrl = userDocSnap.getString(FirebaseDocumentFields.ProfileImage.name)
+
+            currentProfileImageUrl?.let { deleteImageFromStorage(it) }
+            db.runTransaction { transaction ->
+                transaction.update(userDocSnap.reference, FirebaseDocumentFields.ProfileImage.name, null)
+            }
+
+            true
+        }.onFailure { e ->
+            Log.e(TAG_LOG, "Failed to delete user profile image", e)
         }
     }
 

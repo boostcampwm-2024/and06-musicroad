@@ -174,7 +174,7 @@ internal fun EditProfileScreen(
                         } else if (selectedImage == null) {
                             ProfileImageState.Remove
                         } else {
-                            ProfileImageState.New(selectedImage.toString())
+                            ProfileImageState.New(selectedImage!!)
                         }
                     )
                 },

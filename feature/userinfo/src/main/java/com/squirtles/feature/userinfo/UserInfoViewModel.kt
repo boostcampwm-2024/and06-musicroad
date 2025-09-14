@@ -1,14 +1,18 @@
 package com.squirtles.feature.userinfo
 
+import android.content.Context
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.squirtles.domain.user.usecase.DeleteUserProfileImageUseCase
 import com.squirtles.domain.user.usecase.FetchUserByIdUseCase
 import com.squirtles.domain.user.usecase.GetCurrentUidUseCase
 import com.squirtles.domain.user.usecase.UpdateUserNameUseCase
 import com.squirtles.domain.user.usecase.UpdateUserProfileImageUseCase
 import com.squirtles.feature.userinfo.UserInfoConstants.DEFAULT_USER
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -24,7 +28,7 @@ sealed class UserNameState {
 sealed class ProfileImageState {
     data object Unchanged : ProfileImageState()
     data object Remove : ProfileImageState()
-    data class New(val userProfileImage: String) : ProfileImageState()
+    data class New(val userProfileImage: Uri) : ProfileImageState()
 }
 
 data class UpdateState(
@@ -34,10 +38,12 @@ data class UpdateState(
 
 @HiltViewModel
 class UserInfoViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val getCurrentUidUseCase: GetCurrentUidUseCase,
     private val fetchUserByIdUseCase: FetchUserByIdUseCase,
     private val updateUserNameUseCase: UpdateUserNameUseCase,
-    private val updateUserProfileImageUseCase: UpdateUserProfileImageUseCase
+    private val updateUserProfileImageUseCase: UpdateUserProfileImageUseCase,
+    private val deleteUserProfileImageUseCase: DeleteUserProfileImageUseCase
 ) : ViewModel() {
 
     private val _profileUser = MutableStateFlow(DEFAULT_USER)
@@ -99,25 +105,39 @@ class UserInfoViewModel @Inject constructor(
     }
 
     private suspend fun updateUserProfileImage(profileImageState: ProfileImageState): Boolean {
-        val userProfileImage = when (profileImageState) {
+        return when (profileImageState) {
             is ProfileImageState.Unchanged -> {
-                return true
+                true
             }
 
             is ProfileImageState.Remove -> {
-                null
+                currentUid?.let { uid ->
+                    runCatching {
+                        deleteUserProfileImageUseCase(uid)
+                    }.isSuccess
+                } ?: false
             }
 
             is ProfileImageState.New -> {
-                profileImageState.userProfileImage
+                val newImageData: ByteArray = profileImageState.userProfileImage.toByteArray(context) ?: return false
+                currentUid?.let { uid ->
+                    runCatching {
+                        updateUserProfileImageUseCase(uid, newImageData)
+                    }.isSuccess
+                } ?: false
             }
         }
+    }
 
-        return currentUid?.let { uid ->
-            runCatching {
-                updateUserProfileImageUseCase(uid, userProfileImage)
-            }.isSuccess
-        } ?: false
+    private fun Uri.toByteArray(context: Context): ByteArray? {
+        return try {
+            context.contentResolver.openInputStream(this)?.use { inputStream ->
+                inputStream.readBytes()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
     }
 }
 
