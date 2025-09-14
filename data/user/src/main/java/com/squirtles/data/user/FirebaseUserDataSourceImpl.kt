@@ -58,6 +58,15 @@ class FirebaseUserDataSourceImpl @Inject constructor(
 
     override suspend fun deleteUser(uid: String): Result<Void> {
         return runCatching {
+            val userDocSnap = fetchDocumentSnapshot(FirebaseCollections.Users, uid).getOrThrow()
+            val profileImageUrl = userDocSnap.getString(FirebaseDocumentFields.ProfileImage.name)
+            profileImageUrl?.let { url ->
+                deleteImageFromStorage(url).runCatching {
+                }.onFailure { e ->
+                    Log.w(TAG_LOG, "Failed to delete profile image from Storage for uid: $uid", e)
+                }
+            }
+
             FirebaseAuth.getInstance().currentUser?.delete()?.await()
             return deleteDocument(FirebaseCollections.Users, uid)
         }.onFailure {
