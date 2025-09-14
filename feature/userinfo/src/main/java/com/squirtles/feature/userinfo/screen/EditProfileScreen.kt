@@ -14,14 +14,17 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CameraAlt
@@ -101,11 +104,12 @@ internal fun EditProfileScreen(
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val focusManager = LocalFocusManager.current
-    val userName = remember { mutableStateOf(currentUserName) }
-    val nickNameErrorMessage = remember { mutableStateOf("") }
+    val userName = rememberSaveable { mutableStateOf(currentUserName) }
+    val nickNameErrorMessage = rememberSaveable { mutableStateOf("") }
+    var selectedImage by rememberSaveable { mutableStateOf(currentUserProfileImage?.toUri()) }
+
     var showLoadingIndicator by rememberSaveable { mutableStateOf(false) }
     var showDeleteAccountDialog by remember { mutableStateOf(false) }
-    var selectedImage by remember { mutableStateOf(currentUserProfileImage?.toUri()) }
 
     val onDeleteAccountClick: () -> Unit = {
         GoogleId(context).signOut()
@@ -188,25 +192,33 @@ internal fun EditProfileScreen(
                 .background(Brush.verticalGradient(colorStops = COLOR_STOPS))
                 .padding(innerPadding)
         ) {
-            // 프로필 수정
-            EditProfileContents(
-                userName = userName,
-                nickNameErrorMessage = nickNameErrorMessage,
-                profileImage = selectedImage.toString(),
-                onImageSelected = { uri -> selectedImage = uri }
-            )
-
-            // 회원 탈퇴
-            Text(
-                text = stringResource(id = R.string.user_info_setting_delete_user_account),
+            Column(
                 modifier = Modifier
-                    .padding(vertical = 20.dp)
-                    .clickable { showDeleteAccountDialog = true }
-                    .align(Alignment.BottomCenter),
-                color = Gray,
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.bodyMedium
-            )
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                // 프로필 수정
+                EditProfileContents(
+                    userName = userName,
+                    nickNameErrorMessage = nickNameErrorMessage,
+                    profileImage = selectedImage.toString(),
+                    onImageSelected = { uri -> selectedImage = uri }
+                )
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                // 회원 탈퇴
+                Text(
+                    text = stringResource(id = R.string.user_info_setting_delete_user_account),
+                    modifier = Modifier
+                        .padding(vertical = 20.dp)
+                        .clickable { showDeleteAccountDialog = true },
+                    color = Gray,
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
         }
     }
 
