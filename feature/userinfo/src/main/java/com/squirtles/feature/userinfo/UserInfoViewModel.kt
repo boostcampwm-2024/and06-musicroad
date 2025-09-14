@@ -1,8 +1,11 @@
 package com.squirtles.feature.userinfo
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Log
+import androidx.core.graphics.scale
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.squirtles.domain.user.usecase.DeleteUserProfileImageUseCase
@@ -18,6 +21,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.io.ByteArrayOutputStream
 import javax.inject.Inject
 
 sealed class UserNameState {
@@ -129,10 +133,43 @@ class UserInfoViewModel @Inject constructor(
         }
     }
 
-    private fun Uri.toByteArray(context: Context): ByteArray? {
+    private fun Uri.toByteArray(context: Context, maxSizeDp: Int = 180): ByteArray? {
         return try {
+            val density = context.resources.displayMetrics.density
+            val maxSizePx = (maxSizeDp * density).toInt()
+
+            val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
             context.contentResolver.openInputStream(this)?.use { inputStream ->
-                inputStream.readBytes()
+                BitmapFactory.decodeStream(inputStream, null, options)
+            }
+
+            if (options.outWidth <= 0 || options.outHeight <= 0) {
+                return null
+            }
+
+            val maxDimension = maxOf(options.outWidth, options.outHeight)
+            var sampleSize = 1
+            if (maxDimension > maxSizePx) {
+                val half = maxDimension / 2
+                while (half / sampleSize > maxSizePx) {
+                    sampleSize *= 2
+                }
+            }
+            val decodeOptions = BitmapFactory.Options().apply { inSampleSize = sampleSize }
+            val bitmap = context.contentResolver.openInputStream(this)?.use { inputStream ->
+                BitmapFactory.decodeStream(inputStream, null, decodeOptions)
+            } ?: return null
+
+            val scale = maxSizePx.toFloat() / maxOf(bitmap.width, bitmap.height)
+            val resizedBitmap = if (scale < 1f) {
+                bitmap.scale((bitmap.width * scale).toInt(), (bitmap.height * scale).toInt())
+            } else bitmap
+
+            ByteArrayOutputStream().use { baos ->
+                resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 80, baos)
+                if (resizedBitmap != bitmap) bitmap.recycle()
+                resizedBitmap.recycle()
+                baos.toByteArray()
             }
         } catch (e: Exception) {
             e.printStackTrace()
