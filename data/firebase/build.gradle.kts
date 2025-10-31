@@ -13,6 +13,8 @@ dependencies {
     androidTestImplementation(libs.bundles.test)
 
     // Firebase
+    implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.firestore.ktx)
+    implementation(libs.firebase.storage)
     implementation(libs.geofire.android.common)
 }

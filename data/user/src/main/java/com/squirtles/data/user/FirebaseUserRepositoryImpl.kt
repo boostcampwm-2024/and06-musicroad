@@ -44,4 +44,12 @@ class FirebaseUserRepositoryImpl @Inject constructor(
     override suspend fun deleteUser(uid: String): Result<Void> {
         return userDataSource.deleteUser(uid)
     }
+
+    override suspend fun updateUserProfileImage(uid: String, imageData: ByteArray): Result<Boolean> {
+        return userDataSource.updateUserProfileImage(uid, imageData)
+    }
+
+    override suspend fun deleteUserProfileImage(uid: String): Result<Boolean> {
+        return userDataSource.deleteUserProfileImage(uid)
+    }
 }

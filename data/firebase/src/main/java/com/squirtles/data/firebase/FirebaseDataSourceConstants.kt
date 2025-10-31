@@ -12,6 +12,7 @@ sealed class FirebaseDocumentFields(val name: String) {
     data object Uid: FirebaseDocumentFields("uid")
     data object MyPicks: FirebaseDocumentFields("myPicks")
     data object Name: FirebaseDocumentFields("name")
+    data object ProfileImage: FirebaseDocumentFields("profileImage")
     data object Location: FirebaseDocumentFields("location")
     data object GeoHash: FirebaseDocumentFields("geoHash")
     data object CreatedUserName: FirebaseDocumentFields("createdBy.userName")

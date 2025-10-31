@@ -7,5 +7,7 @@ object LocalPropertyProvider {
 
     const val firestoreDbId: String = BuildConfig.FIRESTORE_DB_ID
 
+    const val firebaseStorageId: String = BuildConfig.FIRESTORE_STORAGE_ID
+
     const val httpsCallable: String = BuildConfig.HTTPS_CALLABLE
 }

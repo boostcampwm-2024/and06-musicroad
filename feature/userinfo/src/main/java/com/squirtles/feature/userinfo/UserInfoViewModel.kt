@@ -1,24 +1,53 @@
 package com.squirtles.feature.userinfo
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
+import android.util.Log
+import androidx.core.graphics.scale
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.squirtles.domain.user.usecase.DeleteUserProfileImageUseCase
 import com.squirtles.domain.user.usecase.FetchUserByIdUseCase
 import com.squirtles.domain.user.usecase.GetCurrentUidUseCase
 import com.squirtles.domain.user.usecase.UpdateUserNameUseCase
+import com.squirtles.domain.user.usecase.UpdateUserProfileImageUseCase
 import com.squirtles.feature.userinfo.UserInfoConstants.DEFAULT_USER
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.io.ByteArrayOutputStream
 import javax.inject.Inject
+
+sealed class UserNameState {
+    data object Unchanged : UserNameState()
+    data class New(val userName: String) : UserNameState()
+}
+
+sealed class ProfileImageState {
+    data object Unchanged : ProfileImageState()
+    data object Remove : ProfileImageState()
+    data class New(val userProfileImage: Uri) : ProfileImageState()
+}
+
+data class UpdateState(
+    val nameSuccess: Boolean,
+    val imageSuccess: Boolean
+)
 
 @HiltViewModel
 class UserInfoViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val getCurrentUidUseCase: GetCurrentUidUseCase,
     private val fetchUserByIdUseCase: FetchUserByIdUseCase,
-    private val updateUserNameUseCase: UpdateUserNameUseCase
+    private val updateUserNameUseCase: UpdateUserNameUseCase,
+    private val updateUserProfileImageUseCase: UpdateUserProfileImageUseCase,
+    private val deleteUserProfileImageUseCase: DeleteUserProfileImageUseCase
 ) : ViewModel() {
 
     private val _profileUser = MutableStateFlow(DEFAULT_USER)
@@ -26,8 +55,8 @@ class UserInfoViewModel @Inject constructor(
 
     val currentUid get() = getCurrentUidUseCase()
 
-    private val _updateSuccess = MutableSharedFlow<Boolean>()
-    val updateSuccess = _updateSuccess.asSharedFlow()
+    private val _updateState = MutableSharedFlow<UpdateState>()
+    val updateState = _updateState.asSharedFlow()
 
     fun getUserById(uid: String) {
         viewModelScope.launch {
@@ -36,15 +65,115 @@ class UserInfoViewModel @Inject constructor(
         }
     }
 
-    fun updateUsername(newUserName: String) {
+    fun updateProfile(userNameState: UserNameState, profileImageState: ProfileImageState) {
         viewModelScope.launch {
-            currentUid?.let { uid ->
-                val result = runCatching {
-                    updateUserNameUseCase(uid, newUserName).getOrThrow()
-                    fetchUserByIdUseCase(uid).getOrThrow()
+            val nameResult = updateUsername(userNameState)
+            val imageResult = updateUserProfileImage(profileImageState)
+
+            if (!nameResult) Log.e("UserInfoViewModel", "닉네임 변경 실패")
+            if (!imageResult) Log.e("UserInfoViewModel", "프로필 사진 변경 실패")
+
+            if (nameResult || imageResult) {
+                currentUid?.let { uid ->
+                    runCatching {
+                        fetchUserByIdUseCase(uid).getOrThrow()
+                    }
                 }
-                _updateSuccess.emit(result.isSuccess)
             }
+
+            _updateState.emit(
+                UpdateState(
+                    nameSuccess = nameResult,
+                    imageSuccess = imageResult
+                )
+            )
+        }
+    }
+
+    private suspend fun updateUsername(userNameState: UserNameState): Boolean {
+        val userName = when (userNameState) {
+            is UserNameState.Unchanged -> {
+                return true
+            }
+
+            is UserNameState.New -> {
+                userNameState.userName
+            }
+        }
+
+        return currentUid?.let { uid ->
+            runCatching {
+                updateUserNameUseCase(uid, userName).getOrThrow()
+            }.isSuccess
+        } ?: false
+    }
+
+    private suspend fun updateUserProfileImage(profileImageState: ProfileImageState): Boolean {
+        return when (profileImageState) {
+            is ProfileImageState.Unchanged -> {
+                true
+            }
+
+            is ProfileImageState.Remove -> {
+                currentUid?.let { uid ->
+                    runCatching {
+                        deleteUserProfileImageUseCase(uid)
+                    }.isSuccess
+                } ?: false
+            }
+
+            is ProfileImageState.New -> {
+                val newImageData: ByteArray = profileImageState.userProfileImage.toByteArray(context) ?: return false
+                currentUid?.let { uid ->
+                    runCatching {
+                        updateUserProfileImageUseCase(uid, newImageData)
+                    }.isSuccess
+                } ?: false
+            }
+        }
+    }
+
+    private fun Uri.toByteArray(context: Context, maxSizeDp: Int = 180): ByteArray? {
+        return try {
+            val density = context.resources.displayMetrics.density
+            val maxSizePx = (maxSizeDp * density).toInt()
+
+            val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+            context.contentResolver.openInputStream(this)?.use { inputStream ->
+                BitmapFactory.decodeStream(inputStream, null, options)
+            }
+
+            if (options.outWidth <= 0 || options.outHeight <= 0) {
+                return null
+            }
+
+            val maxDimension = maxOf(options.outWidth, options.outHeight)
+            var sampleSize = 1
+            if (maxDimension > maxSizePx) {
+                val half = maxDimension / 2
+                while (half / sampleSize > maxSizePx) {
+                    sampleSize *= 2
+                }
+            }
+            val decodeOptions = BitmapFactory.Options().apply { inSampleSize = sampleSize }
+            val bitmap = context.contentResolver.openInputStream(this)?.use { inputStream ->
+                BitmapFactory.decodeStream(inputStream, null, decodeOptions)
+            } ?: return null
+
+            val scale = maxSizePx.toFloat() / maxOf(bitmap.width, bitmap.height)
+            val resizedBitmap = if (scale < 1f) {
+                bitmap.scale((bitmap.width * scale).toInt(), (bitmap.height * scale).toInt())
+            } else bitmap
+
+            ByteArrayOutputStream().use { baos ->
+                resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 80, baos)
+                if (resizedBitmap != bitmap) bitmap.recycle()
+                resizedBitmap.recycle()
+                baos.toByteArray()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
         }
     }
 }
