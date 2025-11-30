@@ -8,7 +8,7 @@ sealed interface UserInfoRoute : Route {
     data class MyPicks(val uid: String) : UserInfoRoute
 
     @Serializable
-    data class EditProfile(val userName: String) : UserInfoRoute
+    data class EditProfile(val userName: String, val userProfileImage: String?) : UserInfoRoute
 
     @Serializable
     data object EditNotification : UserInfoRoute

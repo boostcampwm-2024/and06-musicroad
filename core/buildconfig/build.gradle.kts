@@ -42,6 +42,12 @@ android {
 
             buildConfigField(
                 "String",
+                "FIRESTORE_STORAGE_ID",
+                "\"${properties.getProperty("FIRESTORE_STORAGE_ID_DEBUG")}\""
+            )
+
+            buildConfigField(
+                "String",
                 "HTTPS_CALLABLE",
                 "\"${properties.getProperty("HTTPS_CALLABLE_DEBUG")}\""
             )
@@ -54,6 +60,12 @@ android {
                 "String",
                 "FIRESTORE_DB_ID",
                 "\"${properties.getProperty("FIRESTORE_DB_ID_RELEASE")}\""
+            )
+
+            buildConfigField(
+                "String",
+                "FIRESTORE_STORAGE_ID",
+                "\"${properties.getProperty("FIRESTORE_STORAGE_ID_RELEASE")}\""
             )
 
             buildConfigField(

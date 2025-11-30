@@ -7,4 +7,6 @@ interface FirebaseUserDataSource {
     suspend fun createGoogleIdUser(uid: String, newUser: FirebaseUser): Result<FirebaseUser>
     suspend fun updateUserName(uid: String, newUserName: String): Result<Boolean>
     suspend fun deleteUser(uid: String): Result<Void>
+    suspend fun updateUserProfileImage(uid: String, imageData: ByteArray): Result<Boolean>
+    suspend fun deleteUserProfileImage(uid: String): Result<Boolean>
 }

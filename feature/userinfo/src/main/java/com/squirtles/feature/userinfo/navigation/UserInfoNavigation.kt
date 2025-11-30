@@ -16,8 +16,8 @@ fun NavController.navigateUserInfo(uid: String, navOptions: NavOptions? = null) 
     navigate(MainRoute.UserInfo(uid), navOptions)
 }
 
-fun NavController.navigateEditProfile(userName: String, navOptions: NavOptions? = null) {
-    navigate(UserInfoRoute.EditProfile(userName), navOptions)
+fun NavController.navigateEditProfile(userName: String, userProfileImage: String?, navOptions: NavOptions? = null) {
+    navigate(UserInfoRoute.EditProfile(userName, userProfileImage), navOptions)
 }
 
 fun NavController.navigateEditNotificationSetting(navOptions: NavOptions? = null) {
@@ -33,7 +33,7 @@ fun NavGraphBuilder.userInfoNavGraph(
     onBackToMapClick: () -> Unit,
     onFavoritePicksClick: (String) -> Unit,
     onMyPicksClick: (String) -> Unit,
-    onEditProfileClick: (String) -> Unit,
+    onEditProfileClick: (String, String?) -> Unit,
     onEditNotificationClick: () -> Unit,
     onEditPlayerClick : () -> Unit,
     ) {
@@ -54,8 +54,10 @@ fun NavGraphBuilder.userInfoNavGraph(
 
     composable<UserInfoRoute.EditProfile> { backStackEntry ->
         val userName = backStackEntry.toRoute<UserInfoRoute.EditProfile>().userName
+        val userProfileImage = backStackEntry.toRoute<UserInfoRoute.EditProfile>().userProfileImage
         EditProfileScreen(
             currentUserName = userName,
+            currentUserProfileImage = userProfileImage,
             onBackToMapClick = onBackToMapClick,
             onBackClick = onBackClick,
         )
