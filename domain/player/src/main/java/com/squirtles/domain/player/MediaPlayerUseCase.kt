@@ -8,7 +8,6 @@ import com.squirtles.core.mediaservice.MediaControllerProvider
 import com.squirtles.core.mediaservice.SEEK_TO_DURATION
 import com.squirtles.core.model.Pick
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 /*  */
