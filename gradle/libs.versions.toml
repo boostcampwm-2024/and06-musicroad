@@ -9,8 +9,8 @@ jvmTarget = "17"
 jdkVersion = "17"
 
 # App Version
-versionCode = "10000"
-versionName = "1.0.0"
+versionCode = "10001"
+versionName = "1.0.1"
 
 # Build
 agp = "8.5.1"
